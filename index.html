@@ -186,7 +186,144 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 /* SECTION DIVIDER */
 .form-divider{border:none;border-top:1px solid var(--border);margin:16px 0}
 .form-section-title{font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);margin-bottom:12px;display:flex;align-items:center;gap:8px}
-</style>
+
+/* ══════════════════════════════════════════════════════
+   BOTTOM NAV (mobile only — hidden on desktop)
+══════════════════════════════════════════════════════ */
+.bottom-nav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  z-index:20;
+  padding:0 4px;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.bottom-nav-items{display:flex;justify-content:space-around}
+.bn-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:10px 8px 8px;flex:1;cursor:pointer;
+  color:var(--muted);font-size:10px;font-family:'DM Mono',monospace;
+  text-transform:uppercase;letter-spacing:.5px;transition:color .15s;
+  border:none;background:none;
+}
+.bn-item .bn-icon{font-size:20px;line-height:1}
+.bn-item.active{color:var(--accent)}
+.bn-item.active .bn-icon{filter:drop-shadow(0 0 6px rgba(232,200,122,.4))}
+
+/* Mobile FAB */
+.fab{
+  display:none;
+  position:fixed;bottom:calc(64px + env(safe-area-inset-bottom) + 12px);right:16px;
+  width:52px;height:52px;border-radius:50%;
+  background:var(--accent);color:#0d0f14;
+  font-size:24px;font-weight:300;line-height:1;
+  border:none;cursor:pointer;z-index:21;
+  box-shadow:0 4px 20px rgba(232,200,122,.35);
+  align-items:center;justify-content:center;
+  transition:transform .15s;
+}
+.fab:active{transform:scale(.93)}
+
+/* ══════════════════════════════════════════════════════
+   TABLET  ≤ 1024px
+══════════════════════════════════════════════════════ */
+@media(max-width:1024px){
+  .sidebar{width:200px}
+  .main{margin-left:200px;max-width:calc(100vw - 200px);padding:28px 24px}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .content-grid{grid-template-columns:1fr}
+  .side-panel{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .trip-header h1{font-size:28px}
+}
+
+/* ══════════════════════════════════════════════════════
+   MOBILE  ≤ 640px
+══════════════════════════════════════════════════════ */
+@media(max-width:640px){
+  /* Hide desktop sidebar, show bottom nav + FAB */
+  .sidebar{display:none}
+  .bottom-nav{display:block}
+  .fab{display:flex}
+
+  /* Main takes full width, pad bottom for nav bar */
+  .main{
+    margin-left:0;
+    max-width:100vw;
+    padding:16px 16px calc(72px + env(safe-area-inset-bottom) + 16px);
+  }
+
+  /* Topbar: stack vertically */
+  .topbar{flex-direction:column;gap:12px;margin-bottom:20px}
+  .topbar > div:last-child{display:flex;gap:8px;width:100%}
+  .topbar > div:last-child .btn{flex:1;padding:10px;font-size:13px}
+  /* Hide "+ Nova viagem" ghost btn on mobile topbar — accessible via sidebar equivalent */
+  .topbar > div:last-child .btn-ghost:first-child{display:none}
+
+  /* Title */
+  .trip-header h1{font-size:26px;letter-spacing:-.5px}
+  .trip-meta{gap:6px}
+  .badge{font-size:10px;padding:3px 8px}
+
+  /* Stats: 2 cols */
+  .stats-row{grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
+  .stat-card{padding:14px}
+  .stat-val{font-size:22px}
+  .stat-sub{font-size:11px}
+
+  /* Content grid: single col */
+  .content-grid{grid-template-columns:1fr;gap:16px}
+  .side-panel{display:flex;flex-direction:column;gap:12px}
+
+  /* Transport cards */
+  .transport-card{padding:14px 14px}
+  .transport-row{flex-direction:column;gap:10px}
+  .transport-row > div:last-child{
+    flex-direction:row!important;
+    flex-wrap:wrap;
+    align-items:center!important;
+    gap:6px;
+    border-top:1px solid var(--border);
+    padding-top:10px;
+  }
+  .transport-card.connection{margin-left:12px}
+  .route-city{font-size:14px}
+
+  /* Accomm cards */
+  .accomm-card{padding:14px}
+
+  /* Expense entries */
+  .day-entry{flex-wrap:wrap;gap:8px;padding:12px 14px}
+  .day-date{width:auto;font-size:20px}
+
+  /* Tabs: scrollable */
+  .tabs{width:100%;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{padding:8px 14px;font-size:12px;white-space:nowrap;flex-shrink:0}
+
+  /* Modals: full-screen bottom sheet */
+  .modal-overlay{align-items:flex-end}
+  .modal,.modal.wide{
+    width:100%;max-width:100%;
+    border-radius:var(--rl) var(--rl) 0 0;
+    padding:24px 20px;
+    max-height:92vh;
+    animation:slideSheet .25s ease;
+  }
+  @keyframes slideSheet{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .form-row,.form-row3{grid-template-columns:1fr}
+
+  /* Toast above bottom nav */
+  .toast{bottom:calc(70px + env(safe-area-inset-bottom));right:12px;left:12px;font-size:13px}
+
+  /* Action buttons: easier tap targets */
+  .action-btn{padding:6px 12px;font-size:12px}
+
+  /* Sections */
+  .sec-hdr{margin-bottom:12px}
+  .sec-title{font-size:16px}
+}
+
 </head>
 <body>
 
@@ -205,7 +342,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 ">
   <div style="
     background:var(--surface);border:1px solid var(--border);
-    border-radius:var(--rl);padding:40px 48px;width:360px;
+    border-radius:var(--rl);padding:40px 48px;width:min(360px,calc(100vw - 40px));
     display:flex;flex-direction:column;gap:20px;
     box-shadow:0 24px 64px rgba(0,0,0,.5);
   ">
@@ -461,6 +598,30 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
   </div>
 </div>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-items">
+    <button class="bn-item active" data-page="overview" onclick="showPage('overview',this);syncBottomNav(this)">
+      <span class="bn-icon">🗺</span>Início
+    </button>
+    <button class="bn-item" data-page="transport" onclick="showPage('transport',document.querySelector('[data-page=transport]'));syncBottomNav(this)">
+      <span class="bn-icon">✈️</span>Passagens
+    </button>
+    <button class="bn-item" data-page="accommodation" onclick="showPage('accommodation',document.querySelector('[data-page=accommodation]'));syncBottomNav(this)">
+      <span class="bn-icon">🏨</span>Hospedagem
+    </button>
+    <button class="bn-item" data-page="expenses" onclick="showPage('expenses',document.querySelector('[data-page=expenses]'));syncBottomNav(this)">
+      <span class="bn-icon">💳</span>Gastos
+    </button>
+    <button class="bn-item" onclick="openModal('newTrip')">
+      <span class="bn-icon">🌍</span>Viagens
+    </button>
+  </div>
+</nav>
+
+<!-- FAB: add content on current page -->
+<button class="fab" id="fab" onclick="fabAction()">+</button>
 
 <script>
 // ══════════════════════════════════════════════════════════════════════════════
@@ -1731,6 +1892,30 @@ function showPage(id,el){
   if(id==='transport')renderTransport();
   if(id==='accommodation')renderAccomm();
   if(id==='expenses')renderExpenses();
+  // sync bottom nav
+  document.querySelectorAll('.bn-item[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+  // update FAB action
+  updateFab(id);
+}
+
+function syncBottomNav(el){
+  document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+let currentPage='overview';
+function updateFab(page){
+  currentPage=page;
+  const fab=document.getElementById('fab');
+  if(!fab)return;
+  // Show FAB on all pages that have an "add" action
+  fab.style.display=(page==='overview')?'none':'flex';
+}
+
+function fabAction(){
+  if(currentPage==='transport')openAddTransport();
+  else if(currentPage==='accommodation')openModal('addAccomm');
+  else if(currentPage==='expenses')openModal('addExpense');
 }
 
 function openModal(id){
