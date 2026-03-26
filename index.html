@@ -1149,7 +1149,10 @@ function showPage(id){
   if(id==='expenses')renderExpenses();
   currentPage=id;
   const fab=document.getElementById('fab');
-  if(fab)fab.style.display=(id==='overview')?'none':'flex';
+  if(fab){
+    const isMobile=window.matchMedia('(max-width:640px)').matches;
+    fab.style.display=(isMobile&&id!=='overview')?'flex':'none';
+  }
 }
 
 function fabAction(){
