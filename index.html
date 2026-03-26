@@ -2,328 +2,284 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Tripboard — Travel Planner</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+<title>Tripboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,300&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0d0f14;--surface:#13161e;--surface2:#1a1e2a;--surface3:#202533;--border:#252a38;--accent:#e8c87a;--accent2:#7ac8e8;--accent3:#e87ab0;--text:#e8eaf0;--muted:#7a8099;--dim:#4a5070;--green:#6ee7b7;--red:#f87171;--r:12px;--rl:18px}
+:root{--bg:#0d0f14;--sf:#13161e;--sf2:#1a1e2a;--bd:#252a38;--ac:#e8c87a;--ac2:#7ac8e8;--ac3:#e87ab0;--tx:#e8eaf0;--mu:#7a8099;--dm:#4a5070;--gn:#6ee7b7;--rd:#f87171;--r:12px;--rl:18px;--sb:240px}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 10% 20%,rgba(232,200,122,.05) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 90% 80%,rgba(122,200,232,.04) 0%,transparent 60%);pointer-events:none;z-index:0}
+
+/* ─── LAYOUT ─────────────────────────────────────────── */
 .app{position:relative;z-index:1;display:flex;min-height:100vh}
+.sidebar{width:var(--sb);min-height:100vh;background:var(--sf);border-right:1px solid var(--bd);display:flex;flex-direction:column;padding:24px 0;position:fixed;top:0;left:0;bottom:0;z-index:10}
+.main{margin-left:var(--sb);flex:1;padding:40px 48px;max-width:calc(100vw - var(--sb))}
 
-/* SIDEBAR */
-.sidebar{width:240px;min-height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:24px 0;position:fixed;top:0;left:0;bottom:0;z-index:10}
-.logo{padding:0 24px 28px;border-bottom:1px solid var(--border)}
-.logo-mark{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--accent);letter-spacing:-.5px}
-.logo-sub{font-size:11px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-top:2px;font-family:'DM Mono',monospace}
+/* ─── SIDEBAR ────────────────────────────────────────── */
+.logo{padding:0 24px 28px;border-bottom:1px solid var(--bd)}
+.logo-mark{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--ac);letter-spacing:-.5px}
+.logo-sub{font-size:11px;color:var(--dm);letter-spacing:2px;text-transform:uppercase;margin-top:2px;font-family:'DM Mono',monospace}
 .nav{padding:20px 12px;flex:1}
-.nav-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);padding:0 12px;margin-bottom:8px;font-family:'DM Mono',monospace}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;color:var(--muted);font-size:14px;font-weight:500;transition:all .15s;margin-bottom:2px;border:1px solid transparent}
-.nav-item:hover{background:var(--surface2);color:var(--text)}
-.nav-item.active{background:rgba(232,200,122,.1);color:var(--accent);border-color:rgba(232,200,122,.15)}
+.nav-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dm);padding:0 12px;margin-bottom:8px;font-family:'DM Mono',monospace}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;color:var(--mu);font-size:14px;font-weight:500;transition:all .15s;margin-bottom:2px;border:1px solid transparent}
+.nav-item:hover{background:var(--sf2);color:var(--tx)}
+.nav-item.active{background:rgba(232,200,122,.1);color:var(--ac);border-color:rgba(232,200,122,.15)}
 .nav-item .icon{font-size:16px;width:20px;text-align:center}
-.trip-list{padding:20px 12px;border-top:1px solid var(--border);overflow-y:auto;max-height:260px}
-.trip-chip{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--muted);transition:all .15s;margin-bottom:2px}
-.trip-chip:hover{background:var(--surface2);color:var(--text)}
-.trip-chip.active{color:var(--accent2);font-weight:600}
-.trip-dot{width:6px;height:6px;border-radius:50%;background:var(--accent2);flex-shrink:0}
-.trip-dot.past{background:var(--dim)}
+.trip-list{padding:20px 12px;border-top:1px solid var(--bd);overflow-y:auto;max-height:260px}
+.trip-chip{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--mu);transition:all .15s;margin-bottom:2px}
+.trip-chip:hover{background:var(--sf2);color:var(--tx)}
+.trip-chip.active{color:var(--ac2);font-weight:600}
+.trip-dot{width:6px;height:6px;border-radius:50%;background:var(--ac2);flex-shrink:0}
+.trip-dot.past{background:var(--dm)}
 
-/* MAIN */
-.main{margin-left:240px;flex:1;padding:40px 48px;max-width:calc(100vw - 240px)}
-.topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:36px}
-.trip-header h1{font-family:'Fraunces',serif;font-size:38px;font-weight:600;letter-spacing:-1px;line-height:1.1}
-.trip-header h1 em{font-style:italic;color:var(--accent)}
-.trip-meta{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
-.badge{font-family:'DM Mono',monospace;font-size:11px;padding:4px 10px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);color:var(--muted)}
-.badge.active{background:rgba(110,231,183,.1);border-color:rgba(110,231,183,.2);color:var(--green)}
-.btn{padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;transition:all .15s}
-.btn-primary{background:var(--accent);color:#0d0f14}
+/* ─── TOPBAR ─────────────────────────────────────────── */
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:36px;gap:12px}
+.trip-header h1{font-family:'Fraunces',serif;font-size:36px;font-weight:600;letter-spacing:-1px;line-height:1.1}
+.trip-header h1 em{font-style:italic;color:var(--ac)}
+.trip-meta{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.badge{font-family:'DM Mono',monospace;font-size:11px;padding:4px 10px;border-radius:20px;background:var(--sf2);border:1px solid var(--bd);color:var(--mu)}
+.badge.active{background:rgba(110,231,183,.1);border-color:rgba(110,231,183,.2);color:var(--gn)}
+
+/* ─── BUTTONS ────────────────────────────────────────── */
+.btn{padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;transition:all .15s;white-space:nowrap}
+.btn-primary{background:var(--ac);color:#0d0f14}
 .btn-primary:hover{background:#f0d48a;transform:translateY(-1px)}
-.btn-ghost{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
-.btn-ghost:hover{color:var(--text);border-color:var(--dim)}
+.btn-ghost{background:var(--sf2);color:var(--mu);border:1px solid var(--bd)}
+.btn-ghost:hover{color:var(--tx);border-color:var(--dm)}
 .btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+.topbar-actions{display:flex;gap:8px;flex-shrink:0}
 
-/* STATS */
+/* ─── STATS ──────────────────────────────────────────── */
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;transition:border-color .2s}
-.stat-card:hover{border-color:var(--dim)}
-.stat-lbl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);font-family:'DM Mono',monospace;margin-bottom:8px}
+.stat-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:20px}
+.stat-lbl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dm);font-family:'DM Mono',monospace;margin-bottom:8px}
 .stat-val{font-family:'Fraunces',serif;font-size:28px;font-weight:600;line-height:1}
-.stat-sub{font-size:12px;color:var(--muted);margin-top:6px}
+.stat-sub{font-size:12px;color:var(--mu);margin-top:6px}
 
-/* CONTENT GRID */
+/* ─── CONTENT GRID ───────────────────────────────────── */
 .content-grid{display:grid;grid-template-columns:1fr 340px;gap:24px}
+.expenses-grid{display:grid;grid-template-columns:1fr 280px;gap:24px}
 .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.sec-title{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--text)}
+.sec-title{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--tx)}
 
-/* TRANSPORT CARDS */
-.transport-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;margin-bottom:10px;transition:all .2s}
+/* ─── CARDS ──────────────────────────────────────────── */
+.transport-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px 20px;margin-bottom:10px;transition:border-color .2s}
 .transport-card:hover{border-color:rgba(232,200,122,.3)}
 .transport-card.done{opacity:.4}
-.transport-card.connection{border-left:3px solid var(--accent2);margin-left:32px;margin-top:-4px;border-radius:0 var(--r) var(--r) 0;background:var(--surface2)}
+.transport-card.connection{border-left:3px solid var(--ac2);margin-left:32px;margin-top:-4px;border-radius:0 var(--r) var(--r) 0;background:var(--sf2)}
 .transport-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 .transport-route{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .route-city{font-weight:600;font-size:15px}
-.route-arrow{color:var(--dim);font-size:13px}
-.transport-detail{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-top:6px;display:flex;gap:14px;flex-wrap:wrap}
-.transport-price{font-family:'Fraunces',serif;font-size:17px;color:var(--accent)}
-.type-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-family:'DM Mono',monospace;background:var(--surface2);border:1px solid var(--border);color:var(--muted);text-transform:uppercase;letter-spacing:1px}
-.conn-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-family:'DM Mono',monospace;background:rgba(122,200,232,.1);border:1px solid rgba(122,200,232,.2);color:var(--accent2);text-transform:uppercase;letter-spacing:1px}
-.action-btn{font-size:11px;padding:3px 9px;border-radius:5px;cursor:pointer;font-family:'DM Mono',monospace;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .15s}
-.action-btn:hover{color:var(--text);border-color:var(--dim)}
-.action-btn.danger{border-color:rgba(248,113,113,.25);color:var(--red)}
+.route-arrow{color:var(--dm);font-size:13px}
+.transport-detail{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);margin-top:6px;display:flex;gap:14px;flex-wrap:wrap}
+.transport-price{font-family:'Fraunces',serif;font-size:17px;color:var(--ac)}
+.type-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-family:'DM Mono',monospace;background:var(--sf2);border:1px solid var(--bd);color:var(--mu);text-transform:uppercase;letter-spacing:1px}
+.conn-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-family:'DM Mono',monospace;background:rgba(122,200,232,.1);border:1px solid rgba(122,200,232,.2);color:var(--ac2);text-transform:uppercase;letter-spacing:1px}
+.accomm-list{display:flex;flex-direction:column;gap:12px}
+.accomm-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:18px 20px;transition:all .2s}
+.accomm-card:hover{border-color:var(--ac2);background:var(--sf2)}
+
+/* ─── ACTION BUTTONS ─────────────────────────────────── */
+.action-btn{font-size:11px;padding:4px 10px;border-radius:5px;cursor:pointer;font-family:'DM Mono',monospace;border:1px solid var(--bd);background:transparent;color:var(--mu);transition:all .15s}
+.action-btn:hover{color:var(--tx);border-color:var(--dm)}
+.action-btn.danger{border-color:rgba(248,113,113,.25);color:var(--rd)}
 .action-btn.danger:hover{background:rgba(248,113,113,.08)}
-.action-btn.primary{border-color:rgba(232,200,122,.3);color:var(--accent)}
+.action-btn.primary{border-color:rgba(232,200,122,.3);color:var(--ac)}
 .action-btn.primary:hover{background:rgba(232,200,122,.08)}
-.action-btn.info{border-color:rgba(122,200,232,.3);color:var(--accent2)}
+.action-btn.info{border-color:rgba(122,200,232,.3);color:var(--ac2)}
 .action-btn.info:hover{background:rgba(122,200,232,.08)}
 
-/* ACCOMM */
-.accomm-list{display:flex;flex-direction:column;gap:12px}
-.accomm-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;transition:all .2s}
-.accomm-card:hover{border-color:var(--accent2);background:var(--surface2)}
-
-/* SIDE PANEL */
+/* ─── SIDE PANEL ─────────────────────────────────────── */
 .side-panel{display:flex;flex-direction:column;gap:20px}
-.panel-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:20px}
-.map-ph{background:var(--surface2);border-radius:10px;height:120px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;margin-bottom:14px}
+.panel-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);padding:20px}
+.map-ph{background:var(--sf2);border-radius:10px;height:120px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;margin-bottom:14px}
 .map-ph::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 20px,rgba(122,200,232,.03) 20px,rgba(122,200,232,.03) 21px),repeating-linear-gradient(90deg,transparent,transparent 20px,rgba(122,200,232,.03) 20px,rgba(122,200,232,.03) 21px)}
-.map-dot{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(232,200,122,.2);z-index:1}
-.info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.map-dot{width:12px;height:12px;border-radius:50%;background:var(--ac);box-shadow:0 0 0 4px rgba(232,200,122,.2);z-index:1}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd);font-size:13px}
 .info-row:last-child{border-bottom:none}
-.info-key{color:var(--muted)}
+.info-key{color:var(--mu)}
 .info-val{font-weight:600;font-family:'DM Mono',monospace;font-size:12px}
-.bbar-lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px;font-family:'DM Mono',monospace}
-.bbar{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
-.bbar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent3));transition:width .6s ease}
+.bbar-lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--mu);margin-bottom:6px;font-family:'DM Mono',monospace}
+.bbar{height:6px;background:var(--sf2);border-radius:3px;overflow:hidden}
+.bbar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--ac),var(--ac3));transition:width .6s ease}
 
-/* TABS */
-.tabs{display:flex;gap:4px;background:var(--surface2);border-radius:10px;padding:4px;margin-bottom:24px;width:fit-content}
-.tab{padding:8px 18px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);transition:all .15s}
-.tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.3)}
+/* ─── TABS ───────────────────────────────────────────── */
+.tabs{display:flex;gap:4px;background:var(--sf2);border-radius:10px;padding:4px;margin-bottom:24px;width:fit-content;max-width:100%;overflow-x:auto}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:8px 16px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:500;color:var(--mu);transition:all .15s;white-space:nowrap;flex-shrink:0}
+.tab.active{background:var(--sf);color:var(--tx);box-shadow:0 1px 3px rgba(0,0,0,.3)}
 
-/* PAGES */
+/* ─── PAGES ──────────────────────────────────────────── */
 .page{display:none}
-.page.active{display:block;animation:fadeIn .25s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.page.active{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-/* EXPENSES */
-.day-entry{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;transition:all .2s}
-.day-entry:hover{border-color:var(--accent3)}
-.day-date{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--accent3);width:56px;flex-shrink:0}
-.day-cats{display:flex;gap:8px;flex-wrap:wrap}
-.day-cat{font-size:11px;padding:2px 8px;border-radius:4px;background:var(--surface2);color:var(--muted)}
-.day-total{font-family:'Fraunces',serif;font-size:18px;color:var(--text);text-align:right}
-.day-total-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--dim)}
+/* ─── EXPENSES ───────────────────────────────────────── */
+.day-entry{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;gap:12px;transition:border-color .2s}
+.day-entry:hover{border-color:var(--ac3)}
+.day-date{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--ac3);width:44px;flex-shrink:0}
+.day-cats{display:flex;gap:6px;flex-wrap:wrap}
+.day-cat{font-size:11px;padding:2px 8px;border-radius:4px;background:var(--sf2);color:var(--mu)}
+.day-total{font-family:'Fraunces',serif;font-size:18px;color:var(--tx);text-align:right;margin-left:auto;flex-shrink:0}
+.day-total-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--dm)}
 
-/* ── MODAL ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:100;display:none;align-items:center;justify-content:center}
+/* ─── TIMELINE ───────────────────────────────────────── */
+.timeline-item{display:flex;gap:16px}
+.tl-left{display:flex;flex-direction:column;align-items:center;width:36px;flex-shrink:0}
+.tl-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;border:1px solid var(--bd);background:var(--sf);z-index:1}
+.tl-line{width:1px;flex:1;background:var(--bd);min-height:20px;margin:4px 0}
+
+/* ─── MODAL ──────────────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:100;display:none;align-items:center;justify-content:center;padding:16px}
 .modal-overlay.open{display:flex}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:32px;width:580px;max-height:90vh;overflow-y:auto;animation:slideUp .2s ease}
-.modal.wide{width:700px}
+.modal{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);padding:28px;width:min(580px,100%);max-height:90vh;overflow-y:auto;animation:slideUp .2s ease}
+.modal.wide{width:min(700px,100%)}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.modal-title{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center}
-.modal-close{cursor:pointer;color:var(--dim);font-size:20px;line-height:1;transition:color .15s}
-.modal-close:hover{color:var(--text)}
-.form-group{margin-bottom:16px}
-.form-lbl{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:6px}
-.form-input,.form-select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .15s;-webkit-appearance:none}
-.form-input:focus,.form-select:focus{border-color:var(--accent)}
+.modal-title{font-family:'Fraunces',serif;font-size:20px;font-weight:600;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+.modal-close{cursor:pointer;color:var(--dm);font-size:24px;line-height:1;padding:4px;transition:color .15s}
+.modal-close:hover{color:var(--tx)}
+.form-group{margin-bottom:14px}
+.form-lbl{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--mu);font-family:'DM Mono',monospace;margin-bottom:6px}
+.form-input,.form-select{width:100%;background:var(--sf2);border:1px solid var(--bd);border-radius:8px;padding:11px 14px;color:var(--tx);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;transition:border-color .15s;-webkit-appearance:none}
+.form-input:focus,.form-select:focus{border-color:var(--ac)}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.form-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:24px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
 
-/* CONNECTION SECTION */
-.conn-section{margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
-.conn-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;position:relative}
+/* ─── CONNECTIONS ────────────────────────────────────── */
+.conn-section{margin-top:20px;padding-top:20px;border-top:1px solid var(--bd)}
+.conn-item{background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
 .conn-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.conn-item-title{font-family:'DM Mono',monospace;font-size:12px;color:var(--accent2);font-weight:500}
+.conn-item-title{font-family:'DM Mono',monospace;font-size:12px;color:var(--ac2);font-weight:500}
+.form-section-title{font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--ac2);margin-bottom:12px;display:flex;align-items:center;gap:8px}
 
-/* ── AUTOCOMPLETE ── */
+/* ─── AUTOCOMPLETE ───────────────────────────────────── */
 .ac-wrap{position:relative}
-.ac-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .15s}
-.ac-input:focus{border-color:var(--accent)}
-.ac-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;z-index:500;max-height:220px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.5);display:none}
+.ac-input{width:100%;background:var(--sf2);border:1px solid var(--bd);border-radius:8px;padding:11px 14px;color:var(--tx);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;transition:border-color .15s}
+.ac-input:focus{border-color:var(--ac)}
+.ac-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--sf);border:1px solid var(--bd);border-radius:10px;z-index:500;max-height:220px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.5);display:none}
 .ac-dropdown.open{display:block}
-.ac-item{padding:9px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border);transition:background .1s;display:flex;gap:10px;align-items:baseline}
+.ac-item{padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--bd);transition:background .1s;display:flex;gap:10px;align-items:baseline}
 .ac-item:last-child{border-bottom:none}
-.ac-item:hover,.ac-item.selected{background:var(--surface2)}
-.ac-iata{font-family:'DM Mono',monospace;font-size:12px;color:var(--accent);font-weight:600;width:36px;flex-shrink:0}
-.ac-name{color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ac-country{font-size:11px;color:var(--dim);flex-shrink:0}
-.ac-airline-name{color:var(--text);flex:1}
-.ac-airline-code{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);width:36px;flex-shrink:0}
-.ac-empty{padding:12px 14px;font-size:13px;color:var(--dim);text-align:center}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.ac-item:hover,.ac-item.selected{background:var(--sf2)}
+.ac-iata{font-family:'DM Mono',monospace;font-size:12px;color:var(--ac);font-weight:600;width:36px;flex-shrink:0}
+.ac-name{color:var(--tx);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ac-country{font-size:11px;color:var(--dm);flex-shrink:0}
+.ac-airline-name{color:var(--tx);flex:1}
+.ac-airline-code{font-family:'DM Mono',monospace;font-size:11px;color:var(--ac);width:36px;flex-shrink:0}
+.ac-empty{padding:12px 14px;font-size:13px;color:var(--dm);text-align:center}
 
-/* INLINE EDIT */
-.edit-mode{border-color:rgba(232,200,122,.3)!important;background:rgba(232,200,122,.03)!important}
-
-/* LOADING + TOAST */
-.loading-overlay{position:fixed;inset:0;background:rgba(13,15,20,.88);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+/* ─── LOADING / TOAST ────────────────────────────────── */
+.loading-overlay{position:fixed;inset:0;background:rgba(13,15,20,.9);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
 .loading-overlay.hidden{display:none}
-.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+.spinner{width:36px;height:36px;border:3px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{font-family:'DM Mono',monospace;font-size:13px;color:var(--muted)}
-.toast{position:fixed;bottom:32px;right:32px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 20px;font-size:14px;z-index:300;display:none;gap:10px;align-items:center;animation:slideUp .2s ease}
+.loading-text{font-family:'DM Mono',monospace;font-size:13px;color:var(--mu)}
+.toast{position:fixed;bottom:32px;right:16px;left:16px;max-width:360px;margin:0 auto;background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:14px 20px;font-size:14px;z-index:300;display:none;gap:10px;align-items:center;animation:slideUp .2s ease}
 .toast.show{display:flex}
-.toast.success{border-color:rgba(110,231,183,.4);color:var(--green)}
-.toast.error{border-color:rgba(248,113,113,.4);color:var(--red)}
-.empty-state{text-align:center;padding:48px 24px;color:var(--dim)}
+.toast.success{border-color:rgba(110,231,183,.4);color:var(--gn)}
+.toast.error{border-color:rgba(248,113,113,.4);color:var(--rd)}
+.empty-state{text-align:center;padding:48px 24px;color:var(--dm)}
 .empty-state .ei{font-size:40px;margin-bottom:12px}
 .empty-state p{font-size:14px;line-height:1.6}
 
-/* TIMELINE */
-.timeline-item{display:flex;gap:16px}
-.tl-left{display:flex;flex-direction:column;align-items:center;width:36px;flex-shrink:0}
-.tl-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;border:1px solid var(--border);background:var(--surface);z-index:1}
-.tl-line{width:1px;flex:1;background:var(--border);min-height:20px;margin:4px 0}
+/* ─── BOTTOM NAV (hidden on desktop) ─────────────────── */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--sf);border-top:1px solid var(--bd);z-index:20;padding-bottom:env(safe-area-inset-bottom,0px)}
+.bn-items{display:flex}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 8px;cursor:pointer;color:var(--mu);font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;border:none;background:none;transition:color .15s;-webkit-tap-highlight-color:transparent}
+.bn-item .bni{font-size:20px;line-height:1}
+.bn-item.active{color:var(--ac)}
 
-/* SECTION DIVIDER */
-.form-divider{border:none;border-top:1px solid var(--border);margin:16px 0}
-.form-section-title{font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+/* FAB */
+.fab{display:none;position:fixed;right:16px;width:54px;height:54px;border-radius:50%;background:var(--ac);color:#0d0f14;font-size:26px;line-height:1;border:none;cursor:pointer;z-index:21;box-shadow:0 4px 20px rgba(232,200,122,.4);align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
 
-/* ══════════════════════════════════════════════════════
-   BOTTOM NAV (mobile only — hidden on desktop)
-══════════════════════════════════════════════════════ */
-.bottom-nav{
-  display:none;
-  position:fixed;bottom:0;left:0;right:0;
-  background:var(--surface);
-  border-top:1px solid var(--border);
-  z-index:20;
-  padding:0 4px;
-  padding-bottom:env(safe-area-inset-bottom);
-}
-.bottom-nav-items{display:flex;justify-content:space-around}
-.bn-item{
-  display:flex;flex-direction:column;align-items:center;gap:3px;
-  padding:10px 8px 8px;flex:1;cursor:pointer;
-  color:var(--muted);font-size:10px;font-family:'DM Mono',monospace;
-  text-transform:uppercase;letter-spacing:.5px;transition:color .15s;
-  border:none;background:none;
-}
-.bn-item .bn-icon{font-size:20px;line-height:1}
-.bn-item.active{color:var(--accent)}
-.bn-item.active .bn-icon{filter:drop-shadow(0 0 6px rgba(232,200,122,.4))}
+/* ─── SCROLLBAR ──────────────────────────────────────── */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
 
-/* Mobile FAB */
-.fab{
-  display:none;
-  position:fixed;bottom:calc(64px + env(safe-area-inset-bottom) + 12px);right:16px;
-  width:52px;height:52px;border-radius:50%;
-  background:var(--accent);color:#0d0f14;
-  font-size:24px;font-weight:300;line-height:1;
-  border:none;cursor:pointer;z-index:21;
-  box-shadow:0 4px 20px rgba(232,200,122,.35);
-  align-items:center;justify-content:center;
-  transition:transform .15s;
-}
-.fab:active{transform:scale(.93)}
-
-/* ══════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════
    TABLET  ≤ 1024px
-══════════════════════════════════════════════════════ */
+═══════════════════════════════════════════════════════ */
 @media(max-width:1024px){
-  .sidebar{width:200px}
-  .main{margin-left:200px;max-width:calc(100vw - 200px);padding:28px 24px}
+  :root{--sb:200px}
+  .main{padding:28px 24px}
   .stats-row{grid-template-columns:repeat(2,1fr)}
   .content-grid{grid-template-columns:1fr}
   .side-panel{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .expenses-grid{grid-template-columns:1fr}
   .trip-header h1{font-size:28px}
 }
 
-/* ══════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════
    MOBILE  ≤ 640px
-══════════════════════════════════════════════════════ */
+═══════════════════════════════════════════════════════ */
 @media(max-width:640px){
-  /* Hide desktop sidebar, show bottom nav + FAB */
+  :root{--sb:0px}
+
+  /* Show mobile nav, hide desktop sidebar */
   .sidebar{display:none}
   .bottom-nav{display:block}
-  .fab{display:flex}
+  .fab{display:flex;bottom:calc(60px + env(safe-area-inset-bottom,0px) + 12px)}
 
-  /* Main takes full width, pad bottom for nav bar */
+  /* Main area */
   .main{
     margin-left:0;
     max-width:100vw;
-    padding:16px 16px calc(72px + env(safe-area-inset-bottom) + 16px);
+    padding:16px 16px 0;
+    padding-bottom:calc(60px + env(safe-area-inset-bottom,0px) + 80px)
   }
 
-  /* Topbar: stack vertically */
-  .topbar{flex-direction:column;gap:12px;margin-bottom:20px}
-  .topbar > div:last-child{display:flex;gap:8px;width:100%}
-  .topbar > div:last-child .btn{flex:1;padding:10px;font-size:13px}
-  /* Hide "+ Nova viagem" ghost btn on mobile topbar — accessible via sidebar equivalent */
-  .topbar > div:last-child .btn-ghost:first-child{display:none}
-
-  /* Title */
-  .trip-header h1{font-size:26px;letter-spacing:-.5px}
-  .trip-meta{gap:6px}
+  /* Topbar */
+  .topbar{flex-direction:column;margin-bottom:16px}
+  .topbar-actions{width:100%}
+  .topbar-actions .btn{flex:1;padding:10px 8px;font-size:13px}
+  .topbar-actions .btn-ghost{display:none}
+  .trip-header h1{font-size:24px;letter-spacing:-.5px}
+  .trip-meta{gap:5px}
   .badge{font-size:10px;padding:3px 8px}
 
-  /* Stats: 2 cols */
+  /* Stats 2-col */
   .stats-row{grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
   .stat-card{padding:14px}
   .stat-val{font-size:22px}
-  .stat-sub{font-size:11px}
 
-  /* Content grid: single col */
-  .content-grid{grid-template-columns:1fr;gap:16px}
+  /* All grids single col */
+  .content-grid,.expenses-grid{grid-template-columns:1fr;gap:14px}
   .side-panel{display:flex;flex-direction:column;gap:12px}
 
   /* Transport cards */
-  .transport-card{padding:14px 14px}
+  .transport-card{padding:12px 14px}
+  .transport-card.connection{margin-left:12px}
   .transport-row{flex-direction:column;gap:10px}
   .transport-row > div:last-child{
-    flex-direction:row!important;
-    flex-wrap:wrap;
-    align-items:center!important;
-    gap:6px;
-    border-top:1px solid var(--border);
-    padding-top:10px;
+    display:flex!important;flex-direction:row!important;
+    flex-wrap:wrap;align-items:center!important;
+    gap:6px;border-top:1px solid var(--bd);padding-top:10px;width:100%
   }
-  .transport-card.connection{margin-left:12px}
-  .route-city{font-size:14px}
 
-  /* Accomm cards */
-  .accomm-card{padding:14px}
-
-  /* Expense entries */
-  .day-entry{flex-wrap:wrap;gap:8px;padding:12px 14px}
-  .day-date{width:auto;font-size:20px}
-
-  /* Tabs: scrollable */
-  .tabs{width:100%;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
-  .tabs::-webkit-scrollbar{display:none}
-  .tab{padding:8px 14px;font-size:12px;white-space:nowrap;flex-shrink:0}
-
-  /* Modals: full-screen bottom sheet */
-  .modal-overlay{align-items:flex-end}
+  /* Modals as bottom sheet */
+  .modal-overlay{align-items:flex-end;padding:0}
   .modal,.modal.wide{
-    width:100%;max-width:100%;
-    border-radius:var(--rl) var(--rl) 0 0;
-    padding:24px 20px;
-    max-height:92vh;
-    animation:slideSheet .25s ease;
+    width:100%;max-width:100%;border-radius:var(--rl) var(--rl) 0 0;
+    padding:24px 16px;max-height:88vh;
+    animation:sheet .25s ease
   }
-  @keyframes slideSheet{from{transform:translateY(100%)}to{transform:translateY(0)}}
-  .form-row,.form-row3{grid-template-columns:1fr}
+  @keyframes sheet{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .form-row{grid-template-columns:1fr}
 
-  /* Toast above bottom nav */
-  .toast{bottom:calc(70px + env(safe-area-inset-bottom));right:12px;left:12px;font-size:13px}
+  /* Toast above nav */
+  .toast{bottom:calc(60px + env(safe-area-inset-bottom,0px) + 8px)}
 
-  /* Action buttons: easier tap targets */
+  /* Action buttons larger tap target */
   .action-btn{padding:6px 12px;font-size:12px}
 
-  /* Sections */
-  .sec-hdr{margin-bottom:12px}
-  .sec-title{font-size:16px}
+  /* Tabs scrollable */
+  .tabs{width:100%}
 }
-
+</style>
 </head>
 <body>
 
@@ -333,75 +289,57 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 <div id="toast" class="toast"></div>
 
-<!-- AUTH SCREEN -->
-<div id="auth-screen" style="
-  position:fixed;inset:0;z-index:999;
-  background:var(--bg);
-  display:flex;align-items:center;justify-content:center;
-  flex-direction:column;gap:0;
-">
-  <div style="
-    background:var(--surface);border:1px solid var(--border);
-    border-radius:var(--rl);padding:40px 48px;width:min(360px,calc(100vw - 40px));
-    display:flex;flex-direction:column;gap:20px;
-    box-shadow:0 24px 64px rgba(0,0,0,.5);
-  ">
-    <div style="text-align:center;margin-bottom:4px">
-      <div style="font-family:'Fraunces',serif;font-size:28px;font-weight:600;color:var(--accent);letter-spacing:-.5px">Tripboard</div>
-      <div style="font-size:11px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-top:4px">Travel Planner</div>
+<!-- AUTH -->
+<div id="auth-screen" style="position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;align-items:center;justify-content:center">
+  <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);padding:36px;width:min(360px,calc(100vw - 32px));display:flex;flex-direction:column;gap:18px;box-shadow:0 24px 64px rgba(0,0,0,.5)">
+    <div style="text-align:center">
+      <div style="font-family:'Fraunces',serif;font-size:26px;font-weight:600;color:var(--ac)">Tripboard</div>
+      <div style="font-size:11px;color:var(--dm);letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-top:4px">Travel Planner</div>
     </div>
     <div>
-      <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:8px">Senha de acesso</label>
-      <input id="auth-input" type="password"
-        style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;transition:border-color .15s;"
-        placeholder="••••••••"
-        onkeydown="if(event.key==='Enter')checkAuth()"
-        onfocus="this.style.borderColor='var(--accent)'"
-        onblur="this.style.borderColor='var(--border)'"
-      />
-      <div id="auth-error" style="color:var(--red);font-size:12px;margin-top:8px;font-family:'DM Mono',monospace;display:none">Senha incorreta</div>
+      <label class="form-lbl">Senha de acesso</label>
+      <input id="auth-input" type="password" class="form-input" placeholder="••••••••" style="font-size:16px" onkeydown="if(event.key==='Enter')checkAuth()"/>
+      <div id="auth-error" style="color:var(--rd);font-size:12px;margin-top:8px;font-family:'DM Mono',monospace;display:none">Senha incorreta</div>
     </div>
-    <button onclick="checkAuth()" style="
-      background:var(--accent);color:#0d0f14;border:none;border-radius:8px;
-      padding:12px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;
-      cursor:pointer;transition:all .15s;
-    " onmouseover="this.style.background='#f0d48a'" onmouseout="this.style.background='var(--accent)'">
-      Entrar
-    </button>
+    <button class="btn btn-primary" style="padding:13px;font-size:15px" onclick="checkAuth()">Entrar</button>
   </div>
 </div>
 
 <div class="app">
+
+<!-- SIDEBAR (desktop) -->
 <aside class="sidebar">
   <div class="logo"><div class="logo-mark">Tripboard</div><div class="logo-sub">Travel Planner</div></div>
   <nav class="nav">
     <div class="nav-lbl">Menu</div>
-    <div class="nav-item active" data-page="overview" onclick="showPage('overview',this)"><span class="icon">🗺</span> Visão Geral</div>
-    <div class="nav-item" data-page="transport" onclick="showPage('transport',this)"><span class="icon">✈️</span> Passagens</div>
-    <div class="nav-item" data-page="accommodation" onclick="showPage('accommodation',this)"><span class="icon">🏨</span> Hospedagem</div>
-    <div class="nav-item" data-page="expenses" onclick="showPage('expenses',this)"><span class="icon">💳</span> Gastos</div>
+    <div class="nav-item active" data-page="overview" onclick="showPage('overview')"><span class="icon">🗺</span> Visão Geral</div>
+    <div class="nav-item" data-page="transport" onclick="showPage('transport')"><span class="icon">✈️</span> Passagens</div>
+    <div class="nav-item" data-page="accommodation" onclick="showPage('accommodation')"><span class="icon">🏨</span> Hospedagem</div>
+    <div class="nav-item" data-page="expenses" onclick="showPage('expenses')"><span class="icon">💳</span> Gastos</div>
   </nav>
   <div class="trip-list">
     <div class="nav-lbl">Viagens</div>
     <div id="trip-chips"></div>
-    <div class="trip-chip" style="color:var(--dim);font-style:italic;font-size:12px" onclick="openModal('newTrip')">+ Nova viagem</div>
+    <div class="trip-chip" style="color:var(--dm);font-style:italic;font-size:12px" onclick="openModal('newTrip')">+ Nova viagem</div>
   </div>
 </aside>
 
+<!-- MAIN -->
 <main class="main">
+
   <!-- OVERVIEW -->
   <div id="page-overview" class="page active">
     <div class="topbar">
       <div class="trip-header"><h1 id="ov-title">Carregando...</h1><div class="trip-meta" id="ov-meta"></div></div>
-      <div style="display:flex;gap:10px">
+      <div class="topbar-actions">
         <button class="btn btn-ghost" onclick="openModal('newTrip')">+ Nova viagem</button>
-        <button class="btn btn-primary" onclick="openModal('addTransport')">+ Adicionar</button>
+        <button class="btn btn-primary" onclick="openAddTransport()">+ Adicionar</button>
       </div>
     </div>
     <div class="stats-row" id="ov-stats"></div>
     <div class="content-grid">
       <div>
-        <div class="sec-hdr"><div class="sec-title">Itinerário</div><button class="btn btn-ghost" style="font-size:13px;padding:7px 14px" onclick="showPage('transport',document.querySelector('[data-page=transport]'))">Ver tudo</button></div>
+        <div class="sec-hdr"><div class="sec-title">Itinerário</div><button class="btn btn-ghost" style="font-size:13px;padding:7px 14px" onclick="showPage('transport')">Ver tudo</button></div>
         <div id="ov-timeline"></div>
       </div>
       <div class="side-panel">
@@ -419,7 +357,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div id="page-transport" class="page">
     <div class="topbar">
       <div class="trip-header"><h1>Passagens & <em>Transporte</em></h1><div class="trip-meta"><span class="badge" id="tr-badge">—</span></div></div>
-      <button class="btn btn-primary" onclick="openModal('addTransport')">+ Novo trecho</button>
+      <div class="topbar-actions"><button class="btn btn-primary" onclick="openAddTransport()">+ Novo trecho</button></div>
     </div>
     <div class="tabs">
       <div class="tab active" onclick="filterTr('all',this)">Todos</div>
@@ -435,7 +373,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div id="page-accommodation" class="page">
     <div class="topbar">
       <div class="trip-header"><h1><em>Hospedagem</em></h1><div class="trip-meta"><span class="badge" id="ac-badge">—</span></div></div>
-      <button class="btn btn-primary" onclick="openModal('addAccomm')">+ Nova hospedagem</button>
+      <div class="topbar-actions"><button class="btn btn-primary" onclick="editingAccommId=null;openModal('addAccomm')">+ Nova hospedagem</button></div>
     </div>
     <div class="accomm-list" id="accomm-list"></div>
   </div>
@@ -444,9 +382,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div id="page-expenses" class="page">
     <div class="topbar">
       <div class="trip-header"><h1>Gastos <em>Diários</em></h1><div class="trip-meta"><span class="badge" id="ex-badge">—</span></div></div>
-      <button class="btn btn-primary" onclick="openModal('addExpense')">+ Registrar dia</button>
+      <div class="topbar-actions"><button class="btn btn-primary" onclick="openModal('addExpense')">+ Registrar dia</button></div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 280px;gap:24px">
+    <div class="expenses-grid">
       <div id="expense-list"></div>
       <div>
         <div class="panel-card" style="margin-bottom:16px"><div class="sec-title" style="margin-bottom:14px">Resumo</div><div id="expense-summary"></div></div>
@@ -454,79 +392,56 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
     </div>
   </div>
-</main>
-</div>
 
-<!-- ═══════════════════════════════════════════════════════
-     MODAL: ADD / EDIT TRANSPORT
-═══════════════════════════════════════════════════════ -->
+</main>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottom-nav">
+  <div class="bn-items">
+    <button class="bn-item active" data-page="overview" onclick="showPage('overview')"><span class="bni">🗺</span>Início</button>
+    <button class="bn-item" data-page="transport" onclick="showPage('transport')"><span class="bni">✈️</span>Passagens</button>
+    <button class="bn-item" data-page="accommodation" onclick="showPage('accommodation')"><span class="bni">🏨</span>Hospedagem</button>
+    <button class="bn-item" data-page="expenses" onclick="showPage('expenses')"><span class="bni">💳</span>Gastos</button>
+    <button class="bn-item" onclick="openModal('newTrip')"><span class="bni">🌍</span>Viagens</button>
+  </div>
+</nav>
+
+<!-- FAB (mobile) -->
+<button class="fab" id="fab" onclick="fabAction()" style="display:none">+</button>
+
+</div><!-- /.app -->
+
+<!-- MODAL: TRANSPORT -->
 <div id="modal-addTransport" class="modal-overlay" onclick="closeBg(event,'addTransport')">
   <div class="modal wide">
     <div class="modal-title"><span id="modal-transport-title">Novo Trecho</span><span class="modal-close" onclick="closeModal('addTransport')">×</span></div>
-
-    <!-- TIPO -->
-    <div class="form-group">
-      <label class="form-lbl">Tipo de transporte</label>
-      <select class="form-select" id="t-type" onchange="onTypeChange()">
-        <option value="voo">✈️ Voo</option>
-        <option value="trem">🚄 Trem</option>
-        <option value="onibus">🚌 Ônibus</option>
-        <option value="metro">🚇 Metrô</option>
-        <option value="barco">⛴ Barco</option>
-        <option value="outro">🚗 Outro</option>
-      </select>
-    </div>
-
-    <!-- CAMPOS PRINCIPAIS -->
+    <div class="form-group"><label class="form-lbl">Tipo</label><select class="form-select" id="t-type" onchange="onTypeChange()"><option value="voo">✈️ Voo</option><option value="trem">🚄 Trem</option><option value="onibus">🚌 Ônibus</option><option value="metro">🚇 Metrô</option><option value="barco">⛴ Barco</option><option value="outro">🚗 Outro</option></select></div>
     <div class="form-section-title">✈️ Trecho principal</div>
-    <div class="form-row" id="origin-dest-row">
-      <div class="form-group">
-        <label class="form-lbl" id="lbl-origin">Origem</label>
-        <div class="ac-wrap" id="wrap-origin">
-          <input class="ac-input" id="t-origin" placeholder="Ex: GRU — Guarulhos" autocomplete="off" oninput="acSearch('origin',this.value)" onfocus="acSearch('origin',this.value)" onkeydown="acKey(event,'origin')"/>
-          <div class="ac-dropdown" id="ac-origin"></div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-lbl" id="lbl-dest">Destino</label>
-        <div class="ac-wrap" id="wrap-dest">
-          <input class="ac-input" id="t-dest" placeholder="Ex: NRT — Narita" autocomplete="off" oninput="acSearch('dest',this.value)" onfocus="acSearch('dest',this.value)" onkeydown="acKey(event,'dest')"/>
-          <div class="ac-dropdown" id="ac-dest"></div>
-        </div>
-      </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-lbl" id="lbl-origin">Aeroporto de Origem</label><div class="ac-wrap"><input class="ac-input" id="t-origin" placeholder="Ex: GRU — Guarulhos" autocomplete="off" oninput="acSearch('origin',this.value)" onfocus="acSearch('origin',this.value)" onkeydown="acKey(event,'origin')"/><div class="ac-dropdown" id="ac-origin"></div></div></div>
+      <div class="form-group"><label class="form-lbl" id="lbl-dest">Aeroporto de Destino</label><div class="ac-wrap"><input class="ac-input" id="t-dest" placeholder="Ex: NRT — Narita" autocomplete="off" oninput="acSearch('dest',this.value)" onfocus="acSearch('dest',this.value)" onkeydown="acKey(event,'dest')"/><div class="ac-dropdown" id="ac-dest"></div></div></div>
     </div>
     <div class="form-row">
       <div class="form-group"><label class="form-lbl">Partida</label><input class="form-input" id="t-departure" type="datetime-local"/></div>
       <div class="form-group"><label class="form-lbl">Chegada</label><input class="form-input" id="t-arrival" type="datetime-local"/></div>
     </div>
     <div class="form-row" id="carrier-flightnum-row">
-      <div class="form-group">
-        <label class="form-lbl" id="lbl-carrier">Companhia</label>
-        <div class="ac-wrap" id="wrap-airline">
-          <input class="ac-input" id="t-carrier" placeholder="Ex: LATAM, Azul..." autocomplete="off" oninput="acAirline(this.value)" onfocus="acAirline(this.value)" onkeydown="acKey(event,'airline')"/>
-          <div class="ac-dropdown" id="ac-airline"></div>
-        </div>
-      </div>
+      <div class="form-group"><label class="form-lbl" id="lbl-carrier">Companhia Aérea</label><div class="ac-wrap"><input class="ac-input" id="t-carrier" placeholder="Ex: LATAM, Azul..." autocomplete="off" oninput="acAirline(this.value)" onfocus="acAirline(this.value)" onkeydown="acKey(event,'airline')"/><div class="ac-dropdown" id="ac-airline"></div></div></div>
       <div class="form-group"><label class="form-lbl" id="lbl-flightnum">Número do Voo</label><input class="form-input" id="t-flightnum" placeholder="Ex: LA8090"/></div>
     </div>
     <div class="form-row">
       <div class="form-group"><label class="form-lbl">Código de Reserva</label><input class="form-input" id="t-ref" placeholder="Ex: XK4921"/></div>
       <div class="form-group"><label class="form-lbl">Preço (BRL)</label><input class="form-input" id="t-price" type="number" placeholder="0" min="0"/></div>
     </div>
-    <div class="form-row">
-      <div class="form-group" style="grid-column:1/-1"><label class="form-lbl">Observações</label><input class="form-input" id="t-notes" placeholder="Ex: bagagem despachada..."/></div>
-    </div>
-
-    <!-- CONEXÕES -->
+    <div class="form-group"><label class="form-lbl">Observações</label><input class="form-input" id="t-notes" placeholder="Ex: bagagem despachada..."/></div>
     <div class="conn-section" id="conn-section" style="display:none">
-      <div class="form-section-title">🔗 Conexões <span style="color:var(--dim);font-weight:400">(trechos intermediários)</span></div>
+      <div class="form-section-title">🔗 Conexões</div>
       <div id="conn-list"></div>
       <button class="action-btn info" onclick="addConnectionForm()" style="width:100%;text-align:center;padding:8px">+ Adicionar conexão</button>
     </div>
-
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('addTransport')">Cancelar</button>
-      <button class="btn btn-primary" id="btn-save-transport" onclick="saveTransport()">Salvar</button>
+      <button class="btn btn-primary" id="btn-save-transport" onclick="saveTransport()">Salvar Trecho</button>
     </div>
   </div>
 </div>
@@ -578,7 +493,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   </div>
 </div>
 
-<!-- MODAL: NEW/EDIT TRIP -->
+<!-- MODAL: TRIP -->
 <div id="modal-newTrip" class="modal-overlay" onclick="closeBg(event,'newTrip')">
   <div class="modal">
     <div class="modal-title"><span id="modal-trip-title">Nova Viagem</span><span class="modal-close" onclick="closeModal('newTrip')">×</span></div>
@@ -599,499 +514,85 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   </div>
 </div>
 
-<!-- BOTTOM NAV (mobile) -->
-<nav class="bottom-nav">
-  <div class="bottom-nav-items">
-    <button class="bn-item active" data-page="overview" onclick="showPage('overview',this);syncBottomNav(this)">
-      <span class="bn-icon">🗺</span>Início
-    </button>
-    <button class="bn-item" data-page="transport" onclick="showPage('transport',document.querySelector('[data-page=transport]'));syncBottomNav(this)">
-      <span class="bn-icon">✈️</span>Passagens
-    </button>
-    <button class="bn-item" data-page="accommodation" onclick="showPage('accommodation',document.querySelector('[data-page=accommodation]'));syncBottomNav(this)">
-      <span class="bn-icon">🏨</span>Hospedagem
-    </button>
-    <button class="bn-item" data-page="expenses" onclick="showPage('expenses',document.querySelector('[data-page=expenses]'));syncBottomNav(this)">
-      <span class="bn-icon">💳</span>Gastos
-    </button>
-    <button class="bn-item" onclick="openModal('newTrip')">
-      <span class="bn-icon">🌍</span>Viagens
-    </button>
-  </div>
-</nav>
-
-<!-- FAB: add content on current page -->
-<button class="fab" id="fab" onclick="fabAction()">+</button>
-
 <script>
-// ══════════════════════════════════════════════════════════════════════════════
-// SUPABASE
-// ══════════════════════════════════════════════════════════════════════════════
 const {createClient}=supabase;
 const db=createClient(
   'https://saorpmcunlaetxldenwv.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNhb3JwbWN1bmxhZXR4bGRlbnd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0ODUwODAsImV4cCI6MjA5MDA2MTA4MH0.HRiX-LOJ4T851q9-70TXTB8jVMjZXoYSGfHkXY857Pw'
 );
 
-// ══════════════════════════════════════════════════════════════════════════════
-// IATA DATA — Airports (~600 main airports) + Airlines (~200)
-// ══════════════════════════════════════════════════════════════════════════════
+// IATA DATA
 const AIRPORTS=[
-  // BRASIL
-  {iata:"GRU",name:"Guarulhos International",city:"São Paulo",country:"BR"},
-  {iata:"CGH",name:"Congonhas",city:"São Paulo",country:"BR"},
-  {iata:"VCP",name:"Viracopos",city:"Campinas",country:"BR"},
-  {iata:"GIG",name:"Galeão International",city:"Rio de Janeiro",country:"BR"},
-  {iata:"SDU",name:"Santos Dumont",city:"Rio de Janeiro",country:"BR"},
-  {iata:"BSB",name:"Brasília International",city:"Brasília",country:"BR"},
-  {iata:"CNF",name:"Tancredo Neves International",city:"Belo Horizonte",country:"BR"},
-  {iata:"PLU",name:"Pampulha",city:"Belo Horizonte",country:"BR"},
-  {iata:"SSA",name:"Deputado Luís Eduardo Magalhães",city:"Salvador",country:"BR"},
-  {iata:"REC",name:"Guararapes–Gilberto Freyre International",city:"Recife",country:"BR"},
-  {iata:"FOR",name:"Pinto Martins International",city:"Fortaleza",country:"BR"},
-  {iata:"MAO",name:"Eduardo Gomes International",city:"Manaus",country:"BR"},
-  {iata:"BEL",name:"Val de Cans International",city:"Belém",country:"BR"},
-  {iata:"POA",name:"Salgado Filho International",city:"Porto Alegre",country:"BR"},
-  {iata:"CWB",name:"Afonso Pena International",city:"Curitiba",country:"BR"},
-  {iata:"FLN",name:"Hercílio Luz International",city:"Florianópolis",country:"BR"},
-  {iata:"NAT",name:"São Gonçalo do Amarante International",city:"Natal",country:"BR"},
-  {iata:"MCZ",name:"Zumbi dos Palmares International",city:"Maceió",country:"BR"},
-  {iata:"AJU",name:"Santa Maria International",city:"Aracaju",country:"BR"},
-  {iata:"THE",name:"Senador Petrônio Portela",city:"Teresina",country:"BR"},
-  {iata:"SLZ",name:"Marechal Cunha Machado International",city:"São Luís",country:"BR"},
-  {iata:"CGB",name:"Marechal Rondon International",city:"Cuiabá",country:"BR"},
-  {iata:"CGR",name:"Campo Grande International",city:"Campo Grande",country:"BR"},
-  {iata:"PVH",name:"Governador Jorge Teixeira de Oliveira",city:"Porto Velho",country:"BR"},
-  {iata:"VIX",name:"Eurico de Aguiar Salles",city:"Vitória",country:"BR"},
-  {iata:"JPA",name:"Presidente Castro Pinto International",city:"João Pessoa",country:"BR"},
-  {iata:"GYN",name:"Santa Genoveva",city:"Goiânia",country:"BR"},
-  // EUROPA
-  {iata:"LHR",name:"Heathrow",city:"London",country:"GB"},
-  {iata:"LGW",name:"Gatwick",city:"London",country:"GB"},
-  {iata:"STN",name:"Stansted",city:"London",country:"GB"},
-  {iata:"LCY",name:"London City",city:"London",country:"GB"},
-  {iata:"CDG",name:"Charles de Gaulle",city:"Paris",country:"FR"},
-  {iata:"ORY",name:"Orly",city:"Paris",country:"FR"},
-  {iata:"AMS",name:"Schiphol",city:"Amsterdam",country:"NL"},
-  {iata:"FRA",name:"Frankfurt International",city:"Frankfurt",country:"DE"},
-  {iata:"MUC",name:"Munich International",city:"Munich",country:"DE"},
-  {iata:"BER",name:"Berlin Brandenburg",city:"Berlin",country:"DE"},
-  {iata:"HAM",name:"Hamburg Airport",city:"Hamburg",country:"DE"},
-  {iata:"DUS",name:"Düsseldorf Airport",city:"Düsseldorf",country:"DE"},
-  {iata:"MAD",name:"Adolfo Suárez Madrid–Barajas",city:"Madrid",country:"ES"},
-  {iata:"BCN",name:"Josep Tarradellas Barcelona–El Prat",city:"Barcelona",country:"ES"},
-  {iata:"AGP",name:"Málaga Airport",city:"Málaga",country:"ES"},
-  {iata:"LIS",name:"Humberto Delgado",city:"Lisbon",country:"PT"},
-  {iata:"OPO",name:"Francisco de Sá Carneiro",city:"Porto",country:"PT"},
-  {iata:"FAO",name:"Faro Airport",city:"Faro",country:"PT"},
-  {iata:"FCO",name:"Leonardo da Vinci–Fiumicino",city:"Rome",country:"IT"},
-  {iata:"CIA",name:"Ciampino",city:"Rome",country:"IT"},
-  {iata:"MXP",name:"Malpensa",city:"Milan",country:"IT"},
-  {iata:"LIN",name:"Linate",city:"Milan",country:"IT"},
-  {iata:"VCE",name:"Marco Polo",city:"Venice",country:"IT"},
-  {iata:"NAP",name:"Naples International",city:"Naples",country:"IT"},
-  {iata:"ATH",name:"Eleftherios Venizelos",city:"Athens",country:"GR"},
-  {iata:"SKG",name:"Thessaloniki Makedonia",city:"Thessaloniki",country:"GR"},
-  {iata:"HER",name:"Heraklion Nikos Kazantzakis",city:"Heraklion",country:"GR"},
-  {iata:"ZRH",name:"Zurich Airport",city:"Zurich",country:"CH"},
-  {iata:"GVA",name:"Geneva Airport",city:"Geneva",country:"CH"},
-  {iata:"VIE",name:"Vienna International",city:"Vienna",country:"AT"},
-  {iata:"PRG",name:"Václav Havel Airport",city:"Prague",country:"CZ"},
-  {iata:"BUD",name:"Budapest Ferenc Liszt",city:"Budapest",country:"HU"},
-  {iata:"WAW",name:"Warsaw Chopin",city:"Warsaw",country:"PL"},
-  {iata:"KRK",name:"John Paul II International",city:"Kraków",country:"PL"},
-  {iata:"ARN",name:"Stockholm Arlanda",city:"Stockholm",country:"SE"},
-  {iata:"GOT",name:"Gothenburg Landvetter",city:"Gothenburg",country:"SE"},
-  {iata:"OSL",name:"Oslo Gardermoen",city:"Oslo",country:"NO"},
-  {iata:"CPH",name:"Copenhagen Airport",city:"Copenhagen",country:"DK"},
-  {iata:"HEL",name:"Helsinki–Vantaa",city:"Helsinki",country:"FI"},
-  {iata:"DUB",name:"Dublin Airport",city:"Dublin",country:"IE"},
-  {iata:"OTP",name:"Henri Coandă International",city:"Bucharest",country:"RO"},
-  {iata:"SOF",name:"Sofia Airport",city:"Sofia",country:"BG"},
-  {iata:"BEG",name:"Nikola Tesla Airport",city:"Belgrade",country:"RS"},
-  {iata:"ZAG",name:"Zagreb Airport",city:"Zagreb",country:"HR"},
-  {iata:"TLN",name:"Toulon–Hyères",city:"Toulon",country:"FR"},
-  {iata:"NCE",name:"Nice Côte d'Azur",city:"Nice",country:"FR"},
-  {iata:"MRS",name:"Marseille Provence",city:"Marseille",country:"FR"},
-  {iata:"LYS",name:"Lyon–Saint-Exupéry",city:"Lyon",country:"FR"},
-  {iata:"EDI",name:"Edinburgh Airport",city:"Edinburgh",country:"GB"},
-  {iata:"MAN",name:"Manchester Airport",city:"Manchester",country:"GB"},
-  {iata:"BHX",name:"Birmingham Airport",city:"Birmingham",country:"GB"},
-  {iata:"BRS",name:"Bristol Airport",city:"Bristol",country:"GB"},
-  {iata:"IST",name:"Istanbul Airport",city:"Istanbul",country:"TR"},
-  {iata:"SAW",name:"Sabiha Gökçen International",city:"Istanbul",country:"TR"},
-  {iata:"AYT",name:"Antalya Airport",city:"Antalya",country:"TR"},
-  // AMÉRICAS do NORTE
-  {iata:"JFK",name:"John F. Kennedy International",city:"New York",country:"US"},
-  {iata:"LGA",name:"LaGuardia Airport",city:"New York",country:"US"},
-  {iata:"EWR",name:"Newark Liberty International",city:"Newark",country:"US"},
-  {iata:"LAX",name:"Los Angeles International",city:"Los Angeles",country:"US"},
-  {iata:"SFO",name:"San Francisco International",city:"San Francisco",country:"US"},
-  {iata:"ORD",name:"O'Hare International",city:"Chicago",country:"US"},
-  {iata:"MDW",name:"Chicago Midway",city:"Chicago",country:"US"},
-  {iata:"ATL",name:"Hartsfield-Jackson Atlanta",city:"Atlanta",country:"US"},
-  {iata:"DFW",name:"Dallas/Fort Worth International",city:"Dallas",country:"US"},
-  {iata:"MIA",name:"Miami International",city:"Miami",country:"US"},
-  {iata:"FLL",name:"Fort Lauderdale–Hollywood",city:"Fort Lauderdale",country:"US"},
-  {iata:"BOS",name:"Logan International",city:"Boston",country:"US"},
-  {iata:"SEA",name:"Seattle–Tacoma International",city:"Seattle",country:"US"},
-  {iata:"DEN",name:"Denver International",city:"Denver",country:"US"},
-  {iata:"PHX",name:"Phoenix Sky Harbor",city:"Phoenix",country:"US"},
-  {iata:"LAS",name:"Harry Reid International",city:"Las Vegas",country:"US"},
-  {iata:"MCO",name:"Orlando International",city:"Orlando",country:"US"},
-  {iata:"IAH",name:"George Bush Intercontinental",city:"Houston",country:"US"},
-  {iata:"HOU",name:"William P. Hobby",city:"Houston",country:"US"},
-  {iata:"MSP",name:"Minneapolis–Saint Paul",city:"Minneapolis",country:"US"},
-  {iata:"DTW",name:"Detroit Metropolitan Wayne County",city:"Detroit",country:"US"},
-  {iata:"PHL",name:"Philadelphia International",city:"Philadelphia",country:"US"},
-  {iata:"BWI",name:"Baltimore/Washington International",city:"Baltimore",country:"US"},
-  {iata:"IAD",name:"Washington Dulles International",city:"Washington D.C.",country:"US"},
-  {iata:"DCA",name:"Ronald Reagan Washington National",city:"Washington D.C.",country:"US"},
-  {iata:"SAN",name:"San Diego International",city:"San Diego",country:"US"},
-  {iata:"TPA",name:"Tampa International",city:"Tampa",country:"US"},
-  {iata:"PDX",name:"Portland International",city:"Portland",country:"US"},
-  {iata:"STL",name:"St. Louis Lambert International",city:"St. Louis",country:"US"},
-  {iata:"MSY",name:"Louis Armstrong New Orleans",city:"New Orleans",country:"US"},
-  {iata:"AUS",name:"Austin–Bergstrom International",city:"Austin",country:"US"},
-  {iata:"SJC",name:"San José Mineta International",city:"San José",country:"US"},
-  {iata:"OAK",name:"Oakland International",city:"Oakland",country:"US"},
-  {iata:"SLC",name:"Salt Lake City International",city:"Salt Lake City",country:"US"},
-  {iata:"PIT",name:"Pittsburgh International",city:"Pittsburgh",country:"US"},
-  {iata:"CLE",name:"Cleveland Hopkins International",city:"Cleveland",country:"US"},
-  {iata:"CVG",name:"Cincinnati/Northern Kentucky",city:"Cincinnati",country:"US"},
-  {iata:"YYZ",name:"Toronto Pearson International",city:"Toronto",country:"CA"},
-  {iata:"YUL",name:"Montréal-Pierre Elliott Trudeau",city:"Montreal",country:"CA"},
-  {iata:"YVR",name:"Vancouver International",city:"Vancouver",country:"CA"},
-  {iata:"YYC",name:"Calgary International",city:"Calgary",country:"CA"},
-  {iata:"YEG",name:"Edmonton International",city:"Edmonton",country:"CA"},
-  {iata:"YOW",name:"Ottawa Macdonald–Cartier",city:"Ottawa",country:"CA"},
-  {iata:"MEX",name:"Benito Juárez International",city:"Mexico City",country:"MX"},
-  {iata:"CUN",name:"Cancún International",city:"Cancún",country:"MX"},
-  {iata:"GDL",name:"Don Miguel Hidalgo y Costilla",city:"Guadalajara",country:"MX"},
-  {iata:"MTY",name:"General Mariano Escobedo",city:"Monterrey",country:"MX"},
-  // AMÉRICAS do SUL
-  {iata:"EZE",name:"Ministro Pistarini (Ezeiza)",city:"Buenos Aires",country:"AR"},
-  {iata:"AEP",name:"Jorge Newbery",city:"Buenos Aires",country:"AR"},
-  {iata:"COR",name:"Ingeniero Ambrosio Taravella",city:"Córdoba",country:"AR"},
-  {iata:"MDZ",name:"El Plumerillo",city:"Mendoza",country:"AR"},
-  {iata:"SCL",name:"Arturo Merino Benítez",city:"Santiago",country:"CL"},
-  {iata:"PMC",name:"El Tepual",city:"Puerto Montt",country:"CL"},
-  {iata:"BOG",name:"El Dorado International",city:"Bogotá",country:"CO"},
-  {iata:"MDE",name:"José María Córdova",city:"Medellín",country:"CO"},
-  {iata:"CTG",name:"Rafael Núñez",city:"Cartagena",country:"CO"},
-  {iata:"LIM",name:"Jorge Chávez International",city:"Lima",country:"PE"},
-  {iata:"CUZ",name:"Alejandro Velasco Astete",city:"Cusco",country:"PE"},
-  {iata:"UIO",name:"Mariscal Sucre International",city:"Quito",country:"EC"},
-  {iata:"GYE",name:"José Joaquín de Olmedo",city:"Guayaquil",country:"EC"},
-  {iata:"MVD",name:"Carrasco International",city:"Montevideo",country:"UY"},
-  {iata:"ASU",name:"Silvio Pettirossi International",city:"Asunción",country:"PY"},
-  {iata:"LPB",name:"El Alto International",city:"La Paz",country:"BO"},
-  {iata:"VVI",name:"Viru Viru International",city:"Santa Cruz",country:"BO"},
-  {iata:"CCS",name:"Simón Bolívar International",city:"Caracas",country:"VE"},
-  {iata:"PTY",name:"Tocumen International",city:"Panama City",country:"PA"},
-  {iata:"SJO",name:"Juan Santamaría International",city:"San José",country:"CR"},
-  {iata:"GUA",name:"La Aurora International",city:"Guatemala City",country:"GT"},
-  {iata:"HAV",name:"José Martí International",city:"Havana",country:"CU"},
-  {iata:"SDQ",name:"Las Américas International",city:"Santo Domingo",country:"DO"},
-  {iata:"PUJ",name:"Punta Cana International",city:"Punta Cana",country:"DO"},
-  {iata:"MBJ",name:"Sangster International",city:"Montego Bay",country:"JM"},
-  // ÁSIA
-  {iata:"NRT",name:"Narita International",city:"Tokyo",country:"JP"},
-  {iata:"HND",name:"Haneda International",city:"Tokyo",country:"JP"},
-  {iata:"KIX",name:"Kansai International",city:"Osaka",country:"JP"},
-  {iata:"ITM",name:"Osaka Itami",city:"Osaka",country:"JP"},
-  {iata:"CTS",name:"New Chitose",city:"Sapporo",country:"JP"},
-  {iata:"NGO",name:"Chubu Centrair International",city:"Nagoya",country:"JP"},
-  {iata:"FUK",name:"Fukuoka Airport",city:"Fukuoka",country:"JP"},
-  {iata:"OKA",name:"Naha Airport",city:"Okinawa",country:"JP"},
-  {iata:"ICN",name:"Incheon International",city:"Seoul",country:"KR"},
-  {iata:"GMP",name:"Gimpo International",city:"Seoul",country:"KR"},
-  {iata:"PEK",name:"Beijing Capital International",city:"Beijing",country:"CN"},
-  {iata:"PKX",name:"Beijing Daxing International",city:"Beijing",country:"CN"},
-  {iata:"PVG",name:"Shanghai Pudong International",city:"Shanghai",country:"CN"},
-  {iata:"SHA",name:"Shanghai Hongqiao",city:"Shanghai",country:"CN"},
-  {iata:"CAN",name:"Guangzhou Baiyun International",city:"Guangzhou",country:"CN"},
-  {iata:"SZX",name:"Shenzhen Bao'an International",city:"Shenzhen",country:"CN"},
-  {iata:"CTU",name:"Chengdu Shuangliu International",city:"Chengdu",country:"CN"},
-  {iata:"HKG",name:"Hong Kong International",city:"Hong Kong",country:"HK"},
-  {iata:"TPE",name:"Taiwan Taoyuan International",city:"Taipei",country:"TW"},
-  {iata:"TSA",name:"Taipei Songshan",city:"Taipei",country:"TW"},
-  {iata:"SIN",name:"Changi Airport",city:"Singapore",country:"SG"},
-  {iata:"BKK",name:"Suvarnabhumi Airport",city:"Bangkok",country:"TH"},
-  {iata:"DMK",name:"Don Mueang International",city:"Bangkok",country:"TH"},
-  {iata:"HKT",name:"Phuket International",city:"Phuket",country:"TH"},
-  {iata:"CNX",name:"Chiang Mai International",city:"Chiang Mai",country:"TH"},
-  {iata:"KUL",name:"Kuala Lumpur International",city:"Kuala Lumpur",country:"MY"},
-  {iata:"DPS",name:"Ngurah Rai International (Bali)",city:"Bali",country:"ID"},
-  {iata:"CGK",name:"Soekarno-Hatta International",city:"Jakarta",country:"ID"},
-  {iata:"MNL",name:"Ninoy Aquino International",city:"Manila",country:"PH"},
-  {iata:"CEB",name:"Mactan–Cebu International",city:"Cebu",country:"PH"},
-  {iata:"SGN",name:"Tan Son Nhat International",city:"Ho Chi Minh City",country:"VN"},
-  {iata:"HAN",name:"Noi Bai International",city:"Hanoi",country:"VN"},
-  {iata:"DAD",name:"Da Nang International",city:"Da Nang",country:"VN"},
-  {iata:"DEL",name:"Indira Gandhi International",city:"New Delhi",country:"IN"},
-  {iata:"BOM",name:"Chhatrapati Shivaji Maharaj",city:"Mumbai",country:"IN"},
-  {iata:"BLR",name:"Kempegowda International",city:"Bangalore",country:"IN"},
-  {iata:"MAA",name:"Chennai International",city:"Chennai",country:"IN"},
-  {iata:"CCU",name:"Netaji Subhas Chandra Bose",city:"Kolkata",country:"IN"},
-  {iata:"HYD",name:"Rajiv Gandhi International",city:"Hyderabad",country:"IN"},
-  {iata:"COK",name:"Cochin International",city:"Kochi",country:"IN"},
-  {iata:"DXB",name:"Dubai International",city:"Dubai",country:"AE"},
-  {iata:"AUH",name:"Abu Dhabi International",city:"Abu Dhabi",country:"AE"},
-  {iata:"SHJ",name:"Sharjah International",city:"Sharjah",country:"AE"},
-  {iata:"DOH",name:"Hamad International",city:"Doha",country:"QA"},
-  {iata:"BAH",name:"Bahrain International",city:"Manama",country:"BH"},
-  {iata:"KWI",name:"Kuwait International",city:"Kuwait City",country:"KW"},
-  {iata:"RUH",name:"King Khalid International",city:"Riyadh",country:"SA"},
-  {iata:"JED",name:"King Abdulaziz International",city:"Jeddah",country:"SA"},
-  {iata:"AMM",name:"Queen Alia International",city:"Amman",country:"JO"},
-  {iata:"BEY",name:"Rafic Hariri International",city:"Beirut",country:"LB"},
-  {iata:"TLV",name:"Ben Gurion International",city:"Tel Aviv",country:"IL"},
-  {iata:"THR",name:"Imam Khomeini International",city:"Tehran",country:"IR"},
-  {iata:"IST",name:"Istanbul Airport",city:"Istanbul",country:"TR"},
-  {iata:"ESB",name:"Esenboğa International",city:"Ankara",country:"TR"},
-  {iata:"KBL",name:"Hamid Karzai International",city:"Kabul",country:"AF"},
-  {iata:"KHI",name:"Jinnah International",city:"Karachi",country:"PK"},
-  {iata:"LHE",name:"Allama Iqbal International",city:"Lahore",country:"PK"},
-  {iata:"DAC",name:"Hazrat Shahjalal International",city:"Dhaka",country:"BD"},
-  {iata:"CMB",name:"Bandaranaike International",city:"Colombo",country:"LK"},
-  {iata:"KTM",name:"Tribhuvan International",city:"Kathmandu",country:"NP"},
-  // AFRICA + ORIENTE MÉDIO
-  {iata:"CAI",name:"Cairo International",city:"Cairo",country:"EG"},
-  {iata:"HRG",name:"Hurghada International",city:"Hurghada",country:"EG"},
-  {iata:"SSH",name:"Sharm El Sheikh International",city:"Sharm El Sheikh",country:"EG"},
-  {iata:"CMN",name:"Mohammed V International",city:"Casablanca",country:"MA"},
-  {iata:"RAK",name:"Marrakesh Menara",city:"Marrakesh",country:"MA"},
-  {iata:"TUN",name:"Tunis-Carthage International",city:"Tunis",country:"TN"},
-  {iata:"ALG",name:"Houari Boumediene",city:"Algiers",country:"DZ"},
-  {iata:"JNB",name:"O.R. Tambo International",city:"Johannesburg",country:"ZA"},
-  {iata:"CPT",name:"Cape Town International",city:"Cape Town",country:"ZA"},
-  {iata:"DUR",name:"King Shaka International",city:"Durban",country:"ZA"},
-  {iata:"NBO",name:"Jomo Kenyatta International",city:"Nairobi",country:"KE"},
-  {iata:"MBA",name:"Moi International",city:"Mombasa",country:"KE"},
-  {iata:"ADD",name:"Bole International",city:"Addis Ababa",country:"ET"},
-  {iata:"LOS",name:"Murtala Muhammed International",city:"Lagos",country:"NG"},
-  {iata:"ABV",name:"Nnamdi Azikiwe International",city:"Abuja",country:"NG"},
-  {iata:"ACC",name:"Kotoka International",city:"Accra",country:"GH"},
-  {iata:"DAK",name:"Léopold Sédar Senghor International",city:"Dakar",country:"SN"},
-  {iata:"TIP",name:"Mitiga International",city:"Tripoli",country:"LY"},
-  {iata:"KRT",name:"Khartoum International",city:"Khartoum",country:"SD"},
-  {iata:"DAR",name:"Julius Nyerere International",city:"Dar es Salaam",country:"TZ"},
-  {iata:"EBB",name:"Entebbe International",city:"Kampala",country:"UG"},
-  {iata:"RUN",name:"Roland Garros",city:"Saint-Denis (Réunion)",country:"RE"},
-  {iata:"MRU",name:"Sir Seewoosagur Ramgoolam",city:"Mauritius",country:"MU"},
-  {iata:"TNR",name:"Ivato International",city:"Antananarivo",country:"MG"},
-  // OCEANIA
-  {iata:"SYD",name:"Kingsford Smith",city:"Sydney",country:"AU"},
-  {iata:"MEL",name:"Melbourne Airport (Tullamarine)",city:"Melbourne",country:"AU"},
-  {iata:"BNE",name:"Brisbane Airport",city:"Brisbane",country:"AU"},
-  {iata:"PER",name:"Perth Airport",city:"Perth",country:"AU"},
-  {iata:"ADL",name:"Adelaide Airport",city:"Adelaide",country:"AU"},
-  {iata:"CBR",name:"Canberra Airport",city:"Canberra",country:"AU"},
-  {iata:"OOL",name:"Gold Coast Airport",city:"Gold Coast",country:"AU"},
-  {iata:"CNS",name:"Cairns Airport",city:"Cairns",country:"AU"},
-  {iata:"AKL",name:"Auckland Airport",city:"Auckland",country:"NZ"},
-  {iata:"CHC",name:"Christchurch Airport",city:"Christchurch",country:"NZ"},
-  {iata:"WLG",name:"Wellington Airport",city:"Wellington",country:"NZ"},
-  {iata:"NAN",name:"Nadi International",city:"Nadi",country:"FJ"},
-  {iata:"PPT",name:"Faa'a International",city:"Papeete (Tahiti)",country:"PF"},
-  {iata:"HNL",name:"Daniel K. Inouye International",city:"Honolulu",country:"US"},
-  {iata:"GUM",name:"Antonio B. Won Pat International",city:"Guam",country:"GU"},
+{iata:"GRU",name:"Guarulhos International",city:"São Paulo",country:"BR"},{iata:"CGH",name:"Congonhas",city:"São Paulo",country:"BR"},{iata:"VCP",name:"Viracopos",city:"Campinas",country:"BR"},{iata:"GIG",name:"Galeão International",city:"Rio de Janeiro",country:"BR"},{iata:"SDU",name:"Santos Dumont",city:"Rio de Janeiro",country:"BR"},{iata:"BSB",name:"Brasília International",city:"Brasília",country:"BR"},{iata:"CNF",name:"Tancredo Neves International",city:"Belo Horizonte",country:"BR"},{iata:"PLU",name:"Pampulha",city:"Belo Horizonte",country:"BR"},{iata:"SSA",name:"Deputado Luís Eduardo Magalhães",city:"Salvador",country:"BR"},{iata:"REC",name:"Guararapes-Gilberto Freyre International",city:"Recife",country:"BR"},{iata:"FOR",name:"Pinto Martins International",city:"Fortaleza",country:"BR"},{iata:"MAO",name:"Eduardo Gomes International",city:"Manaus",country:"BR"},{iata:"BEL",name:"Val de Cans International",city:"Belém",country:"BR"},{iata:"POA",name:"Salgado Filho International",city:"Porto Alegre",country:"BR"},{iata:"CWB",name:"Afonso Pena International",city:"Curitiba",country:"BR"},{iata:"FLN",name:"Hercílio Luz International",city:"Florianópolis",country:"BR"},{iata:"NAT",name:"São Gonçalo do Amarante International",city:"Natal",country:"BR"},{iata:"MCZ",name:"Zumbi dos Palmares International",city:"Maceió",country:"BR"},{iata:"AJU",name:"Santa Maria International",city:"Aracaju",country:"BR"},{iata:"SLZ",name:"Marechal Cunha Machado International",city:"São Luís",country:"BR"},{iata:"CGB",name:"Marechal Rondon International",city:"Cuiabá",country:"BR"},{iata:"CGR",name:"Campo Grande International",city:"Campo Grande",country:"BR"},{iata:"VIX",name:"Eurico de Aguiar Salles",city:"Vitória",country:"BR"},{iata:"JPA",name:"Presidente Castro Pinto International",city:"João Pessoa",country:"BR"},{iata:"GYN",name:"Santa Genoveva",city:"Goiânia",country:"BR"},
+{iata:"LHR",name:"Heathrow",city:"London",country:"GB"},{iata:"LGW",name:"Gatwick",city:"London",country:"GB"},{iata:"CDG",name:"Charles de Gaulle",city:"Paris",country:"FR"},{iata:"ORY",name:"Orly",city:"Paris",country:"FR"},{iata:"AMS",name:"Schiphol",city:"Amsterdam",country:"NL"},{iata:"FRA",name:"Frankfurt International",city:"Frankfurt",country:"DE"},{iata:"MUC",name:"Munich International",city:"Munich",country:"DE"},{iata:"BER",name:"Berlin Brandenburg",city:"Berlin",country:"DE"},{iata:"MAD",name:"Adolfo Suárez Madrid-Barajas",city:"Madrid",country:"ES"},{iata:"BCN",name:"Barcelona-El Prat",city:"Barcelona",country:"ES"},{iata:"LIS",name:"Humberto Delgado",city:"Lisbon",country:"PT"},{iata:"OPO",name:"Francisco de Sá Carneiro",city:"Porto",country:"PT"},{iata:"FAO",name:"Faro Airport",city:"Faro",country:"PT"},{iata:"FCO",name:"Leonardo da Vinci-Fiumicino",city:"Rome",country:"IT"},{iata:"MXP",name:"Malpensa",city:"Milan",country:"IT"},{iata:"LIN",name:"Linate",city:"Milan",country:"IT"},{iata:"VCE",name:"Marco Polo",city:"Venice",country:"IT"},{iata:"ATH",name:"Eleftherios Venizelos",city:"Athens",country:"GR"},{iata:"ZRH",name:"Zurich Airport",city:"Zurich",country:"CH"},{iata:"GVA",name:"Geneva Airport",city:"Geneva",country:"CH"},{iata:"VIE",name:"Vienna International",city:"Vienna",country:"AT"},{iata:"PRG",name:"Václav Havel Airport",city:"Prague",country:"CZ"},{iata:"BUD",name:"Budapest Ferenc Liszt",city:"Budapest",country:"HU"},{iata:"WAW",name:"Warsaw Chopin",city:"Warsaw",country:"PL"},{iata:"ARN",name:"Stockholm Arlanda",city:"Stockholm",country:"SE"},{iata:"OSL",name:"Oslo Gardermoen",city:"Oslo",country:"NO"},{iata:"CPH",name:"Copenhagen Airport",city:"Copenhagen",country:"DK"},{iata:"HEL",name:"Helsinki-Vantaa",city:"Helsinki",country:"FI"},{iata:"DUB",name:"Dublin Airport",city:"Dublin",country:"IE"},{iata:"EDI",name:"Edinburgh Airport",city:"Edinburgh",country:"GB"},{iata:"MAN",name:"Manchester Airport",city:"Manchester",country:"GB"},{iata:"IST",name:"Istanbul Airport",city:"Istanbul",country:"TR"},{iata:"SAW",name:"Sabiha Gökçen International",city:"Istanbul",country:"TR"},{iata:"NCE",name:"Nice Côte d'Azur",city:"Nice",country:"FR"},{iata:"MRS",name:"Marseille Provence",city:"Marseille",country:"FR"},
+{iata:"JFK",name:"John F. Kennedy International",city:"New York",country:"US"},{iata:"LGA",name:"LaGuardia Airport",city:"New York",country:"US"},{iata:"EWR",name:"Newark Liberty International",city:"Newark",country:"US"},{iata:"LAX",name:"Los Angeles International",city:"Los Angeles",country:"US"},{iata:"SFO",name:"San Francisco International",city:"San Francisco",country:"US"},{iata:"ORD",name:"O'Hare International",city:"Chicago",country:"US"},{iata:"ATL",name:"Hartsfield-Jackson Atlanta",city:"Atlanta",country:"US"},{iata:"DFW",name:"Dallas/Fort Worth International",city:"Dallas",country:"US"},{iata:"MIA",name:"Miami International",city:"Miami",country:"US"},{iata:"BOS",name:"Logan International",city:"Boston",country:"US"},{iata:"SEA",name:"Seattle-Tacoma International",city:"Seattle",country:"US"},{iata:"DEN",name:"Denver International",city:"Denver",country:"US"},{iata:"LAS",name:"Harry Reid International",city:"Las Vegas",country:"US"},{iata:"MCO",name:"Orlando International",city:"Orlando",country:"US"},{iata:"IAH",name:"George Bush Intercontinental",city:"Houston",country:"US"},{iata:"YYZ",name:"Toronto Pearson International",city:"Toronto",country:"CA"},{iata:"YUL",name:"Montréal-Pierre Elliott Trudeau",city:"Montreal",country:"CA"},{iata:"YVR",name:"Vancouver International",city:"Vancouver",country:"CA"},{iata:"MEX",name:"Benito Juárez International",city:"Mexico City",country:"MX"},{iata:"CUN",name:"Cancún International",city:"Cancún",country:"MX"},
+{iata:"EZE",name:"Ministro Pistarini (Ezeiza)",city:"Buenos Aires",country:"AR"},{iata:"AEP",name:"Jorge Newbery",city:"Buenos Aires",country:"AR"},{iata:"SCL",name:"Arturo Merino Benítez",city:"Santiago",country:"CL"},{iata:"BOG",name:"El Dorado International",city:"Bogotá",country:"CO"},{iata:"LIM",name:"Jorge Chávez International",city:"Lima",country:"PE"},{iata:"UIO",name:"Mariscal Sucre International",city:"Quito",country:"EC"},{iata:"MVD",name:"Carrasco International",city:"Montevideo",country:"UY"},{iata:"PTY",name:"Tocumen International",city:"Panama City",country:"PA"},{iata:"SDQ",name:"Las Américas International",city:"Santo Domingo",country:"DO"},{iata:"PUJ",name:"Punta Cana International",city:"Punta Cana",country:"DO"},
+{iata:"NRT",name:"Narita International",city:"Tokyo",country:"JP"},{iata:"HND",name:"Haneda International",city:"Tokyo",country:"JP"},{iata:"KIX",name:"Kansai International",city:"Osaka",country:"JP"},{iata:"ICN",name:"Incheon International",city:"Seoul",country:"KR"},{iata:"PEK",name:"Beijing Capital International",city:"Beijing",country:"CN"},{iata:"PVG",name:"Shanghai Pudong International",city:"Shanghai",country:"CN"},{iata:"HKG",name:"Hong Kong International",city:"Hong Kong",country:"HK"},{iata:"TPE",name:"Taiwan Taoyuan International",city:"Taipei",country:"TW"},{iata:"SIN",name:"Changi Airport",city:"Singapore",country:"SG"},{iata:"BKK",name:"Suvarnabhumi Airport",city:"Bangkok",country:"TH"},{iata:"HKT",name:"Phuket International",city:"Phuket",country:"TH"},{iata:"KUL",name:"Kuala Lumpur International",city:"Kuala Lumpur",country:"MY"},{iata:"DPS",name:"Ngurah Rai International (Bali)",city:"Bali",country:"ID"},{iata:"CGK",name:"Soekarno-Hatta International",city:"Jakarta",country:"ID"},{iata:"MNL",name:"Ninoy Aquino International",city:"Manila",country:"PH"},{iata:"SGN",name:"Tan Son Nhat International",city:"Ho Chi Minh City",country:"VN"},{iata:"HAN",name:"Noi Bai International",city:"Hanoi",country:"VN"},{iata:"DEL",name:"Indira Gandhi International",city:"New Delhi",country:"IN"},{iata:"BOM",name:"Chhatrapati Shivaji Maharaj",city:"Mumbai",country:"IN"},{iata:"DXB",name:"Dubai International",city:"Dubai",country:"AE"},{iata:"AUH",name:"Abu Dhabi International",city:"Abu Dhabi",country:"AE"},{iata:"DOH",name:"Hamad International",city:"Doha",country:"QA"},{iata:"RUH",name:"King Khalid International",city:"Riyadh",country:"SA"},{iata:"JED",name:"King Abdulaziz International",city:"Jeddah",country:"SA"},{iata:"TLV",name:"Ben Gurion International",city:"Tel Aviv",country:"IL"},{iata:"CAI",name:"Cairo International",city:"Cairo",country:"EG"},{iata:"CMN",name:"Mohammed V International",city:"Casablanca",country:"MA"},{iata:"JNB",name:"O.R. Tambo International",city:"Johannesburg",country:"ZA"},{iata:"CPT",name:"Cape Town International",city:"Cape Town",country:"ZA"},{iata:"NBO",name:"Jomo Kenyatta International",city:"Nairobi",country:"KE"},{iata:"ADD",name:"Bole International",city:"Addis Ababa",country:"ET"},{iata:"LOS",name:"Murtala Muhammed International",city:"Lagos",country:"NG"},
+{iata:"SYD",name:"Kingsford Smith",city:"Sydney",country:"AU"},{iata:"MEL",name:"Melbourne Airport",city:"Melbourne",country:"AU"},{iata:"BNE",name:"Brisbane Airport",city:"Brisbane",country:"AU"},{iata:"PER",name:"Perth Airport",city:"Perth",country:"AU"},{iata:"AKL",name:"Auckland Airport",city:"Auckland",country:"NZ"},{iata:"HNL",name:"Daniel K. Inouye International",city:"Honolulu",country:"US"},
 ];
 
 const AIRLINES=[
-  {code:"LA",name:"LATAM Airlines",country:"BR/CL"},
-  {code:"G3",name:"GOL Linhas Aéreas",country:"BR"},
-  {code:"AD",name:"Azul Linhas Aéreas",country:"BR"},
-  {code:"2Z",name:"Voepass",country:"BR"},
-  {code:"AA",name:"American Airlines",country:"US"},
-  {code:"DL",name:"Delta Air Lines",country:"US"},
-  {code:"UA",name:"United Airlines",country:"US"},
-  {code:"WN",name:"Southwest Airlines",country:"US"},
-  {code:"B6",name:"JetBlue Airways",country:"US"},
-  {code:"AS",name:"Alaska Airlines",country:"US"},
-  {code:"F9",name:"Frontier Airlines",country:"US"},
-  {code:"NK",name:"Spirit Airlines",country:"US"},
-  {code:"HA",name:"Hawaiian Airlines",country:"US"},
-  {code:"BA",name:"British Airways",country:"GB"},
-  {code:"VS",name:"Virgin Atlantic",country:"GB"},
-  {code:"EZ",name:"easyJet",country:"GB"},
-  {code:"U2",name:"easyJet Europe",country:"AT"},
-  {code:"FR",name:"Ryanair",country:"IE"},
-  {code:"EI",name:"Aer Lingus",country:"IE"},
-  {code:"AF",name:"Air France",country:"FR"},
-  {code:"TO",name:"Transavia France",country:"FR"},
-  {code:"KL",name:"KLM Royal Dutch Airlines",country:"NL"},
-  {code:"LH",name:"Lufthansa",country:"DE"},
-  {code:"EW",name:"Eurowings",country:"DE"},
-  {code:"4U",name:"Germanwings",country:"DE"},
-  {code:"LX",name:"SWISS",country:"CH"},
-  {code:"IB",name:"Iberia",country:"ES"},
-  {code:"VY",name:"Vueling",country:"ES"},
-  {code:"UX",name:"Air Europa",country:"ES"},
-  {code:"TP",name:"TAP Air Portugal",country:"PT"},
-  {code:"AZ",name:"ITA Airways",country:"IT"},
-  {code:"SK",name:"Scandinavian Airlines",country:"SE"},
-  {code:"AY",name:"Finnair",country:"FI"},
-  {code:"OS",name:"Austrian Airlines",country:"AT"},
-  {code:"TK",name:"Turkish Airlines",country:"TR"},
-  {code:"PC",name:"Pegasus Airlines",country:"TR"},
-  {code:"SU",name:"Aeroflot",country:"RU"},
-  {code:"S7",name:"S7 Airlines",country:"RU"},
-  {code:"LO",name:"LOT Polish Airlines",country:"PL"},
-  {code:"OK",name:"Czech Airlines",country:"CZ"},
-  {code:"MA",name:"Wizz Air Hungary",country:"HU"},
-  {code:"W6",name:"Wizz Air",country:"HU"},
-  {code:"PS",name:"Ukraine International Airlines",country:"UA"},
-  {code:"RO",name:"TAROM",country:"RO"},
-  {code:"FB",name:"Bulgaria Air",country:"BG"},
-  {code:"JP",name:"Adria Airways",country:"SI"},
-  {code:"NH",name:"All Nippon Airways (ANA)",country:"JP"},
-  {code:"JL",name:"Japan Airlines",country:"JP"},
-  {code:"MH",name:"Malaysia Airlines",country:"MY"},
-  {code:"SQ",name:"Singapore Airlines",country:"SG"},
-  {code:"MI",name:"SilkAir",country:"SG"},
-  {code:"TR",name:"Scoot",country:"SG"},
-  {code:"TZ",name:"Scoot (old)",country:"SG"},
-  {code:"KE",name:"Korean Air",country:"KR"},
-  {code:"OZ",name:"Asiana Airlines",country:"KR"},
-  {code:"CX",name:"Cathay Pacific",country:"HK"},
-  {code:"KA",name:"Cathay Dragon",country:"HK"},
-  {code:"CA",name:"Air China",country:"CN"},
-  {code:"MU",name:"China Eastern Airlines",country:"CN"},
-  {code:"CZ",name:"China Southern Airlines",country:"CN"},
-  {code:"HU",name:"Hainan Airlines",country:"CN"},
-  {code:"CI",name:"China Airlines",country:"TW"},
-  {code:"BR",name:"EVA Air",country:"TW"},
-  {code:"TG",name:"Thai Airways",country:"TH"},
-  {code:"FD",name:"Thai AirAsia",country:"TH"},
-  {code:"VZ",name:"Thai Vietjet",country:"TH"},
-  {code:"VJ",name:"Vietjet Air",country:"VN"},
-  {code:"VN",name:"Vietnam Airlines",country:"VN"},
-  {code:"BL",name:"Jetstar Pacific",country:"VN"},
-  {code:"AK",name:"AirAsia",country:"MY"},
-  {code:"QZ",name:"AirAsia Indonesia",country:"ID"},
-  {code:"GA",name:"Garuda Indonesia",country:"ID"},
-  {code:"JT",name:"Lion Air",country:"ID"},
-  {code:"PR",name:"Philippine Airlines",country:"PH"},
-  {code:"Z2",name:"Philippines AirAsia",country:"PH"},
-  {code:"SL",name:"Thai Lion Air",country:"TH"},
-  {code:"AI",name:"Air India",country:"IN"},
-  {code:"IX",name:"Air India Express",country:"IN"},
-  {code:"6E",name:"IndiGo",country:"IN"},
-  {code:"SG",name:"SpiceJet",country:"IN"},
-  {code:"UK",name:"Vistara",country:"IN"},
-  {code:"QR",name:"Qatar Airways",country:"QA"},
-  {code:"EK",name:"Emirates",country:"AE"},
-  {code:"EY",name:"Etihad Airways",country:"AE"},
-  {code:"FZ",name:"Flydubai",country:"AE"},
-  {code:"G9",name:"Air Arabia",country:"AE"},
-  {code:"GF",name:"Gulf Air",country:"BH"},
-  {code:"KU",name:"Kuwait Airways",country:"KW"},
-  {code:"SV",name:"Saudia",country:"SA"},
-  {code:"RJ",name:"Royal Jordanian",country:"JO"},
-  {code:"ME",name:"Middle East Airlines",country:"LB"},
-  {code:"LY",name:"El Al Israel Airlines",country:"IL"},
-  {code:"IR",name:"Iran Air",country:"IR"},
-  {code:"PK",name:"Pakistan International",country:"PK"},
-  {code:"MS",name:"EgyptAir",country:"EG"},
-  {code:"AT",name:"Royal Air Maroc",country:"MA"},
-  {code:"TU",name:"Tunisair",country:"TN"},
-  {code:"ET",name:"Ethiopian Airlines",country:"ET"},
-  {code:"KQ",name:"Kenya Airways",country:"KE"},
-  {code:"SA",name:"South African Airways",country:"ZA"},
-  {code:"FA",name:"Safair",country:"ZA"},
-  {code:"W3",name:"Arik Air",country:"NG"},
-  {code:"GH",name:"Ghana Airways",country:"GH"},
-  {code:"AC",name:"Air Canada",country:"CA"},
-  {code:"WS",name:"WestJet",country:"CA"},
-  {code:"PD",name:"Porter Airlines",country:"CA"},
-  {code:"AM",name:"Aeromexico",country:"MX"},
-  {code:"VB",name:"VivaAerobus",country:"MX"},
-  {code:"Y4",name:"Volaris",country:"MX"},
-  {code:"AR",name:"Aerolíneas Argentinas",country:"AR"},
-  {code:"JJ",name:"LATAM Brasil",country:"BR"},
-  {code:"CM",name:"Copa Airlines",country:"PA"},
-  {code:"AV",name:"Avianca",country:"CO"},
-  {code:"P5",name:"Wingo",country:"CO"},
-  {code:"LP",name:"LATAM Peru",country:"PE"},
-  {code:"4M",name:"LATAM Argentina",country:"AR"},
-  {code:"XL",name:"LATAM Ecuador",country:"EC"},
-  {code:"PZ",name:"LATAM Paraguay",country:"PY"},
-  {code:"5U",name:"Urganair",country:"BO"},
-  {code:"QA",name:"BoA Bolivia",country:"BO"},
-  {code:"UC",name:"LATAM Cargo Chile",country:"CL"},
-  {code:"WP",name:"Wampa Air",country:"PG"},
-  {code:"QF",name:"Qantas",country:"AU"},
-  {code:"JQ",name:"Jetstar Airways",country:"AU"},
-  {code:"VA",name:"Virgin Australia",country:"AU"},
-  {code:"TT",name:"Tigerair Australia",country:"AU"},
-  {code:"NZ",name:"Air New Zealand",country:"NZ"},
-  {code:"FJ",name:"Fiji Airways",country:"FJ"},
+{code:"LA",name:"LATAM Airlines",country:"BR/CL"},{code:"G3",name:"GOL Linhas Aéreas",country:"BR"},{code:"AD",name:"Azul Linhas Aéreas",country:"BR"},{code:"2Z",name:"Voepass",country:"BR"},
+{code:"AA",name:"American Airlines",country:"US"},{code:"DL",name:"Delta Air Lines",country:"US"},{code:"UA",name:"United Airlines",country:"US"},{code:"B6",name:"JetBlue Airways",country:"US"},{code:"AS",name:"Alaska Airlines",country:"US"},
+{code:"BA",name:"British Airways",country:"GB"},{code:"VS",name:"Virgin Atlantic",country:"GB"},{code:"EZ",name:"easyJet",country:"GB"},{code:"FR",name:"Ryanair",country:"IE"},{code:"EI",name:"Aer Lingus",country:"IE"},
+{code:"AF",name:"Air France",country:"FR"},{code:"KL",name:"KLM Royal Dutch Airlines",country:"NL"},{code:"LH",name:"Lufthansa",country:"DE"},{code:"EW",name:"Eurowings",country:"DE"},{code:"LX",name:"SWISS",country:"CH"},
+{code:"IB",name:"Iberia",country:"ES"},{code:"VY",name:"Vueling",country:"ES"},{code:"UX",name:"Air Europa",country:"ES"},{code:"TP",name:"TAP Air Portugal",country:"PT"},{code:"AZ",name:"ITA Airways",country:"IT"},
+{code:"SK",name:"Scandinavian Airlines",country:"SE"},{code:"AY",name:"Finnair",country:"FI"},{code:"OS",name:"Austrian Airlines",country:"AT"},{code:"TK",name:"Turkish Airlines",country:"TR"},{code:"LO",name:"LOT Polish Airlines",country:"PL"},
+{code:"NH",name:"All Nippon Airways (ANA)",country:"JP"},{code:"JL",name:"Japan Airlines",country:"JP"},{code:"KE",name:"Korean Air",country:"KR"},{code:"OZ",name:"Asiana Airlines",country:"KR"},{code:"CX",name:"Cathay Pacific",country:"HK"},
+{code:"CA",name:"Air China",country:"CN"},{code:"MU",name:"China Eastern Airlines",country:"CN"},{code:"CZ",name:"China Southern Airlines",country:"CN"},{code:"SQ",name:"Singapore Airlines",country:"SG"},{code:"MH",name:"Malaysia Airlines",country:"MY"},
+{code:"TG",name:"Thai Airways",country:"TH"},{code:"FD",name:"Thai AirAsia",country:"TH"},{code:"VN",name:"Vietnam Airlines",country:"VN"},{code:"AK",name:"AirAsia",country:"MY"},{code:"GA",name:"Garuda Indonesia",country:"ID"},
+{code:"PR",name:"Philippine Airlines",country:"PH"},{code:"AI",name:"Air India",country:"IN"},{code:"6E",name:"IndiGo",country:"IN"},{code:"SG",name:"SpiceJet",country:"IN"},
+{code:"QR",name:"Qatar Airways",country:"QA"},{code:"EK",name:"Emirates",country:"AE"},{code:"EY",name:"Etihad Airways",country:"AE"},{code:"FZ",name:"Flydubai",country:"AE"},{code:"SV",name:"Saudia",country:"SA"},{code:"MS",name:"EgyptAir",country:"EG"},{code:"AT",name:"Royal Air Maroc",country:"MA"},{code:"ET",name:"Ethiopian Airlines",country:"ET"},{code:"KQ",name:"Kenya Airways",country:"KE"},{code:"SA",name:"South African Airways",country:"ZA"},
+{code:"AC",name:"Air Canada",country:"CA"},{code:"WS",name:"WestJet",country:"CA"},{code:"AM",name:"Aeromexico",country:"MX"},{code:"AR",name:"Aerolíneas Argentinas",country:"AR"},{code:"CM",name:"Copa Airlines",country:"PA"},{code:"AV",name:"Avianca",country:"CO"},
+{code:"QF",name:"Qantas",country:"AU"},{code:"JQ",name:"Jetstar Airways",country:"AU"},{code:"NZ",name:"Air New Zealand",country:"NZ"},
 ];
 
-// ══════════════════════════════════════════════════════════════════════════════
 // STATE
-// ══════════════════════════════════════════════════════════════════════════════
 let S={trips:[],currentTripId:null,transports:[],accommodations:[],expenses:[]};
 let trFilter='all';
 let editingTransportId=null;
 let editingAccommId=null;
 let editingTripId=null;
+let currentPage='overview';
 const EMOJI={voo:'✈️',trem:'🚄',onibus:'🚌',metro:'🚇',barco:'⛴',outro:'🚗'};
 
-// ══════════════════════════════════════════════════════════════════════════════
-// AUTOCOMPLETE ENGINE
-// ══════════════════════════════════════════════════════════════════════════════
+// AUTOCOMPLETE
 let acState={origin:{idx:-1},dest:{idx:-1},airline:{idx:-1}};
 let isVoo=true;
 
 function acSearch(field,q){
   if(!isVoo){acClose();return}
   const dd=document.getElementById('ac-'+field);
+  if(!dd)return;
   const results=searchAirports(q);
-  if(!results.length){dd.innerHTML=`<div class="ac-empty">Nenhum aeroporto encontrado</div>`;dd.classList.add('open');return}
-  dd.innerHTML=results.slice(0,12).map((a,i)=>`
-    <div class="ac-item" data-idx="${i}" onmousedown="acSelect('${field}','${a.iata} — ${a.city} (${a.name})')"
-      onmouseover="acHighlight('${field}',${i})">
-      <span class="ac-iata">${a.iata}</span>
-      <span class="ac-name">${a.city} — ${a.name}</span>
-      <span class="ac-country">${a.country}</span>
-    </div>`).join('');
-  dd.classList.add('open');
-  acState[field].idx=-1;
+  if(!results.length){dd.innerHTML='<div class="ac-empty">Nenhum aeroporto encontrado</div>';dd.classList.add('open');return}
+  dd.innerHTML=results.slice(0,12).map((a,i)=>`<div class="ac-item" data-idx="${i}" onmousedown="acSelect('${field}','${a.iata} — ${a.city} (${a.name})')" onmouseover="acHighlight('${field}',${i})"><span class="ac-iata">${a.iata}</span><span class="ac-name">${a.city} — ${a.name}</span><span class="ac-country">${a.country}</span></div>`).join('');
+  dd.classList.add('open');acState[field].idx=-1;
 }
 
 function acAirline(q){
   const dd=document.getElementById('ac-airline');
+  if(!dd)return;
   if(!isVoo){dd.classList.remove('open');return}
   const results=searchAirlines(q);
-  if(!results.length){dd.innerHTML=`<div class="ac-empty">Nenhuma companhia encontrada</div>`;dd.classList.add('open');return}
-  dd.innerHTML=results.slice(0,10).map((a,i)=>`
-    <div class="ac-item" data-idx="${i}" onmousedown="acSelectAirline('${a.name.replace(/'/g,'&#39;')}')"
-      onmouseover="acHighlight('airline',${i})">
-      <span class="ac-airline-code">${a.code}</span>
-      <span class="ac-airline-name">${a.name}</span>
-      <span class="ac-country">${a.country}</span>
-    </div>`).join('');
-  dd.classList.add('open');
-  acState.airline.idx=-1;
+  if(!results.length){dd.innerHTML='<div class="ac-empty">Nenhuma companhia encontrada</div>';dd.classList.add('open');return}
+  dd.innerHTML=results.slice(0,10).map((a,i)=>`<div class="ac-item" data-idx="${i}" onmousedown="acSelectAirline('${a.name.replace(/'/g,"&#39;")}')" onmouseover="acHighlight('airline',${i})"><span class="ac-airline-code">${a.code}</span><span class="ac-airline-name">${a.name}</span><span class="ac-country">${a.country}</span></div>`).join('');
+  dd.classList.add('open');acState.airline.idx=-1;
 }
 
 function searchAirports(q){
   if(!q||q.length<1)return AIRPORTS.filter(a=>['GRU','GIG','BSB','LHR','CDG','JFK','NRT','DXB','SIN','MAD'].includes(a.iata));
-  const u=q.toUpperCase();
-  const l=q.toLowerCase();
+  const u=q.toUpperCase(),l=q.toLowerCase();
   const exact=AIRPORTS.filter(a=>a.iata===u);
   const startIata=AIRPORTS.filter(a=>a.iata!==u&&a.iata.startsWith(u));
   const startCity=AIRPORTS.filter(a=>!a.iata.startsWith(u)&&(a.city.toLowerCase().startsWith(l)||a.name.toLowerCase().startsWith(l)));
-  const contains=AIRPORTS.filter(a=>!a.iata.startsWith(u)&&!a.city.toLowerCase().startsWith(l)&&!a.name.toLowerCase().startsWith(l)&&(a.iata.includes(u)||a.city.toLowerCase().includes(l)||a.name.toLowerCase().includes(l)||a.country.toLowerCase().includes(l)));
+  const contains=AIRPORTS.filter(a=>!a.iata.startsWith(u)&&!a.city.toLowerCase().startsWith(l)&&!a.name.toLowerCase().startsWith(l)&&(a.city.toLowerCase().includes(l)||a.name.toLowerCase().includes(l)||a.country.toLowerCase().includes(l)));
   return [...exact,...startIata,...startCity,...contains].slice(0,15);
 }
 
 function searchAirlines(q){
   if(!q||q.length<1)return AIRLINES.filter(a=>['LA','G3','AD','AA','DL','UA','BA','AF','KL','LH','EK','QR','NH','JL'].includes(a.code));
-  const u=q.toUpperCase();const l=q.toLowerCase();
+  const u=q.toUpperCase(),l=q.toLowerCase();
   const exact=AIRLINES.filter(a=>a.code===u||a.name.toLowerCase()===l);
   const start=AIRLINES.filter(a=>!exact.includes(a)&&(a.code.startsWith(u)||a.name.toLowerCase().startsWith(l)));
   const contains=AIRLINES.filter(a=>!exact.includes(a)&&!start.includes(a)&&(a.code.includes(u)||a.name.toLowerCase().includes(l)));
@@ -1100,17 +601,14 @@ function searchAirlines(q){
 
 function acSelect(field,val){document.getElementById('t-'+field).value=val;acClose(field)}
 function acSelectAirline(name){document.getElementById('t-carrier').value=name;acClose('airline')}
-function acHighlight(field,idx){
-  const dd=document.getElementById('ac-'+field);
-  dd.querySelectorAll('.ac-item').forEach((el,i)=>el.classList.toggle('selected',i===idx));
-  acState[field].idx=idx;
-}
+function acHighlight(field,idx){const dd=document.getElementById('ac-'+field);if(dd){dd.querySelectorAll('.ac-item').forEach((el,i)=>el.classList.toggle('selected',i===idx));acState[field].idx=idx;}}
 function acClose(field){
-  if(field){document.getElementById('ac-'+field).classList.remove('open')}
+  if(field){const el=document.getElementById('ac-'+field);if(el)el.classList.remove('open')}
   else{['origin','dest','airline'].forEach(f=>{const el=document.getElementById('ac-'+f);if(el)el.classList.remove('open')})}
 }
 function acKey(e,field){
   const dd=document.getElementById('ac-'+field);
+  if(!dd)return;
   const items=dd.querySelectorAll('.ac-item');
   if(!items.length)return;
   if(e.key==='ArrowDown'){e.preventDefault();const ni=Math.min(acState[field].idx+1,items.length-1);acHighlight(field,ni)}
@@ -1118,15 +616,9 @@ function acKey(e,field){
   else if(e.key==='Enter'&&acState[field].idx>=0){e.preventDefault();items[acState[field].idx].dispatchEvent(new MouseEvent('mousedown'))}
   else if(e.key==='Escape'){acClose(field)}
 }
+document.addEventListener('click',e=>{if(!e.target.closest('.ac-wrap'))acClose()});
 
-// Close dropdowns on outside click
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.ac-wrap'))acClose();
-});
-
-// ══════════════════════════════════════════════════════════════════════════════
-// TYPE CHANGE — toggle airport/airline autocomplete
-// ══════════════════════════════════════════════════════════════════════════════
+// TYPE CHANGE
 function onTypeChange(){
   const type=document.getElementById('t-type').value;
   isVoo=(type==='voo');
@@ -1157,151 +649,72 @@ function onTypeChange(){
 function updateCarrierRefVisibility(){
   const hasConns=document.querySelectorAll('#conn-list .conn-item').length>0;
   const row=document.getElementById('carrier-flightnum-row');
-  if(!row)return;
-  // When there are connections, hide companhia+número do voo from main leg (they belong to each connection)
-  row.style.display=(isVoo&&hasConns)?'none':'';
+  if(row)row.style.display=(isVoo&&hasConns)?'none':'';
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-// CONNECTION FORMS (no modal)
-// ══════════════════════════════════════════════════════════════════════════════
+// CONNECTION FORMS
 let connCount=0;
-let connData=[]; // array of connection form data when editing
+let acConnState={};
 
 function addConnectionForm(data=null){
   connCount++;
   const idx=connCount;
   const cl=document.getElementById('conn-list');
   const div=document.createElement('div');
-  div.className='conn-item';
-  div.id='conn-'+idx;
+  div.className='conn-item';div.id='conn-'+idx;
   div.innerHTML=`
-    <div class="conn-item-header">
-      <div class="conn-item-title">🔗 Conexão ${cl.children.length+1}</div>
-      <button class="action-btn danger" onclick="removeConn(${idx})">Remover</button>
+    <div class="conn-item-header"><div class="conn-item-title">🔗 Conexão ${cl.children.length+1}</div><button class="action-btn danger" onclick="removeConn(${idx})">Remover</button></div>
+    <div class="form-row" style="margin-bottom:10px">
+      <div><div class="form-lbl">Aeroporto de Conexão (Origem)</div><div class="ac-wrap"><input class="ac-input" id="conn-origin-${idx}" placeholder="Ex: MIA — Miami" autocomplete="off" oninput="acSearchConn('origin',${idx},this.value)" onfocus="acSearchConn('origin',${idx},this.value)" onkeydown="acKeyConn(event,'origin',${idx})" value="${data?data.origin:''}"/><div class="ac-dropdown" id="ac-conn-origin-${idx}"></div></div></div>
+      <div><div class="form-lbl">Aeroporto de Destino</div><div class="ac-wrap"><input class="ac-input" id="conn-dest-${idx}" placeholder="Ex: CDG — Paris" autocomplete="off" oninput="acSearchConn('dest',${idx},this.value)" onfocus="acSearchConn('dest',${idx},this.value)" onkeydown="acKeyConn(event,'dest',${idx})" value="${data?data.destination:''}"/><div class="ac-dropdown" id="ac-conn-dest-${idx}"></div></div></div>
     </div>
     <div class="form-row" style="margin-bottom:10px">
-      <div>
-        <div class="form-lbl">Aeroporto de Conexão (Origem)</div>
-        <div class="ac-wrap">
-          <input class="ac-input" id="conn-origin-${idx}" placeholder="Ex: MIA — Miami" autocomplete="off"
-            oninput="acSearchConn('origin',${idx},this.value)" onfocus="acSearchConn('origin',${idx},this.value)"
-            onkeydown="acKeyConn(event,'origin',${idx})" value="${data?data.origin:''}"/>
-          <div class="ac-dropdown" id="ac-conn-origin-${idx}"></div>
-        </div>
-      </div>
-      <div>
-        <div class="form-lbl">Aeroporto de Destino</div>
-        <div class="ac-wrap">
-          <input class="ac-input" id="conn-dest-${idx}" placeholder="Ex: CDG — Paris" autocomplete="off"
-            oninput="acSearchConn('dest',${idx},this.value)" onfocus="acSearchConn('dest',${idx},this.value)"
-            onkeydown="acKeyConn(event,'dest',${idx})" value="${data?data.destination:''}"/>
-          <div class="ac-dropdown" id="ac-conn-dest-${idx}"></div>
-        </div>
-      </div>
+      <div><div class="form-lbl">Partida</div><input class="form-input" id="conn-dep-${idx}" type="datetime-local" value="${data?localDT(data.departure_at):''}"/></div>
+      <div><div class="form-lbl">Chegada</div><input class="form-input" id="conn-arr-${idx}" type="datetime-local" value="${data?localDT(data.arrival_at):''}"/></div>
     </div>
     <div class="form-row" style="margin-bottom:10px">
-      <div>
-        <div class="form-lbl">Partida</div>
-        <input class="form-input" id="conn-dep-${idx}" type="datetime-local" value="${data?localDT(data.departure_at):''}"/>
-      </div>
-      <div>
-        <div class="form-lbl">Chegada</div>
-        <input class="form-input" id="conn-arr-${idx}" type="datetime-local" value="${data?localDT(data.arrival_at):''}"/>
-      </div>
+      <div><div class="form-lbl">Companhia Aérea</div><div class="ac-wrap"><input class="ac-input" id="conn-carrier-${idx}" placeholder="Ex: American Airlines" autocomplete="off" oninput="acSearchConnAirline(${idx},this.value)" onfocus="acSearchConnAirline(${idx},this.value)" onkeydown="acKeyConn(event,'airline',${idx})" value="${data?data.carrier:''}"/><div class="ac-dropdown" id="ac-conn-airline-${idx}"></div></div></div>
+      <div><div class="form-lbl">Número do Voo</div><input class="form-input" id="conn-ref-${idx}" placeholder="Ex: LA8090" value="${data?data.flight_number:''}"/></div>
     </div>
-    <div class="form-row" style="margin-bottom:0">
-      <div>
-        <div class="form-lbl">Companhia Aérea</div>
-        <div class="ac-wrap">
-          <input class="ac-input" id="conn-carrier-${idx}" placeholder="Ex: American Airlines" autocomplete="off"
-            oninput="acSearchConnAirline(${idx},this.value)" onfocus="acSearchConnAirline(${idx},this.value)"
-            onkeydown="acKeyConn(event,'airline',${idx})" value="${data?data.carrier:''}"/>
-          <div class="ac-dropdown" id="ac-conn-airline-${idx}"></div>
-        </div>
-      </div>
-      <div>
-        <div class="form-lbl">Número do Voo</div>
-        <input class="form-input" id="conn-ref-${idx}" placeholder="Ex: LA8090" value="${data?data.booking_ref:''}"/>
-      </div>
-    </div>
-    <div class="form-row" style="margin-top:10px">
-      <div style="grid-column:1/-1">
-        <div class="form-lbl">Código da Reserva</div>
-        <input class="form-input" id="conn-bookref-${idx}" placeholder="Ex: XK4921" value="${data?data.notes:''}"/>
-      </div>
-    </div>`;
+    <div class="form-group"><div class="form-lbl">Código da Reserva</div><input class="form-input" id="conn-bookref-${idx}" placeholder="Ex: XK4921" value="${data?data.booking_ref:''}"/></div>`;
   cl.appendChild(div);
   renumberConns();
   updateCarrierRefVisibility();
 }
 
-function removeConn(idx){
-  document.getElementById('conn-'+idx)?.remove();
-  renumberConns();
-  updateCarrierRefVisibility();
-}
+function removeConn(idx){document.getElementById('conn-'+idx)?.remove();renumberConns();updateCarrierRefVisibility();}
+function renumberConns(){document.querySelectorAll('#conn-list .conn-item').forEach((el,i)=>{el.querySelector('.conn-item-title').textContent=`🔗 Conexão ${i+1}`});}
+function getConnIds(){return Array.from(document.querySelectorAll('#conn-list .conn-item')).map(el=>parseInt(el.id.replace('conn-','')));}
 
-function renumberConns(){
-  document.querySelectorAll('#conn-list .conn-item').forEach((el,i)=>{
-    el.querySelector('.conn-item-title').textContent=`🔗 Conexão ${i+1}`;
-  });
-}
-
-function getConnIds(){
-  return Array.from(document.querySelectorAll('#conn-list .conn-item')).map(el=>parseInt(el.id.replace('conn-','')));
-}
-
-// Conn autocomplete
-let acConnState={};
 function acSearchConn(field,idx,q){
-  const key=`${field}-${idx}`;
-  if(!acConnState[key])acConnState[key]={idx:-1};
-  const dd=document.getElementById(`ac-conn-${field}-${idx}`);
+  const key=`${field}-${idx}`;if(!acConnState[key])acConnState[key]={idx:-1};
+  const dd=document.getElementById(`ac-conn-${field}-${idx}`);if(!dd)return;
   const results=searchAirports(q);
-  if(!results.length){dd.innerHTML=`<div class="ac-empty">Nenhum aeroporto</div>`;dd.classList.add('open');return}
-  dd.innerHTML=results.slice(0,10).map((a,i)=>`
-    <div class="ac-item" data-idx="${i}"
-      onmousedown="acSelectConn('${field}',${idx},'${a.iata} — ${a.city} (${a.name})')"
-      onmouseover="acHighlightConn('${field}',${idx},${i})">
-      <span class="ac-iata">${a.iata}</span>
-      <span class="ac-name">${a.city} — ${a.name}</span>
-      <span class="ac-country">${a.country}</span>
-    </div>`).join('');
+  if(!results.length){dd.innerHTML='<div class="ac-empty">Nenhum aeroporto</div>';dd.classList.add('open');return}
+  dd.innerHTML=results.slice(0,10).map((a,i)=>`<div class="ac-item" data-idx="${i}" onmousedown="acSelectConn('${field}',${idx},'${a.iata} — ${a.city} (${a.name})')" onmouseover="acHighlightConn('${field}',${idx},${i})"><span class="ac-iata">${a.iata}</span><span class="ac-name">${a.city} — ${a.name}</span><span class="ac-country">${a.country}</span></div>`).join('');
   dd.classList.add('open');
 }
 function acSearchConnAirline(idx,q){
-  const dd=document.getElementById(`ac-conn-airline-${idx}`);
+  const dd=document.getElementById(`ac-conn-airline-${idx}`);if(!dd)return;
   const results=searchAirlines(q);
-  if(!results.length){dd.innerHTML=`<div class="ac-empty">Nenhuma companhia</div>`;dd.classList.add('open');return}
-  dd.innerHTML=results.slice(0,8).map((a,i)=>`
-    <div class="ac-item" data-idx="${i}"
-      onmousedown="acSelectConnAirline(${idx},'${a.name.replace(/'/g,'&#39;')}')"
-      onmouseover="acHighlightConn('airline',${idx},${i})">
-      <span class="ac-airline-code">${a.code}</span>
-      <span class="ac-airline-name">${a.name}</span>
-      <span class="ac-country">${a.country}</span>
-    </div>`).join('');
+  if(!results.length){dd.innerHTML='<div class="ac-empty">Nenhuma companhia</div>';dd.classList.add('open');return}
+  dd.innerHTML=results.slice(0,8).map((a,i)=>`<div class="ac-item" data-idx="${i}" onmousedown="acSelectConnAirline(${idx},'${a.name.replace(/'/g,"&#39;")}')" onmouseover="acHighlightConn('airline',${idx},${i})"><span class="ac-airline-code">${a.code}</span><span class="ac-airline-name">${a.name}</span><span class="ac-country">${a.country}</span></div>`).join('');
   dd.classList.add('open');
 }
-function acSelectConn(field,idx,val){document.getElementById(`conn-${field==='origin'?'origin':'dest'}-${idx}`).value=val;document.getElementById(`ac-conn-${field}-${idx}`)?.classList.remove('open')}
-function acSelectConnAirline(idx,name){document.getElementById(`conn-carrier-${idx}`).value=name;document.getElementById(`ac-conn-airline-${idx}`)?.classList.remove('open')}
+function acSelectConn(field,idx,val){const el=document.getElementById(`conn-${field}-${idx}`);if(el)el.value=val;document.getElementById(`ac-conn-${field}-${idx}`)?.classList.remove('open')}
+function acSelectConnAirline(idx,name){const el=document.getElementById(`conn-carrier-${idx}`);if(el)el.value=name;document.getElementById(`ac-conn-airline-${idx}`)?.classList.remove('open')}
 function acHighlightConn(field,idx,i){const dd=document.getElementById(`ac-conn-${field}-${idx}`);if(dd)dd.querySelectorAll('.ac-item').forEach((el,j)=>el.classList.toggle('selected',j===i))}
 function acKeyConn(e,field,idx){
   const ddId=field==='airline'?`ac-conn-airline-${idx}`:`ac-conn-${field}-${idx}`;
-  const dd=document.getElementById(ddId);
-  const items=dd?.querySelectorAll('.ac-item')||[];
-  const key=`${field}-${idx}`;
-  if(!acConnState[key])acConnState[key]={idx:-1};
+  const dd=document.getElementById(ddId);const items=dd?.querySelectorAll('.ac-item')||[];
+  const key=`${field}-${idx}`;if(!acConnState[key])acConnState[key]={idx:-1};
   if(e.key==='ArrowDown'){e.preventDefault();const ni=Math.min((acConnState[key].idx||0)+1,items.length-1);acConnState[key].idx=ni;items.forEach((el,j)=>el.classList.toggle('selected',j===ni))}
   else if(e.key==='ArrowUp'){e.preventDefault();const ni=Math.max((acConnState[key].idx||0)-1,0);acConnState[key].idx=ni;items.forEach((el,j)=>el.classList.toggle('selected',j===ni))}
   else if(e.key==='Enter'&&(acConnState[key].idx||0)>=0){e.preventDefault();const it=items[acConnState[key].idx];if(it)it.dispatchEvent(new MouseEvent('mousedown'))}
   else if(e.key==='Escape'){dd?.classList.remove('open')}
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
 // BOOT
-// ══════════════════════════════════════════════════════════════════════════════
 async function boot(){
   showLoading(true,'Conectando ao Supabase...');
   try{
@@ -1324,14 +737,10 @@ async function reloadTrip(){
     db.from('accommodations').select('*').eq('trip_id',S.currentTripId).order('check_in'),
     db.from('daily_expenses').select('*').eq('trip_id',S.currentTripId).order('expense_date'),
   ]);
-  S.transports=t.data||[];
-  S.accommodations=a.data||[];
-  S.expenses=e.data||[];
+  S.transports=t.data||[];S.accommodations=a.data||[];S.expenses=e.data||[];
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
 // SIDEBAR
-// ══════════════════════════════════════════════════════════════════════════════
 function renderSidebar(){
   document.getElementById('trip-chips').innerHTML=S.trips.map(t=>`
     <div class="trip-chip ${t.id===S.currentTripId?'active':''}" onclick="switchTrip('${t.id}')">
@@ -1342,19 +751,15 @@ function renderSidebar(){
 }
 
 async function switchTrip(id){
-  S.currentTripId=id;
-  showLoading(true,'Carregando...');
-  await reloadTrip();
-  showLoading(false);
+  S.currentTripId=id;showLoading(true,'Carregando...');
+  await reloadTrip();showLoading(false);
   renderSidebar();renderOverview();
   if(document.getElementById('page-transport').classList.contains('active'))renderTransport();
   if(document.getElementById('page-accommodation').classList.contains('active'))renderAccomm();
   if(document.getElementById('page-expenses').classList.contains('active'))renderExpenses();
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
 // OVERVIEW
-// ══════════════════════════════════════════════════════════════════════════════
 function renderOverview(){
   const trip=curTrip();
   if(!trip){
@@ -1365,9 +770,7 @@ function renderOverview(){
     document.getElementById('ov-budget-card').innerHTML='';
     return;
   }
-  const days=tripDays(trip);
-  const isAct=isActive(trip);
-  const isPst=isPast(trip.end_date);
+  const days=tripDays(trip),isAct=isActive(trip),isPst=isPast(trip.end_date);
   const status=isPst?'Concluída':(isAct?'Em andamento':'Planejada');
   document.getElementById('ov-title').innerHTML=trip.name.replace(/(\d{4})/,'<em>$1</em>');
   document.getElementById('ov-meta').innerHTML=`
@@ -1376,49 +779,30 @@ function renderOverview(){
     <span class="badge">${days} dias</span>
     <span class="badge">🌍 ${trip.currency||'BRL'}</span>`;
 
-  // only root legs for stats
   const roots=S.transports.filter(t=>!t.parent_leg_id);
   const totTr=S.transports.reduce((s,t)=>s+(t.price||0),0);
   const totAc=S.accommodations.reduce((s,a)=>s+(calcNights(a.check_in,a.check_out)*(a.price_per_night||0)),0);
   const totEx=S.expenses.reduce((s,e)=>s+daySum(e),0);
-  const total=totTr+totAc+totEx;
-  const budget=trip.budget||0;
+  const total=totTr+totAc+totEx,budget=trip.budget||0;
   const pct=budget>0?Math.min(Math.round(total/budget*100),100):0;
   const rem=Math.max(0,daysLeft(trip.end_date));
 
   document.getElementById('ov-stats').innerHTML=`
-    <div class="stat-card"><div class="stat-lbl">Total Gasto</div><div class="stat-val" style="color:var(--accent)">R$ ${fmt(total)}</div><div class="stat-sub">${budget>0?`de R$ ${fmt(budget)} orçados`:'sem orçamento'}</div></div>
-    <div class="stat-card"><div class="stat-lbl">Passagens</div><div class="stat-val" style="color:var(--accent2)">R$ ${fmt(totTr)}</div><div class="stat-sub">${roots.length} trecho(s)</div></div>
-    <div class="stat-card"><div class="stat-lbl">Hospedagem</div><div class="stat-val" style="color:var(--accent3)">R$ ${fmt(totAc)}</div><div class="stat-sub">${S.accommodations.length} local(is)</div></div>
-    <div class="stat-card"><div class="stat-lbl">${isPst?'Duração':'Dias restantes'}</div><div class="stat-val" style="color:var(--green)">${isPst?days:rem}</div><div class="stat-sub">até ${fmtDate(trip.end_date)}</div></div>`;
+    <div class="stat-card"><div class="stat-lbl">Total Gasto</div><div class="stat-val" style="color:var(--ac)">R$ ${fmt(total)}</div><div class="stat-sub">${budget>0?`de R$ ${fmt(budget)} orçados`:'sem orçamento'}</div></div>
+    <div class="stat-card"><div class="stat-lbl">Passagens</div><div class="stat-val" style="color:var(--ac2)">R$ ${fmt(totTr)}</div><div class="stat-sub">${roots.length} trecho(s)</div></div>
+    <div class="stat-card"><div class="stat-lbl">Hospedagem</div><div class="stat-val" style="color:var(--ac3)">R$ ${fmt(totAc)}</div><div class="stat-sub">${S.accommodations.length} local(is)</div></div>
+    <div class="stat-card"><div class="stat-lbl">${isPst?'Duração':'Dias restantes'}</div><div class="stat-val" style="color:var(--gn)">${isPst?days:rem}</div><div class="stat-sub">até ${fmtDate(trip.end_date)}</div></div>`;
 
   const tl=roots.slice(0,4);
   document.getElementById('ov-timeline').innerHTML=tl.length
     ?tl.map((t,i)=>`
       <div class="timeline-item">
-        <div class="tl-left">
-          <div class="tl-dot">${EMOJI[t.type]||'🚗'}</div>
-          ${i<tl.length-1?'<div class="tl-line"></div>':''}
-        </div>
+        <div class="tl-left"><div class="tl-dot">${EMOJI[t.type]||'🚗'}</div>${i<tl.length-1?'<div class="tl-line"></div>':''}</div>
         <div class="transport-card ${t.done?'done':''}">
           <div class="transport-row">
-            <div>
-              <div class="transport-route">
-                <span class="route-city">${t.origin}</span>
-                <span class="route-arrow"> → </span>
-                <span class="route-city">${t.destination}</span>
-              </div>
-              <div class="transport-detail">
-                <span>${fmtDT(t.departure_at)}</span>
-                ${t.carrier?`<span>${t.carrier}</span>`:''}
-                ${t.flight_number?`<span>Voo ${t.flight_number}</span>`:''}
-                ${t.booking_ref?`<span>Ref: ${t.booking_ref}</span>`:''}
-              </div>
-            </div>
-            <div style="text-align:right">
-              <div class="transport-price">R$ ${fmt(t.price)}</div>
-              <span class="type-badge">${t.type}</span>
-            </div>
+            <div><div class="transport-route"><span style="font-size:18px;margin-right:4px">${EMOJI[t.type]||'🚗'}</span><span class="route-city">${t.origin}</span><span class="route-arrow"> → </span><span class="route-city">${t.destination}</span></div>
+            <div class="transport-detail"><span>${fmtDT(t.departure_at)}</span>${t.carrier?`<span>${t.carrier}</span>`:''} ${t.flight_number?`<span>Voo ${t.flight_number}</span>`:''} ${t.booking_ref?`<span>Ref: ${t.booking_ref}</span>`:''}</div></div>
+            <div style="text-align:right"><div class="transport-price">R$ ${fmt(t.price)}</div><span class="type-badge">${t.type}</span></div>
           </div>
         </div>
       </div>`).join('')
@@ -1430,51 +814,31 @@ function renderOverview(){
     <div class="info-row"><span class="info-key">Passagens</span><span class="info-val">${roots.length} trechos</span></div>
     <div class="info-row"><span class="info-key">Hospedagem</span><span class="info-val">${S.accommodations.length} locais</span></div>
     <div class="info-row"><span class="info-key">Dias c/ gastos</span><span class="info-val">${S.expenses.length}</span></div>`;
-
   document.getElementById('ov-budget-card').innerHTML=budget>0?`
     <div class="sec-title" style="margin-bottom:14px">Orçamento</div>
-    <div style="margin:12px 0">
-      <div class="bbar-lbl"><span>Gasto: R$ ${fmt(total)}</span><span>${pct}%</span></div>
-      <div class="bbar"><div class="bbar-fill" style="width:${pct}%"></div></div>
-    </div>
-    <div style="font-size:12px;color:var(--muted)">Restam <strong style="color:var(--green)">R$ ${fmt(budget-total)}</strong></div>`
-    :`<div class="sec-title" style="margin-bottom:10px">Orçamento</div><div style="font-size:13px;color:var(--dim)">Sem orçamento definido.</div>`;
+    <div style="margin:12px 0"><div class="bbar-lbl"><span>Gasto: R$ ${fmt(total)}</span><span>${pct}%</span></div><div class="bbar"><div class="bbar-fill" style="width:${pct}%"></div></div></div>
+    <div style="font-size:12px;color:var(--mu)">Restam <strong style="color:var(--gn)">R$ ${fmt(budget-total)}</strong></div>`
+    :`<div class="sec-title" style="margin-bottom:10px">Orçamento</div><div style="font-size:13px;color:var(--dm)">Sem orçamento definido.</div>`;
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
 // TRANSPORT
-// ══════════════════════════════════════════════════════════════════════════════
 function renderTransport(filter){
   if(filter!==undefined)trFilter=filter;
   const trip=curTrip();
   document.getElementById('tr-badge').textContent=trip?`${trip.name} · ${S.transports.filter(t=>!t.parent_leg_id).length} trechos`:'—';
-
   const roots=S.transports.filter(t=>!t.parent_leg_id);
   const filtered=trFilter==='all'?roots:roots.filter(t=>t.type===trFilter);
-
   document.getElementById('transport-list').innerHTML=!filtered.length
     ?`<div class="empty-state"><div class="ei">${EMOJI[trFilter]||'✈️'}</div><p>Nenhum trecho encontrado.</p></div>`
     :filtered.map(t=>{
       const conns=S.transports.filter(c=>c.parent_leg_id===t.id).sort((a,b)=>a.connection_order-b.connection_order);
       const hasConn=conns.length>0;
-      return `
-      <div>
+      return `<div>
         <div class="transport-card ${t.done?'done':''}">
           <div class="transport-row">
             <div style="flex:1">
-              <div class="transport-route">
-                <span style="font-size:18px;margin-right:4px">${EMOJI[t.type]||'🚗'}</span>
-                <span class="route-city">${t.origin}</span>
-                <span class="route-arrow"> → </span>
-                <span class="route-city">${t.destination}</span>
-                ${hasConn?`<span class="conn-badge">+${conns.length} conexão</span>`:''}
-              </div>
-              <div class="transport-detail">
-                <span>${fmtDT(t.departure_at)}</span>
-                ${t.carrier?`<span>${t.carrier}</span>`:''}
-                ${t.flight_number?`<span>Voo ${t.flight_number}</span>`:''}
-                ${t.booking_ref?`<span>Ref: ${t.booking_ref}</span>`:''}
-              </div>
+              <div class="transport-route"><span style="font-size:18px;margin-right:4px">${EMOJI[t.type]||'🚗'}</span><span class="route-city">${t.origin}</span><span class="route-arrow"> → </span><span class="route-city">${t.destination}</span>${hasConn?`<span class="conn-badge">+${conns.length} conexão</span>`:''}</div>
+              <div class="transport-detail"><span>${fmtDT(t.departure_at)}</span>${t.carrier?`<span>${t.carrier}</span>`:''} ${t.flight_number?`<span>Voo ${t.flight_number}</span>`:''} ${t.booking_ref?`<span>Ref: ${t.booking_ref}</span>`:''} ${t.notes?`<span>📝 ${t.notes}</span>`:''}</div>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
               <div class="transport-price">R$ ${fmt(t.price)}</div>
@@ -1491,18 +855,8 @@ function renderTransport(filter){
           <div class="transport-card connection ${c.done?'done':''}">
             <div class="transport-row">
               <div style="flex:1">
-                <div class="transport-route">
-                  <span style="font-size:15px;margin-right:4px">🔗</span>
-                  <span class="route-city" style="font-size:13px">${c.origin}</span>
-                  <span class="route-arrow"> → </span>
-                  <span class="route-city" style="font-size:13px">${c.destination}</span>
-                </div>
-                <div class="transport-detail">
-                  <span>${fmtDT(c.departure_at)}</span>
-                  ${c.carrier?`<span>${c.carrier}</span>`:''}
-                  ${c.flight_number?`<span>Voo ${c.flight_number}</span>`:''}
-                  ${c.booking_ref?`<span>Ref: ${c.booking_ref}</span>`:''}
-                </div>
+                <div class="transport-route"><span style="font-size:15px;margin-right:4px">🔗</span><span class="route-city" style="font-size:13px">${c.origin}</span><span class="route-arrow"> → </span><span class="route-city" style="font-size:13px">${c.destination}</span></div>
+                <div class="transport-detail"><span>${fmtDT(c.departure_at)}</span>${c.carrier?`<span>${c.carrier}</span>`:''} ${c.flight_number?`<span>Voo ${c.flight_number}</span>`:''} ${c.booking_ref?`<span>Ref: ${c.booking_ref}</span>`:''}</div>
               </div>
               <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
                 <span class="conn-badge">conexão</span>
@@ -1520,12 +874,10 @@ function filterTr(type,el){
   renderTransport(type);
 }
 
-// OPEN ADD MODAL
 function openAddTransport(){
   editingTransportId=null;
   document.getElementById('modal-transport-title').textContent='Novo Trecho';
   document.getElementById('btn-save-transport').textContent='Salvar Trecho';
-  // Reset form
   ['t-origin','t-dest','t-carrier','t-flightnum','t-ref','t-price','t-notes'].forEach(id=>setVal(id,''));
   setVal('t-departure','');setVal('t-arrival','');
   document.getElementById('t-type').value='voo';
@@ -1535,75 +887,44 @@ function openAddTransport(){
   openModal('addTransport');
 }
 
-// OPEN EDIT MODAL
 function openEditTransport(id){
-  const t=S.transports.find(x=>x.id===id);
-  if(!t)return;
+  const t=S.transports.find(x=>x.id===id);if(!t)return;
   editingTransportId=id;
   document.getElementById('modal-transport-title').textContent='Editar Trecho';
   document.getElementById('btn-save-transport').textContent='Salvar Alterações';
   document.getElementById('t-type').value=t.type;
   onTypeChange();
-  setVal('t-origin',t.origin||'');
-  setVal('t-dest',t.destination||'');
-  setVal('t-carrier',t.carrier||'');
-  setVal('t-flightnum',t.flight_number||'');
-  setVal('t-ref',t.booking_ref||'');
-  setVal('t-price',t.price||'');
-  setVal('t-notes',t.notes||'');
-  setVal('t-departure',localDT(t.departure_at));
-  setVal('t-arrival',localDT(t.arrival_at));
-  // Load existing connections
-  document.getElementById('conn-list').innerHTML='';
-  connCount=0;
+  setVal('t-origin',t.origin||'');setVal('t-dest',t.destination||'');
+  setVal('t-carrier',t.carrier||'');setVal('t-flightnum',t.flight_number||'');
+  setVal('t-ref',t.booking_ref||'');setVal('t-price',t.price||'');
+  setVal('t-notes',t.notes||'');setVal('t-departure',localDT(t.departure_at));setVal('t-arrival',localDT(t.arrival_at));
+  document.getElementById('conn-list').innerHTML='';connCount=0;
   const conns=S.transports.filter(c=>c.parent_leg_id===id).sort((a,b)=>a.connection_order-b.connection_order);
   conns.forEach(c=>addConnectionForm(c));
-  conns.forEach((c,i)=>{
-    const ids=getConnIds();
-    if(ids[i]!==undefined){
-      const refEl=document.getElementById(`conn-ref-${ids[i]}`);
-      if(refEl)refEl.value=c.flight_number||'';
-      const bookEl=document.getElementById(`conn-bookref-${ids[i]}`);
-      if(bookEl)bookEl.value=c.booking_ref||'';
-    }
-  });
   openModal('addTransport');
 }
 
 async function saveTransport(){
-  const trip=curTrip();
-  if(!trip)return showToast('Selecione uma viagem primeiro','error');
+  const trip=curTrip();if(!trip)return showToast('Selecione uma viagem primeiro','error');
   const o=gv('t-origin'),d=gv('t-dest');
   if(!o||!d)return showToast('Origem e destino são obrigatórios','error');
-
   setBusy('btn-save-transport',true,'Salvando...');
-
-  const payload={
-    trip_id:trip.id,type:gv('t-type'),origin:o,destination:d,
+  const payload={trip_id:trip.id,type:gv('t-type'),origin:o,destination:d,
     departure_at:gv('t-departure')||null,arrival_at:gv('t-arrival')||null,
     carrier:gv('t-carrier')||null,booking_ref:gv('t-ref')||null,
     flight_number:gv('t-flightnum')||null,
-    price:num('t-price'),notes:gv('t-notes')||null,
-    parent_leg_id:null,connection_order:0
-  };
-
+    price:num('t-price'),notes:gv('t-notes')||null,parent_leg_id:null,connection_order:0};
   let parentId;
-
   if(editingTransportId){
-    // UPDATE main leg
     const{error}=await db.from('transport_legs').update(payload).eq('id',editingTransportId);
     if(error){setBusy('btn-save-transport',false,'Salvar Alterações');return showToast('Erro: '+error.message,'error')}
     parentId=editingTransportId;
-    // Delete old connections
     await db.from('transport_legs').delete().eq('parent_leg_id',editingTransportId);
   } else {
-    // INSERT main leg
     const{data,error}=await db.from('transport_legs').insert(payload).select().single();
     if(error){setBusy('btn-save-transport',false,'Salvar Trecho');return showToast('Erro: '+error.message,'error')}
     parentId=data.id;
   }
-
-  // Save connections
   const connIds=getConnIds();
   for(let i=0;i<connIds.length;i++){
     const idx=connIds[i];
@@ -1611,8 +932,7 @@ async function saveTransport(){
     const cd=document.getElementById(`conn-dest-${idx}`)?.value.trim();
     if(!co||!cd)continue;
     await db.from('transport_legs').insert({
-      trip_id:trip.id,parent_leg_id:parentId,connection_order:i+1,
-      type:gv('t-type'),origin:co,destination:cd,
+      trip_id:trip.id,parent_leg_id:parentId,connection_order:i+1,type:gv('t-type'),origin:co,destination:cd,
       departure_at:document.getElementById(`conn-dep-${idx}`)?.value||null,
       arrival_at:document.getElementById(`conn-arr-${idx}`)?.value||null,
       carrier:document.getElementById(`conn-carrier-${idx}`)?.value.trim()||null,
@@ -1621,46 +941,31 @@ async function saveTransport(){
       price:0,notes:null,done:false
     });
   }
-
   setBusy('btn-save-transport',false,'Salvar');
   showToast(editingTransportId?'Trecho atualizado! ✏️':'Trecho salvo! ✈️','success');
   closeModal('addTransport');
-  await reloadTrip();
-  renderTransport();renderOverview();
+  await reloadTrip();renderTransport();renderOverview();
 }
 
 async function toggleDone(id){
-  const t=S.transports.find(x=>x.id===id);
-  if(!t)return;
+  const t=S.transports.find(x=>x.id===id);if(!t)return;
   const newDone=!t.done;
-  // Update main leg
-  await db.from('transport_legs').update({done:newDone}).eq('id',id);
-  t.done=newDone;
-  // Cascade to all connections
+  await db.from('transport_legs').update({done:newDone}).eq('id',id);t.done=newDone;
   const conns=S.transports.filter(c=>c.parent_leg_id===id);
-  if(conns.length){
-    await db.from('transport_legs').update({done:newDone}).eq('parent_leg_id',id);
-    conns.forEach(c=>c.done=newDone);
-  }
+  if(conns.length){await db.from('transport_legs').update({done:newDone}).eq('parent_leg_id',id);conns.forEach(c=>c.done=newDone);}
   renderTransport();
 }
 
 async function toggleDoneConn(connId){
-  const conn=S.transports.find(x=>x.id===connId);
-  if(!conn)return;
+  const conn=S.transports.find(x=>x.id===connId);if(!conn)return;
   const newDone=!conn.done;
-  await db.from('transport_legs').update({done:newDone}).eq('id',connId);
-  conn.done=newDone;
-  // Check if all siblings are done → sync parent
+  await db.from('transport_legs').update({done:newDone}).eq('id',connId);conn.done=newDone;
   const parentId=conn.parent_leg_id;
   if(parentId){
     const siblings=S.transports.filter(c=>c.parent_leg_id===parentId);
     const allDone=siblings.every(c=>c.done);
     const parent=S.transports.find(x=>x.id===parentId);
-    if(parent&&parent.done!==allDone){
-      await db.from('transport_legs').update({done:allDone}).eq('id',parentId);
-      parent.done=allDone;
-    }
+    if(parent&&parent.done!==allDone){await db.from('transport_legs').update({done:allDone}).eq('id',parentId);parent.done=allDone;}
   }
   renderTransport();
 }
@@ -1668,38 +973,33 @@ async function toggleDoneConn(connId){
 async function delTransport(id){
   if(!confirm('Excluir este trecho e suas conexões?'))return;
   await db.from('transport_legs').delete().eq('id',id);
-  await reloadTrip();
-  renderTransport();renderOverview();
-  showToast('Excluído','success');
+  await reloadTrip();renderTransport();renderOverview();showToast('Excluído','success');
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
 // ACCOMMODATION
-// ══════════════════════════════════════════════════════════════════════════════
 function renderAccomm(){
   const trip=curTrip();
   document.getElementById('ac-badge').textContent=trip?`${trip.name} · ${S.accommodations.length} locais`:'—';
   document.getElementById('accomm-list').innerHTML=!S.accommodations.length
-    ?`<div class="empty-state"><div class="ei">🏨</div><p>Nenhuma hospedagem registrada.</p></div>`
+    ?'<div class="empty-state"><div class="ei">🏨</div><p>Nenhuma hospedagem registrada.</p></div>'
     :S.accommodations.map(a=>{
-      const nights=calcNights(a.check_in,a.check_out);
-      const total=nights*(a.price_per_night||0);
+      const nights=calcNights(a.check_in,a.check_out),total=nights*(a.price_per_night||0);
       return `<div class="accomm-card">
         <div style="font-weight:600;font-size:15px;margin-bottom:4px">🏨 ${a.name}</div>
-        ${a.address?`<div style="font-size:12px;color:var(--muted);margin-bottom:10px">📍 ${a.address}</div>`:''}
+        ${a.address?`<div style="font-size:12px;color:var(--mu);margin-bottom:10px">📍 ${a.address}</div>`:''}
         <div style="display:flex;justify-content:space-between;align-items:flex-end">
           <div>
-            <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${fmtDate(a.check_in)} → ${fmtDate(a.check_out)}</div>
-            ${a.booking_ref?`<div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--dim);margin-top:3px">Ref: ${a.booking_ref}</div>`:''}
-            ${a.notes?`<div style="font-size:12px;color:var(--muted);margin-top:4px">📝 ${a.notes}</div>`:''}
+            <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--mu)">${fmtDate(a.check_in)} → ${fmtDate(a.check_out)}</div>
+            ${a.booking_ref?`<div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--dm);margin-top:3px">Ref: ${a.booking_ref}</div>`:''}
+            ${a.notes?`<div style="font-size:12px;color:var(--mu);margin-top:4px">📝 ${a.notes}</div>`:''}
             <div style="display:flex;gap:6px;margin-top:8px">
               <button class="action-btn primary" onclick="openEditAccomm('${a.id}')">✏ Editar</button>
               <button class="action-btn danger" onclick="delAccomm('${a.id}')">Excluir</button>
             </div>
           </div>
           <div style="text-align:right">
-            <div style="font-family:'Fraunces',serif;font-size:17px;color:var(--accent2)">R$ ${fmt(total)}</div>
-            <div style="font-size:11px;color:var(--dim)">${nights} noites · R$ ${fmt(a.price_per_night)}/noite</div>
+            <div style="font-family:'Fraunces',serif;font-size:17px;color:var(--ac2)">R$ ${fmt(total)}</div>
+            <div style="font-size:11px;color:var(--dm)">${nights} noites · R$ ${fmt(a.price_per_night)}/noite</div>
           </div>
         </div>
       </div>`;
@@ -1707,110 +1007,86 @@ function renderAccomm(){
 }
 
 function openEditAccomm(id){
-  const a=S.accommodations.find(x=>x.id===id);
-  if(!a)return;
+  const a=S.accommodations.find(x=>x.id===id);if(!a)return;
   editingAccommId=id;
   document.getElementById('modal-accomm-title').textContent='Editar Hospedagem';
   setVal('a-name',a.name);setVal('a-address',a.address||'');
   setVal('a-checkin',a.check_in||'');setVal('a-checkout',a.check_out||'');
-  setVal('a-price',a.price_per_night||'');setVal('a-ref',a.booking_ref||'');
-  setVal('a-notes',a.notes||'');
+  setVal('a-price',a.price_per_night||'');setVal('a-ref',a.booking_ref||'');setVal('a-notes',a.notes||'');
   openModal('addAccomm');
 }
 
 async function saveAccomm(){
-  const trip=curTrip();
-  if(!trip)return showToast('Selecione uma viagem primeiro','error');
+  const trip=curTrip();if(!trip)return showToast('Selecione uma viagem primeiro','error');
   if(!gv('a-name'))return showToast('Nome é obrigatório','error');
   setBusy('btn-save-accomm',true,'Salvando...');
   const payload={trip_id:trip.id,name:gv('a-name'),address:gv('a-address')||null,
     check_in:gv('a-checkin')||null,check_out:gv('a-checkout')||null,
     price_per_night:num('a-price'),booking_ref:gv('a-ref')||null,notes:gv('a-notes')||null};
-
   let error;
   if(editingAccommId){({error}=await db.from('accommodations').update(payload).eq('id',editingAccommId))}
   else{({error}=await db.from('accommodations').insert(payload))}
-
   setBusy('btn-save-accomm',false,'Salvar');
   if(error)return showToast('Erro: '+error.message,'error');
   showToast(editingAccommId?'Hospedagem atualizada! ✏️':'Hospedagem salva! 🏨','success');
-  editingAccommId=null;
-  closeModal('addAccomm');
+  editingAccommId=null;closeModal('addAccomm');
   const{data}=await db.from('accommodations').select('*').eq('trip_id',trip.id).order('check_in');
-  S.accommodations=data||[];
-  renderAccomm();renderOverview();
+  S.accommodations=data||[];renderAccomm();renderOverview();
 }
 
 async function delAccomm(id){
   if(!confirm('Excluir esta hospedagem?'))return;
   await db.from('accommodations').delete().eq('id',id);
-  S.accommodations=S.accommodations.filter(a=>a.id!==id);
-  renderAccomm();renderOverview();
-  showToast('Excluída','success');
+  S.accommodations=S.accommodations.filter(a=>a.id!==id);renderAccomm();renderOverview();showToast('Excluída','success');
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
 // EXPENSES
-// ══════════════════════════════════════════════════════════════════════════════
 function renderExpenses(){
   const trip=curTrip();
   document.getElementById('ex-badge').textContent=trip?trip.name:'—';
   const CAT={food:'🍣 Alimentação',transport:'🚇 Transporte',activities:'🎡 Passeios',shopping:'🛍 Compras',health:'🏥 Saúde',other:'📦 Outros'};
   if(!S.expenses.length){
-    document.getElementById('expense-list').innerHTML=`<div class="empty-state"><div class="ei">💳</div><p>Nenhum gasto registrado.</p></div>`;
-    document.getElementById('expense-summary').innerHTML='<div style="color:var(--dim);font-size:13px">Sem dados.</div>';
-    document.getElementById('category-summary').innerHTML='';
-    return;
+    document.getElementById('expense-list').innerHTML='<div class="empty-state"><div class="ei">💳</div><p>Nenhum gasto registrado.</p></div>';
+    document.getElementById('expense-summary').innerHTML='<div style="color:var(--dm);font-size:13px">Sem dados.</div>';
+    document.getElementById('category-summary').innerHTML='';return;
   }
   document.getElementById('expense-list').innerHTML=S.expenses.map(e=>{
     const total=daySum(e);
     const tags=Object.keys(CAT).filter(k=>(e[k]||0)>0).map(k=>`<span class="day-cat">${CAT[k]}</span>`).join('');
     return `<div class="day-entry">
       <div class="day-date">${fmtDay(e.expense_date)}</div>
-      <div style="flex:1;margin:0 16px"><div class="day-cats">${tags}</div>${e.note?`<div style="font-size:12px;color:var(--muted);margin-top:4px">💬 ${e.note}</div>`:''}</div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+      <div style="flex:1"><div class="day-cats">${tags}</div>${e.note?`<div style="font-size:12px;color:var(--mu);margin-top:4px">💬 ${e.note}</div>`:''}</div>
+      <div style="text-align:right;flex-shrink:0">
         <div class="day-total">R$ ${fmt(total)}</div>
         <div class="day-total-sub">${fmtDate(e.expense_date)}</div>
-        <button class="action-btn danger" onclick="delExpense('${e.id}')">Excluir</button>
+        <button class="action-btn danger" style="margin-top:4px" onclick="delExpense('${e.id}')">Excluir</button>
       </div>
     </div>`;
   }).join('');
 
   const grand=S.expenses.reduce((s,e)=>s+daySum(e),0);
-  const avg=grand/S.expenses.length;
-  const max=Math.max(...S.expenses.map(e=>daySum(e)));
+  const avg=grand/S.expenses.length,max=Math.max(...S.expenses.map(e=>daySum(e)));
   document.getElementById('expense-summary').innerHTML=`
-    <div class="info-row"><span class="info-key">Total gasto</span><span class="info-val" style="color:var(--accent)">R$ ${fmt(grand)}</span></div>
+    <div class="info-row"><span class="info-key">Total gasto</span><span class="info-val" style="color:var(--ac)">R$ ${fmt(grand)}</span></div>
     <div class="info-row"><span class="info-key">Dias registrados</span><span class="info-val">${S.expenses.length}</span></div>
     <div class="info-row"><span class="info-key">Média por dia</span><span class="info-val">R$ ${fmt(avg)}</span></div>
-    <div class="info-row"><span class="info-key">Maior gasto</span><span class="info-val" style="color:var(--red)">R$ ${fmt(max)}</span></div>`;
-
+    <div class="info-row"><span class="info-key">Maior gasto</span><span class="info-val" style="color:var(--rd)">R$ ${fmt(max)}</span></div>`;
   const totals={food:0,transport:0,activities:0,shopping:0,health:0,other:0};
   S.expenses.forEach(e=>Object.keys(totals).forEach(k=>totals[k]+=(e[k]||0)));
-  document.getElementById('category-summary').innerHTML=Object.entries(totals)
-    .filter(([,v])=>v>0)
-    .map(([k,v])=>{
-      const pct=Math.round(v/grand*100);
-      return `<div style="margin-bottom:12px">
-        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-          <span style="color:var(--muted)">${CAT[k]}</span>
-          <span style="font-family:'DM Mono',monospace;font-size:11px">R$ ${fmt(v)} · ${pct}%</span>
-        </div>
-        <div class="bbar"><div class="bbar-fill" style="width:${pct}%"></div></div>
-      </div>`;
-    }).join('');
+  document.getElementById('category-summary').innerHTML=Object.entries(totals).filter(([,v])=>v>0).map(([k,v])=>{
+    const pct=Math.round(v/grand*100);
+    return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--mu)">${CAT[k]}</span><span style="font-family:'DM Mono',monospace;font-size:11px">R$ ${fmt(v)} · ${pct}%</span></div><div class="bbar"><div class="bbar-fill" style="width:${pct}%"></div></div></div>`;
+  }).join('');
 }
 
 async function saveExpense(){
-  const trip=curTrip();
-  if(!trip)return showToast('Selecione uma viagem primeiro','error');
+  const trip=curTrip();if(!trip)return showToast('Selecione uma viagem primeiro','error');
   if(!gv('e-date'))return showToast('Data é obrigatória','error');
   setBusy('btn-save-expense',true,'Salvando...');
   const{error}=await db.from('daily_expenses').insert({
     trip_id:trip.id,expense_date:gv('e-date'),
     food:num('e-food'),transport:num('e-transport'),activities:num('e-activities'),
-    shopping:num('e-shopping'),health:num('e-health'),other:num('e-other'),
-    note:gv('e-note')||null
+    shopping:num('e-shopping'),health:num('e-health'),other:num('e-other'),note:gv('e-note')||null
   });
   setBusy('btn-save-expense',false,'Salvar');
   if(error)return showToast('Erro: '+error.message,'error');
@@ -1818,114 +1094,74 @@ async function saveExpense(){
   closeModal('addExpense');
   ['e-date','e-food','e-transport','e-activities','e-shopping','e-health','e-other','e-note'].forEach(id=>setVal(id,''));
   const{data}=await db.from('daily_expenses').select('*').eq('trip_id',trip.id).order('expense_date');
-  S.expenses=data||[];
-  renderExpenses();renderOverview();
+  S.expenses=data||[];renderExpenses();renderOverview();
 }
 
 async function delExpense(id){
   if(!confirm('Excluir este registro?'))return;
   await db.from('daily_expenses').delete().eq('id',id);
-  S.expenses=S.expenses.filter(e=>e.id!==id);
-  renderExpenses();renderOverview();
-  showToast('Excluído','success');
+  S.expenses=S.expenses.filter(e=>e.id!==id);renderExpenses();renderOverview();showToast('Excluído','success');
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
 // TRIP
-// ══════════════════════════════════════════════════════════════════════════════
 function openEditTrip(id){
-  const t=S.trips.find(x=>x.id===id);
-  if(!t)return;
+  const t=S.trips.find(x=>x.id===id);if(!t)return;
   editingTripId=id;
   document.getElementById('modal-trip-title').textContent='Editar Viagem';
   document.getElementById('btn-save-trip').textContent='Salvar Alterações';
-  setVal('trip-name',t.name);
-  setVal('trip-country',t.country||'');
-  setVal('trip-currency',t.currency||'BRL');
-  setVal('trip-start',t.start_date||'');
-  setVal('trip-end',t.end_date||'');
-  setVal('trip-budget',t.budget||'');
+  setVal('trip-name',t.name);setVal('trip-country',t.country||'');setVal('trip-currency',t.currency||'BRL');
+  setVal('trip-start',t.start_date||'');setVal('trip-end',t.end_date||'');setVal('trip-budget',t.budget||'');
   openModal('newTrip');
 }
 
 async function saveTrip(){
   if(!gv('trip-name'))return showToast('Nome é obrigatório','error');
   setBusy('btn-save-trip',true,editingTripId?'Salvando...':'Criando...');
-  const payload={
-    name:gv('trip-name'),country:gv('trip-country')||null,
-    currency:gv('trip-currency')||'BRL',
-    start_date:gv('trip-start')||null,end_date:gv('trip-end')||null,
-    budget:num('trip-budget')
-  };
-
+  const payload={name:gv('trip-name'),country:gv('trip-country')||null,currency:gv('trip-currency')||'BRL',
+    start_date:gv('trip-start')||null,end_date:gv('trip-end')||null,budget:num('trip-budget')};
   if(editingTripId){
     const{error}=await db.from('trips').update(payload).eq('id',editingTripId);
     setBusy('btn-save-trip',false,'Salvar Alterações');
     if(error)return showToast('Erro: '+error.message,'error');
     const idx=S.trips.findIndex(t=>t.id===editingTripId);
     if(idx>=0)S.trips[idx]={...S.trips[idx],...payload};
-    showToast('Viagem atualizada! ✏️','success');
-    editingTripId=null;
-    closeModal('newTrip');
-    renderSidebar();renderOverview();
+    showToast('Viagem atualizada! ✏️','success');editingTripId=null;closeModal('newTrip');renderSidebar();renderOverview();
   } else {
     const{data,error}=await db.from('trips').insert(payload).select().single();
     setBusy('btn-save-trip',false,'Criar Viagem');
     if(error)return showToast('Erro: '+error.message,'error');
-    showToast('Viagem criada! 🌍','success');
-    closeModal('newTrip');
-    S.trips.unshift(data);S.currentTripId=data.id;
-    S.transports=[];S.accommodations=[];S.expenses=[];
+    showToast('Viagem criada! 🌍','success');closeModal('newTrip');
+    S.trips.unshift(data);S.currentTripId=data.id;S.transports=[];S.accommodations=[];S.expenses=[];
     renderSidebar();renderOverview();
   }
   ['trip-name','trip-country','trip-currency','trip-start','trip-end','trip-budget'].forEach(id=>setVal(id,''));
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-// NAV + MODALS
-// ══════════════════════════════════════════════════════════════════════════════
-function showPage(id,el){
+// NAVIGATION
+function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  if(el)el.classList.add('active');
+  const page=document.getElementById('page-'+id);if(page)page.classList.add('active');
+  const sideItem=document.querySelector('.nav-item[data-page="'+id+'"]');if(sideItem)sideItem.classList.add('active');
+  document.querySelectorAll('.bn-item[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
   if(id==='transport')renderTransport();
   if(id==='accommodation')renderAccomm();
   if(id==='expenses')renderExpenses();
-  // sync bottom nav
-  document.querySelectorAll('.bn-item[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
-  // update FAB action
-  updateFab(id);
-}
-
-function syncBottomNav(el){
-  document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-}
-
-let currentPage='overview';
-function updateFab(page){
-  currentPage=page;
+  currentPage=id;
   const fab=document.getElementById('fab');
-  if(!fab)return;
-  // Show FAB on all pages that have an "add" action
-  fab.style.display=(page==='overview')?'none':'flex';
+  if(fab)fab.style.display=(id==='overview')?'none':'flex';
 }
 
 function fabAction(){
   if(currentPage==='transport')openAddTransport();
-  else if(currentPage==='accommodation')openModal('addAccomm');
+  else if(currentPage==='accommodation'){editingAccommId=null;openModal('addAccomm');}
   else if(currentPage==='expenses')openModal('addExpense');
 }
 
+// MODALS
 function openModal(id){
-  if(id==='addAccomm'&&!editingAccommId){
-    document.getElementById('modal-accomm-title').textContent='Nova Hospedagem';
-  }
-  if(id==='newTrip'&&!editingTripId){
-    document.getElementById('modal-trip-title').textContent='Nova Viagem';
-    document.getElementById('btn-save-trip').textContent='Criar Viagem';
-  }
+  if(id==='addAccomm'&&!editingAccommId)document.getElementById('modal-accomm-title').textContent='Nova Hospedagem';
+  if(id==='newTrip'&&!editingTripId){document.getElementById('modal-trip-title').textContent='Nova Viagem';document.getElementById('btn-save-trip').textContent='Criar Viagem';}
   document.getElementById('modal-'+id).classList.add('open');
 }
 function closeModal(id){
@@ -1936,12 +1172,7 @@ function closeModal(id){
 }
 function closeBg(e,id){if(e.target===document.getElementById('modal-'+id))closeModal(id)}
 
-// Override addTransport button to use openAddTransport
-document.querySelectorAll('[onclick="openModal(\'addTransport\')"]').forEach(el=>{el.onclick=openAddTransport});
-
-// ══════════════════════════════════════════════════════════════════════════════
 // UTILS
-// ══════════════════════════════════════════════════════════════════════════════
 const curTrip=()=>S.trips.find(t=>t.id===S.currentTripId)||null;
 const daySum=e=>['food','transport','activities','shopping','health','other'].reduce((s,k)=>s+(e[k]||0),0);
 const calcNights=(ci,co)=>{if(!ci||!co)return 0;return Math.max(0,Math.round((new Date(co)-new Date(ci))/86400000))};
@@ -1956,47 +1187,37 @@ const num=id=>parseFloat((document.getElementById(id)||{}).value)||0;
 
 function localDT(iso){
   if(!iso)return'';
-  try{const d=new Date(iso);const pad=n=>String(n).padStart(2,'0');return`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`}
-  catch{return''}
+  try{const d=new Date(iso);const p=n=>String(n).padStart(2,'0');return`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`}catch{return''}
 }
-
 function fmtDate(d){
-  if(!d)return'—';
-  const s=d.split('T')[0].split('-');
+  if(!d)return'—';const s=d.split('T')[0].split('-');
   const M=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
   return`${s[2]} ${M[parseInt(s[1])-1]}`;
 }
 function fmtDay(d){return d?d.split('T')[0].split('-')[2]:'—'}
 function fmtDT(dt){
-  if(!dt)return'—';
-  const d=dt.split('T')[0];
-  const t=dt.includes('T')?dt.split('T')[1].slice(0,5):'';
+  if(!dt)return'—';const d=dt.split('T')[0];const t=dt.includes('T')?dt.split('T')[1].slice(0,5):'';
   return fmtDate(d)+(t?' · '+t:'');
 }
 
-let loadTxt=document.getElementById('loading-text');
-function showLoading(on,msg){document.getElementById('loading').classList.toggle('hidden',!on);if(msg&&loadTxt)loadTxt.textContent=msg}
-
+let loadTxt;
+function showLoading(on,msg){
+  const el=document.getElementById('loading');if(el)el.classList.toggle('hidden',!on);
+  if(!loadTxt)loadTxt=document.getElementById('loading-text');
+  if(msg&&loadTxt)loadTxt.textContent=msg;
+}
 let toastT;
 function showToast(msg,type='success'){
-  const el=document.getElementById('toast');
+  const el=document.getElementById('toast');if(!el)return;
   el.textContent=(type==='success'?'✓ ':'✕ ')+msg;
-  el.className=`toast show ${type}`;
-  clearTimeout(toastT);
+  el.className=`toast show ${type}`;clearTimeout(toastT);
   toastT=setTimeout(()=>el.classList.remove('show'),3200);
 }
 function setBusy(id,busy,label){const el=document.getElementById(id);if(!el)return;el.disabled=busy;if(label)el.textContent=label}
 
-// ══════════════════════════════════════════════════════════════════════════════
 // AUTH
-// ══════════════════════════════════════════════════════════════════════════════
 const PWD_HASH='fd97c6d58fea3eb7aca90c1586eb8ddaf6e6f2ea1d13d081f3a35dcdec72b9dd';
-
-async function sha256(str){
-  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-
+async function sha256(str){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
 async function checkAuth(){
   const input=document.getElementById('auth-input').value;
   const hash=await sha256(input);
@@ -2006,25 +1227,15 @@ async function checkAuth(){
     boot();
   } else {
     document.getElementById('auth-error').style.display='block';
-    document.getElementById('auth-input').style.borderColor='var(--red)';
+    document.getElementById('auth-input').style.borderColor='var(--rd)';
     document.getElementById('auth-input').value='';
-    setTimeout(()=>{
-      document.getElementById('auth-error').style.display='none';
-      document.getElementById('auth-input').style.borderColor='var(--border)';
-    },2500);
+    setTimeout(()=>{document.getElementById('auth-error').style.display='none';document.getElementById('auth-input').style.borderColor='var(--bd)';},2500);
   }
 }
-
-// On load: check if already authenticated
 (async()=>{
   const saved=localStorage.getItem('tb_auth');
-  if(saved&&saved===PWD_HASH){
-    document.getElementById('auth-screen').style.display='none';
-    boot();
-  } else {
-    // Show auth, focus input
-    setTimeout(()=>document.getElementById('auth-input').focus(),100);
-  }
+  if(saved&&saved===PWD_HASH){document.getElementById('auth-screen').style.display='none';boot();}
+  else{setTimeout(()=>document.getElementById('auth-input').focus(),100);}
 })();
 </script>
 </body>
