@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
 <title>Tripboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,300&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -275,6 +276,19 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   /* Tabs scrollable */
   .tabs{width:100%}
 }
+
+/* ─── ICONS ──────────────────────────────────────────── */
+.ic{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.ic svg{display:block}
+.nav-item .ic svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.8}
+.bn-item .ic svg{width:22px;height:22px;stroke:currentColor;stroke-width:1.8}
+.ic-sm svg{width:14px;height:14px;stroke:currentColor;stroke-width:2}
+.ic-md svg{width:16px;height:16px;stroke:currentColor;stroke-width:2}
+.ic-lg svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.8}
+.ic-xl svg{width:36px;height:36px;stroke:currentColor;stroke-width:1.5}
+.tab .ic svg{width:14px;height:14px;stroke:currentColor;stroke-width:2}
+.form-section-title .ic svg{width:14px;height:14px;stroke:currentColor;stroke-width:2}
+.type-tag-icon svg{width:13px;height:13px;stroke:currentColor;stroke-width:2;display:inline-block;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -308,10 +322,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div class="logo"><div class="logo-mark">Tripboard</div><div class="logo-sub">Travel Planner</div></div>
   <nav class="nav">
     <div class="nav-lbl">Menu</div>
-    <div class="nav-item active" data-page="overview" onclick="showPage('overview')"><span class="icon">🗺</span> Visão Geral</div>
-    <div class="nav-item" data-page="transport" onclick="showPage('transport')"><span class="icon">✈️</span> Passagens</div>
-    <div class="nav-item" data-page="accommodation" onclick="showPage('accommodation')"><span class="icon">🏨</span> Hospedagem</div>
-    <div class="nav-item" data-page="expenses" onclick="showPage('expenses')"><span class="icon">💳</span> Gastos</div>
+    <div class="nav-item active" data-page="overview" onclick="showPage('overview')"><span class="ic"><i data-lucide="map"></i></span> Visão Geral</div>
+    <div class="nav-item" data-page="transport" onclick="showPage('transport')"><span class="ic"><i data-lucide="plane"></i></span> Passagens</div>
+    <div class="nav-item" data-page="accommodation" onclick="showPage('accommodation')"><span class="ic"><i data-lucide="bed-double"></i></span> Hospedagem</div>
+    <div class="nav-item" data-page="expenses" onclick="showPage('expenses')"><span class="ic"><i data-lucide="wallet"></i></span> Gastos</div>
   </nav>
   <div class="trip-list">
     <div class="nav-lbl">Viagens</div>
@@ -357,10 +371,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div class="tabs">
       <div class="tab active" onclick="filterTr('all',this)">Todos</div>
-      <div class="tab" onclick="filterTr('voo',this)">✈️ Voos</div>
-      <div class="tab" onclick="filterTr('trem',this)">🚄 Trem</div>
-      <div class="tab" onclick="filterTr('onibus',this)">🚌 Ônibus</div>
-      <div class="tab" onclick="filterTr('metro',this)">🚇 Metrô</div>
+      <div class="tab" onclick="filterTr('voo',this)"><span class="ic"><i data-lucide="plane"></i></span> Voos</div>
+      <div class="tab" onclick="filterTr('trem',this)"><span class="ic"><i data-lucide="train-front"></i></span> Trem</div>
+      <div class="tab" onclick="filterTr('onibus',this)"><span class="ic"><i data-lucide="bus"></i></span> Ônibus</div>
+      <div class="tab" onclick="filterTr('metro',this)"><span class="ic"><i data-lucide="train-subway-tunnel" style=""></i></span> Metrô</div>
     </div>
     <div id="transport-list"></div>
   </div>
@@ -394,11 +408,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <!-- BOTTOM NAV (mobile) -->
 <nav class="bottom-nav">
   <div class="bn-items">
-    <button class="bn-item active" data-page="overview" onclick="showPage('overview')"><span class="bni">🗺</span>Início</button>
-    <button class="bn-item" data-page="transport" onclick="showPage('transport')"><span class="bni">✈️</span>Passagens</button>
-    <button class="bn-item" data-page="accommodation" onclick="showPage('accommodation')"><span class="bni">🏨</span>Hospedagem</button>
-    <button class="bn-item" data-page="expenses" onclick="showPage('expenses')"><span class="bni">💳</span>Gastos</button>
-    <button class="bn-item" onclick="openModal('newTrip')"><span class="bni">🌍</span>Viagens</button>
+    <button class="bn-item active" data-page="overview" onclick="showPage('overview')"><span class="ic"><i data-lucide="map"></i></span>Início</button>
+    <button class="bn-item" data-page="transport" onclick="showPage('transport')"><span class="ic"><i data-lucide="plane"></i></span>Passagens</button>
+    <button class="bn-item" data-page="accommodation" onclick="showPage('accommodation')"><span class="ic"><i data-lucide="bed-double"></i></span>Hospedagem</button>
+    <button class="bn-item" data-page="expenses" onclick="showPage('expenses')"><span class="ic"><i data-lucide="wallet"></i></span>Gastos</button>
+    <button class="bn-item" onclick="openModal('newTrip')"><span class="ic"><i data-lucide="globe"></i></span>Viagens</button>
   </div>
 </nav>
 
@@ -409,8 +423,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <div id="modal-addTransport" class="modal-overlay" onclick="closeBg(event,'addTransport')">
   <div class="modal wide">
     <div class="modal-title"><span id="modal-transport-title">Novo Trecho</span><span class="modal-close" onclick="closeModal('addTransport')">×</span></div>
-    <div class="form-group"><label class="form-lbl">Tipo</label><select class="form-select" id="t-type" onchange="onTypeChange()"><option value="voo">✈️ Voo</option><option value="trem">🚄 Trem</option><option value="onibus">🚌 Ônibus</option><option value="metro">🚇 Metrô</option><option value="barco">⛴ Barco</option><option value="outro">🚗 Outro</option></select></div>
-    <div class="form-section-title">✈️ Trecho principal</div>
+    <div class="form-group"><label class="form-lbl">Tipo</label><select class="form-select" id="t-type" onchange="onTypeChange()"><option value="voo">Voo</option><option value="trem"><span class="ic"><i data-lucide="train-front"></i></span> Trem</option><option value="onibus"><span class="ic"><i data-lucide="bus"></i></span> Ônibus</option><option value="metro"><span class="ic"><i data-lucide="train-subway-tunnel" style=""></i></span> Metrô</option><option value="barco">Barco</option><option value="outro">Outro</option></select></div>
+    <div class="form-section-title"><span class="ic"><i data-lucide="plane"></i></span> Trecho principal</div>
     <div class="form-row">
       <div class="form-group"><label class="form-lbl" id="lbl-origin">Aeroporto de Origem</label><div class="ac-wrap"><input class="ac-input" id="t-origin" placeholder="Ex: GRU — Guarulhos" autocomplete="off" oninput="acSearch('origin',this.value)" onfocus="acSearch('origin',this.value)" onkeydown="acKey(event,'origin')"/><div class="ac-dropdown" id="ac-origin"></div></div></div>
       <div class="form-group"><label class="form-lbl" id="lbl-dest">Aeroporto de Destino</label><div class="ac-wrap"><input class="ac-input" id="t-dest" placeholder="Ex: NRT — Narita" autocomplete="off" oninput="acSearch('dest',this.value)" onfocus="acSearch('dest',this.value)" onkeydown="acKey(event,'dest')"/><div class="ac-dropdown" id="ac-dest"></div></div></div>
@@ -429,7 +443,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div class="form-group"><label class="form-lbl">Observações</label><input class="form-input" id="t-notes" placeholder="Ex: bagagem despachada..."/></div>
     <div class="conn-section" id="conn-section" style="display:none">
-      <div class="form-section-title">🔗 Conexões</div>
+      <div class="form-section-title"><span class="ic"><i data-lucide="git-merge"></i></span> Conexões</div>
       <div id="conn-list"></div>
       <button class="action-btn info" onclick="addConnectionForm()" style="width:100%;text-align:center;padding:8px">+ Adicionar conexão</button>
     </div>
@@ -468,16 +482,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="modal-title">Gastos do Dia <span class="modal-close" onclick="closeModal('addExpense')">×</span></div>
     <div class="form-group"><label class="form-lbl">Data</label><input class="form-input" id="e-date" type="date"/></div>
     <div class="form-row">
-      <div class="form-group"><label class="form-lbl">🍣 Alimentação (BRL)</label><input class="form-input" id="e-food" type="number" placeholder="0" min="0"/></div>
-      <div class="form-group"><label class="form-lbl">🚇 Transporte local (BRL)</label><input class="form-input" id="e-transport" type="number" placeholder="0" min="0"/></div>
+      <div class="form-group"><label class="form-lbl">Alimentação (BRL)</label><input class="form-input" id="e-food" type="number" placeholder="0" min="0"/></div>
+      <div class="form-group"><label class="form-lbl">Transporte local (BRL)</label><input class="form-input" id="e-transport" type="number" placeholder="0" min="0"/></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-lbl">🎡 Passeios (BRL)</label><input class="form-input" id="e-activities" type="number" placeholder="0" min="0"/></div>
-      <div class="form-group"><label class="form-lbl">🛍 Compras (BRL)</label><input class="form-input" id="e-shopping" type="number" placeholder="0" min="0"/></div>
+      <div class="form-group"><label class="form-lbl">Passeios (BRL)</label><input class="form-input" id="e-activities" type="number" placeholder="0" min="0"/></div>
+      <div class="form-group"><label class="form-lbl">Compras (BRL)</label><input class="form-input" id="e-shopping" type="number" placeholder="0" min="0"/></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-lbl">🏥 Saúde (BRL)</label><input class="form-input" id="e-health" type="number" placeholder="0" min="0"/></div>
-      <div class="form-group"><label class="form-lbl">📦 Outros (BRL)</label><input class="form-input" id="e-other" type="number" placeholder="0" min="0"/></div>
+      <div class="form-group"><label class="form-lbl">Saúde (BRL)</label><input class="form-input" id="e-health" type="number" placeholder="0" min="0"/></div>
+      <div class="form-group"><label class="form-lbl">Outros (BRL)</label><input class="form-input" id="e-other" type="number" placeholder="0" min="0"/></div>
     </div>
     <div class="form-group"><label class="form-lbl">Nota do dia</label><input class="form-input" id="e-note" placeholder="Ex: dia no Fuji..."/></div>
     <div class="modal-actions">
@@ -548,7 +562,14 @@ let editingTransportId=null;
 let editingAccommId=null;
 let editingTripId=null;
 let currentPage='overview';
-const EMOJI={voo:'✈️',trem:'🚄',onibus:'🚌',metro:'🚇',barco:'⛴',outro:'🚗'};
+const EMOJI={
+  voo:`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 2c-2-2-4-2-5.5-.5L10 5 1.8 6.2c-.5.1-.9.5-.8 1.1l1.1 4a1 1 0 0 0 .7.7l4 1.1a1 1 0 0 1 .6.5l2.4 4.2c.3.5.9.7 1.4.4l2.9-1.7a1 1 0 0 0 .4-1.3Z"/></svg>`,
+  trem:`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="16" rx="3"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m18 22-2-3"/><path d="M8 15h0"/><path d="M16 15h0"/></svg>`,
+  onibus:`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/></svg>`,
+  metro:`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="16" rx="3"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m18 22-2-3"/><path d="M8 15h0"/><path d="M16 15h0"/></svg>`,
+  barco:`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 21c.6.5 1.2 1 2.5 1C7 22 7 20 9.5 20c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M19 13V7a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v6"/><path d="M12 10v4"/><path d="M12 2v3"/></svg>`,
+  outro:`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h11l3 5v5a2 2 0 0 1-1 1.7"/><path d="M14 7V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>`
+};
 
 // AUTOCOMPLETE
 let acState={origin:{idx:-1},dest:{idx:-1},airline:{idx:-1}};
@@ -657,7 +678,7 @@ function addConnectionForm(data=null){
   const div=document.createElement('div');
   div.className='conn-item';div.id='conn-'+idx;
   div.innerHTML=`
-    <div class="conn-item-header"><div class="conn-item-title">🔗 Conexão ${cl.children.length+1}</div><button class="action-btn danger" onclick="removeConn(${idx})">Remover</button></div>
+    <div class="conn-item-header"><div class="conn-item-title"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Conexão ${cl.children.length+1}</div><button class="action-btn danger" onclick="removeConn(${idx})">Remover</button></div>
     <div class="form-row" style="margin-bottom:10px">
       <div><div class="form-lbl">Aeroporto de Conexão (Origem)</div><div class="ac-wrap"><input class="ac-input" id="conn-origin-${idx}" placeholder="Ex: MIA — Miami" autocomplete="off" oninput="acSearchConn('origin',${idx},this.value)" onfocus="acSearchConn('origin',${idx},this.value)" onkeydown="acKeyConn(event,'origin',${idx})" value="${data?data.origin:''}"/><div class="ac-dropdown" id="ac-conn-origin-${idx}"></div></div></div>
       <div><div class="form-lbl">Aeroporto de Destino</div><div class="ac-wrap"><input class="ac-input" id="conn-dest-${idx}" placeholder="Ex: CDG — Paris" autocomplete="off" oninput="acSearchConn('dest',${idx},this.value)" onfocus="acSearchConn('dest',${idx},this.value)" onkeydown="acKeyConn(event,'dest',${idx})" value="${data?data.destination:''}"/><div class="ac-dropdown" id="ac-conn-dest-${idx}"></div></div></div>
@@ -677,7 +698,7 @@ function addConnectionForm(data=null){
 }
 
 function removeConn(idx){document.getElementById('conn-'+idx)?.remove();renumberConns();updateCarrierRefVisibility();}
-function renumberConns(){document.querySelectorAll('#conn-list .conn-item').forEach((el,i)=>{el.querySelector('.conn-item-title').textContent=`🔗 Conexão ${i+1}`});}
+function renumberConns(){document.querySelectorAll('#conn-list .conn-item').forEach((el,i)=>{el.querySelector('.conn-item-title').innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Conexão ${i+1}`});}
 function getConnIds(){return Array.from(document.querySelectorAll('#conn-list .conn-item')).map(el=>parseInt(el.id.replace('conn-','')));}
 
 function acSearchConn(field,idx,q){
@@ -740,7 +761,7 @@ function renderSidebar(){
     <div class="trip-chip ${t.id===S.currentTripId?'active':''}" onclick="switchTrip('${t.id}')">
       <div class="trip-dot ${isPast(t.end_date)?'past':''}"></div>
       <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.name}</span>
-      <span style="font-size:11px;opacity:.5;padding-left:4px;flex-shrink:0" onclick="event.stopPropagation();openEditTrip('${t.id}')" title="Editar viagem">✏</span>
+      <span style="opacity:.4;padding-left:4px;flex-shrink:0;display:inline-flex;align-items:center" onclick="event.stopPropagation();openEditTrip('${t.id}')" title="Editar viagem"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span>
     </div>`).join('');
 }
 
@@ -760,7 +781,7 @@ function renderOverview(){
     document.getElementById('ov-title').innerHTML='Sem viagens';
     document.getElementById('ov-meta').innerHTML='<span class="badge">Crie sua primeira viagem →</span>';
     document.getElementById('ov-stats').innerHTML='';
-    document.getElementById('ov-timeline').innerHTML='<div class="empty-state"><div class="ei">✈️</div><p>Nenhuma viagem.<br>Clique em "+ Nova viagem".</p></div>';
+    document.getElementById('ov-timeline').innerHTML='<div class="empty-state"><div class="ei"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.3"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 2c-2-2-4-2-5.5-.5L10 5 1.8 6.2c-.5.1-.9.5-.8 1.1l1.1 4a1 1 0 0 0 .7.7l4 1.1a1 1 0 0 1 .6.5l2.4 4.2c.3.5.9.7 1.4.4l2.9-1.7a1 1 0 0 0 .4-1.3Z"/></svg></div><p>Nenhuma viagem.<br>Clique em "+ Nova viagem".</p></div>';
     document.getElementById('ov-budget-card').innerHTML='';
     return;
   }
@@ -768,10 +789,10 @@ function renderOverview(){
   const status=isPst?'Concluída':(isAct?'Em andamento':'Planejada');
   document.getElementById('ov-title').innerHTML=trip.name.replace(/(\d{4})/,'<em>$1</em>');
   document.getElementById('ov-meta').innerHTML=`
-    <span class="badge ${isAct?'active':''}">● ${status}</span>
+    <span class="badge ${isAct?'active':''}"><span style="display:inline-flex;align-items:center"><svg xmlns="http://www.w3.org/2000/svg" width="7" height="7" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/></svg></span>${status}</span>
     <span class="badge">${fmtDate(trip.start_date)} → ${fmtDate(trip.end_date)}</span>
     <span class="badge">${days} dias</span>
-    <span class="badge">🌍 ${trip.currency||'BRL'}</span>`;
+    <span class="badge"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>${trip.currency||'BRL'}</span>`;
 
   const roots=S.transports.filter(t=>!t.parent_leg_id);
   const totTr=S.transports.reduce((s,t)=>s+(t.price||0),0);
@@ -791,18 +812,18 @@ function renderOverview(){
   document.getElementById('ov-timeline').innerHTML=tl.length
     ?tl.map((t,i)=>`
       <div class="timeline-item">
-        <div class="tl-left"><div class="tl-dot">${EMOJI[t.type]||'🚗'}</div>${i<tl.length-1?'<div class="tl-line"></div>':''}</div>
+        <div class="tl-left"><div class="tl-dot">${EMOJI[t.type]||''}</div>${i<tl.length-1?'<div class="tl-line"></div>':''}</div>
         <div class="transport-card ${t.done?'done':''}">
           <div class="transport-row">
-            <div><div class="transport-route"><span style="font-size:18px;margin-right:4px">${EMOJI[t.type]||'🚗'}</span><span class="route-city">${t.origin}</span><span class="route-arrow"> → </span><span class="route-city">${t.destination}</span></div>
+            <div><div class="transport-route"><span style="display:inline-flex;align-items:center;margin-right:6px">${EMOJI[t.type]||''}</span><span class="route-city">${t.origin}</span><span class="route-arrow"> → </span><span class="route-city">${t.destination}</span></div>
             <div class="transport-detail"><span>${fmtDT(t.departure_at)}</span>${t.carrier?`<span>${t.carrier}</span>`:''} ${t.flight_number?`<span>Voo ${t.flight_number}</span>`:''} ${t.booking_ref?`<span>Ref: ${t.booking_ref}</span>`:''}</div></div>
             <div style="text-align:right"><div class="transport-price">R$ ${fmt(t.price)}</div><span class="type-badge">${t.type}</span></div>
           </div>
         </div>
       </div>`).join('')
-    :'<div class="empty-state"><div class="ei">✈️</div><p>Nenhuma passagem adicionada.</p></div>';
+    :'<div class="empty-state"><div class="ei"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.3"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 2c-2-2-4-2-5.5-.5L10 5 1.8 6.2c-.5.1-.9.5-.8 1.1l1.1 4a1 1 0 0 0 .7.7l4 1.1a1 1 0 0 1 .6.5l2.4 4.2c.3.5.9.7 1.4.4l2.9-1.7a1 1 0 0 0 .4-1.3Z"/></svg></div><p>Nenhuma passagem adicionada.</p></div>';
 
-  document.getElementById('ov-country-title').textContent=trip.country?`🌍 ${trip.country}`:'—';
+  document.getElementById('ov-country-title').textContent=trip.country?trip.country:'—';
   document.getElementById('ov-country-info').innerHTML=`
     <div class="info-row"><span class="info-key">Moeda local</span><span class="info-val">${trip.currency||'—'}</span></div>
     <div class="info-row"><span class="info-key">Passagens</span><span class="info-val">${roots.length} trechos</span></div>
@@ -823,7 +844,7 @@ function renderTransport(filter){
   const roots=S.transports.filter(t=>!t.parent_leg_id);
   const filtered=trFilter==='all'?roots:roots.filter(t=>t.type===trFilter);
   document.getElementById('transport-list').innerHTML=!filtered.length
-    ?`<div class="empty-state"><div class="ei">${EMOJI[trFilter]||'✈️'}</div><p>Nenhum trecho encontrado.</p></div>`
+    ?`<div class="empty-state"><div class="ei"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.3"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 2c-2-2-4-2-5.5-.5L10 5 1.8 6.2c-.5.1-.9.5-.8 1.1l1.1 4a1 1 0 0 0 .7.7l4 1.1a1 1 0 0 1 .6.5l2.4 4.2c.3.5.9.7 1.4.4l2.9-1.7a1 1 0 0 0 .4-1.3Z"/></svg></div><p>Nenhum trecho encontrado.</p></div>`
     :filtered.map(t=>{
       const conns=S.transports.filter(c=>c.parent_leg_id===t.id).sort((a,b)=>a.connection_order-b.connection_order);
       const hasConn=conns.length>0;
@@ -831,15 +852,15 @@ function renderTransport(filter){
         <div class="transport-card ${t.done?'done':''}">
           <div class="transport-row">
             <div style="flex:1">
-              <div class="transport-route"><span style="font-size:18px;margin-right:4px">${EMOJI[t.type]||'🚗'}</span><span class="route-city">${t.origin}</span><span class="route-arrow"> → </span><span class="route-city">${t.destination}</span>${hasConn?`<span class="conn-badge">+${conns.length} conexão</span>`:''}</div>
-              <div class="transport-detail"><span>${fmtDT(t.departure_at)}</span>${t.carrier?`<span>${t.carrier}</span>`:''} ${t.flight_number?`<span>Voo ${t.flight_number}</span>`:''} ${t.booking_ref?`<span>Ref: ${t.booking_ref}</span>`:''} ${t.notes?`<span>📝 ${t.notes}</span>`:''}</div>
+              <div class="transport-route"><span style="display:inline-flex;align-items:center;margin-right:6px">${EMOJI[t.type]||''}</span><span class="route-city">${t.origin}</span><span class="route-arrow"> → </span><span class="route-city">${t.destination}</span>${hasConn?`<span class="conn-badge">+${conns.length} conexão</span>`:''}</div>
+              <div class="transport-detail"><span>${fmtDT(t.departure_at)}</span>${t.carrier?`<span>${t.carrier}</span>`:''} ${t.flight_number?`<span>Voo ${t.flight_number}</span>`:''} ${t.booking_ref?`<span>Ref: ${t.booking_ref}</span>`:''} ${t.notes?`<span style="display:inline-flex;align-items:center;gap:3px"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg> ${t.notes}</span>`:''}</div>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
               <div class="transport-price">R$ ${fmt(t.price)}</div>
               <span class="type-badge">${t.type}</span>
               <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">
-                <button class="action-btn" onclick="toggleDone('${t.id}')">${t.done?'↩ Reabrir':'✓ Feito'}</button>
-                <button class="action-btn primary" onclick="openEditTransport('${t.id}')">✏ Editar</button>
+                <button class="action-btn" onclick="toggleDone('${t.id}')">${t.done?'<span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> Reabrir</span>':'<span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Feito</span>'}</button>
+                <button class="action-btn primary" onclick="openEditTransport('${t.id}')"><span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</span></button>
                 <button class="action-btn danger" onclick="delTransport('${t.id}')">Excluir</button>
               </div>
             </div>
@@ -849,12 +870,12 @@ function renderTransport(filter){
           <div class="transport-card connection ${c.done?'done':''}">
             <div class="transport-row">
               <div style="flex:1">
-                <div class="transport-route"><span style="font-size:15px;margin-right:4px">🔗</span><span class="route-city" style="font-size:13px">${c.origin}</span><span class="route-arrow"> → </span><span class="route-city" style="font-size:13px">${c.destination}</span></div>
+                <div class="transport-route"><span style="display:inline-flex;align-items:center;margin-right:4px"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><span class="route-city" style="font-size:13px">${c.origin}</span><span class="route-arrow"> → </span><span class="route-city" style="font-size:13px">${c.destination}</span></div>
                 <div class="transport-detail"><span>${fmtDT(c.departure_at)}</span>${c.carrier?`<span>${c.carrier}</span>`:''} ${c.flight_number?`<span>Voo ${c.flight_number}</span>`:''} ${c.booking_ref?`<span>Ref: ${c.booking_ref}</span>`:''}</div>
               </div>
               <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
                 <span class="conn-badge">conexão</span>
-                <button class="action-btn" onclick="toggleDoneConn('${c.id}')">${c.done?'↩ Reabrir':'✓ Feito'}</button>
+                <button class="action-btn" onclick="toggleDoneConn('${c.id}')">${c.done?'<span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> Reabrir</span>':'<span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Feito</span>'}</button>
               </div>
             </div>
           </div>`).join('')}
@@ -936,7 +957,7 @@ async function saveTransport(){
     });
   }
   setBusy('btn-save-transport',false,'Salvar');
-  showToast(editingTransportId?'Trecho atualizado! ✏️':'Trecho salvo! ✈️','success');
+  showToast(editingTransportId?'Trecho atualizado!':'Trecho salvo!','success');
   closeModal('addTransport');
   await reloadTrip();renderTransport();renderOverview();
 }
@@ -975,19 +996,19 @@ function renderAccomm(){
   const trip=curTrip();
   document.getElementById('ac-badge').textContent=trip?`${trip.name} · ${S.accommodations.length} locais`:'—';
   document.getElementById('accomm-list').innerHTML=!S.accommodations.length
-    ?'<div class="empty-state"><div class="ei">🏨</div><p>Nenhuma hospedagem registrada.</p></div>'
+    ?'<div class="empty-state"><div class="ei"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.3"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div><p>Nenhuma hospedagem registrada.</p></div>'
     :S.accommodations.map(a=>{
       const nights=calcNights(a.check_in,a.check_out),total=nights*(a.price_per_night||0);
       return `<div class="accomm-card">
-        <div style="font-weight:600;font-size:15px;margin-bottom:4px">🏨 ${a.name}</div>
-        ${a.address?`<div style="font-size:12px;color:var(--mu);margin-bottom:10px">📍 ${a.address}</div>`:''}
+        <div style="font-weight:600;font-size:15px;margin-bottom:4px;display:flex;align-items:center;gap:6px"><span style="display:inline-flex;color:var(--ac2)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></span>${a.name}</div>
+        ${a.address?`<div style="font-size:12px;color:var(--mu);margin-bottom:10px;display:flex;align-items:center;gap:4px"><span style="flex-shrink:0;display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>${a.address}</div>`:''}
         <div style="display:flex;justify-content:space-between;align-items:flex-end">
           <div>
             <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--mu)">${fmtDate(a.check_in)} → ${fmtDate(a.check_out)}</div>
             ${a.booking_ref?`<div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--dm);margin-top:3px">Ref: ${a.booking_ref}</div>`:''}
-            ${a.notes?`<div style="font-size:12px;color:var(--mu);margin-top:4px">📝 ${a.notes}</div>`:''}
+            ${a.notes?`<div style="font-size:12px;color:var(--mu);margin-top:4px;display:flex;align-items:center;gap:4px"><span style="flex-shrink:0;display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg></span>${a.notes}</div>`:''}
             <div style="display:flex;gap:6px;margin-top:8px">
-              <button class="action-btn primary" onclick="openEditAccomm('${a.id}')">✏ Editar</button>
+              <button class="action-btn primary" onclick="openEditAccomm('${a.id}')"><span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</span></button>
               <button class="action-btn danger" onclick="delAccomm('${a.id}')">Excluir</button>
             </div>
           </div>
@@ -1022,7 +1043,7 @@ async function saveAccomm(){
   else{({error}=await db.from('accommodations').insert(payload))}
   setBusy('btn-save-accomm',false,'Salvar');
   if(error)return showToast('Erro: '+error.message,'error');
-  showToast(editingAccommId?'Hospedagem atualizada! ✏️':'Hospedagem salva! 🏨','success');
+  showToast(editingAccommId?'Hospedagem atualizada!':'Hospedagem salva!','success');
   editingAccommId=null;closeModal('addAccomm');
   const{data}=await db.from('accommodations').select('*').eq('trip_id',trip.id).order('check_in');
   S.accommodations=data||[];renderAccomm();renderOverview();
@@ -1038,9 +1059,9 @@ async function delAccomm(id){
 function renderExpenses(){
   const trip=curTrip();
   document.getElementById('ex-badge').textContent=trip?trip.name:'—';
-  const CAT={food:'🍣 Alimentação',transport:'🚇 Transporte',activities:'🎡 Passeios',shopping:'🛍 Compras',health:'🏥 Saúde',other:'📦 Outros'};
+  const CAT={food:'<span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg> Alimentação</span>',transport:'<span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="16" rx="3"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m18 22-2-3"/><path d="M8 15h0"/><path d="M16 15h0"/></svg> Transporte</span>',activities:'<span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg> Passeios</span>',shopping:'<span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> Compras</span>',health:'<span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg> Saúde</span>',other:'<span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg> Outros</span>'}; 
   if(!S.expenses.length){
-    document.getElementById('expense-list').innerHTML='<div class="empty-state"><div class="ei">💳</div><p>Nenhum gasto registrado.</p></div>';
+    document.getElementById('expense-list').innerHTML='<div class="empty-state"><div class="ei"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.3"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div><p>Nenhum gasto registrado.</p></div>';
     document.getElementById('expense-summary').innerHTML='<div style="color:var(--dm);font-size:13px">Sem dados.</div>';
     document.getElementById('category-summary').innerHTML='';return;
   }
@@ -1049,7 +1070,7 @@ function renderExpenses(){
     const tags=Object.keys(CAT).filter(k=>(e[k]||0)>0).map(k=>`<span class="day-cat">${CAT[k]}</span>`).join('');
     return `<div class="day-entry">
       <div class="day-date">${fmtDay(e.expense_date)}</div>
-      <div style="flex:1"><div class="day-cats">${tags}</div>${e.note?`<div style="font-size:12px;color:var(--mu);margin-top:4px">💬 ${e.note}</div>`:''}</div>
+      <div style="flex:1"><div class="day-cats">${tags}</div>${e.note?`<div style="font-size:12px;color:var(--mu);margin-top:4px;display:flex;align-items:center;gap:4px"><span style="flex-shrink:0;display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>${e.note}</div>`:''}</div>
       <div style="text-align:right;flex-shrink:0">
         <div class="day-total">R$ ${fmt(total)}</div>
         <div class="day-total-sub">${fmtDate(e.expense_date)}</div>
@@ -1084,7 +1105,7 @@ async function saveExpense(){
   });
   setBusy('btn-save-expense',false,'Salvar');
   if(error)return showToast('Erro: '+error.message,'error');
-  showToast('Dia registrado! 💳','success');
+  showToast('Dia registrado!','success');
   closeModal('addExpense');
   ['e-date','e-food','e-transport','e-activities','e-shopping','e-health','e-other','e-note'].forEach(id=>setVal(id,''));
   const{data}=await db.from('daily_expenses').select('*').eq('trip_id',trip.id).order('expense_date');
@@ -1119,12 +1140,12 @@ async function saveTrip(){
     if(error)return showToast('Erro: '+error.message,'error');
     const idx=S.trips.findIndex(t=>t.id===editingTripId);
     if(idx>=0)S.trips[idx]={...S.trips[idx],...payload};
-    showToast('Viagem atualizada! ✏️','success');editingTripId=null;closeModal('newTrip');renderSidebar();renderOverview();
+    showToast('Viagem atualizada!','success');editingTripId=null;closeModal('newTrip');renderSidebar();renderOverview();
   } else {
     const{data,error}=await db.from('trips').insert(payload).select().single();
     setBusy('btn-save-trip',false,'Criar Viagem');
     if(error)return showToast('Erro: '+error.message,'error');
-    showToast('Viagem criada! 🌍','success');closeModal('newTrip');
+    showToast('Viagem criada!','success');closeModal('newTrip');
     S.trips.unshift(data);S.currentTripId=data.id;S.transports=[];S.accommodations=[];S.expenses=[];
     renderSidebar();renderOverview();
   }
@@ -1195,7 +1216,7 @@ function showLoading(on,msg){
 let toastT;
 function showToast(msg,type='success'){
   const el=document.getElementById('toast');if(!el)return;
-  el.textContent=(type==='success'?'✓ ':'✕ ')+msg;
+  el.innerHTML=(type==='success'?'<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ':'<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> ')+msg;
   el.className=`toast show ${type}`;clearTimeout(toastT);
   toastT=setTimeout(()=>el.classList.remove('show'),3200);
 }
@@ -1223,6 +1244,8 @@ async function checkAuth(){
   if(saved&&saved===PWD_HASH){document.getElementById('auth-screen').style.display='none';boot();}
   else{setTimeout(()=>document.getElementById('auth-input').focus(),100);}
 })();
+// Init Lucide icons
+if(typeof lucide!=="undefined")lucide.createIcons();
 </script>
 </body>
 </html>
