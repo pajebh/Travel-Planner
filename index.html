@@ -196,6 +196,44 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 <div id="toast" class="toast"></div>
 
+<!-- AUTH SCREEN -->
+<div id="auth-screen" style="
+  position:fixed;inset:0;z-index:999;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:0;
+">
+  <div style="
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--rl);padding:40px 48px;width:360px;
+    display:flex;flex-direction:column;gap:20px;
+    box-shadow:0 24px 64px rgba(0,0,0,.5);
+  ">
+    <div style="text-align:center;margin-bottom:4px">
+      <div style="font-family:'Fraunces',serif;font-size:28px;font-weight:600;color:var(--accent);letter-spacing:-.5px">Tripboard</div>
+      <div style="font-size:11px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-top:4px">Travel Planner</div>
+    </div>
+    <div>
+      <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:8px">Senha de acesso</label>
+      <input id="auth-input" type="password"
+        style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;transition:border-color .15s;"
+        placeholder="••••••••"
+        onkeydown="if(event.key==='Enter')checkAuth()"
+        onfocus="this.style.borderColor='var(--accent)'"
+        onblur="this.style.borderColor='var(--border)'"
+      />
+      <div id="auth-error" style="color:var(--red);font-size:12px;margin-top:8px;font-family:'DM Mono',monospace;display:none">Senha incorreta</div>
+    </div>
+    <button onclick="checkAuth()" style="
+      background:var(--accent);color:#0d0f14;border:none;border-radius:8px;
+      padding:12px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;
+      cursor:pointer;transition:all .15s;
+    " onmouseover="this.style.background='#f0d48a'" onmouseout="this.style.background='var(--accent)'">
+      Entrar
+    </button>
+  </div>
+</div>
+
 <div class="app">
 <aside class="sidebar">
   <div class="logo"><div class="logo-mark">Tripboard</div><div class="logo-sub">Travel Planner</div></div>
@@ -1764,7 +1802,45 @@ function showToast(msg,type='success'){
 }
 function setBusy(id,busy,label){const el=document.getElementById(id);if(!el)return;el.disabled=busy;if(label)el.textContent=label}
 
-boot();
+// ══════════════════════════════════════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════════════════════════════════════
+const PWD_HASH='fd97c6d58fea3eb7aca90c1586eb8ddaf6e6f2ea1d13d081f3a35dcdec72b9dd';
+
+async function sha256(str){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+async function checkAuth(){
+  const input=document.getElementById('auth-input').value;
+  const hash=await sha256(input);
+  if(hash===PWD_HASH){
+    localStorage.setItem('tb_auth',hash);
+    document.getElementById('auth-screen').style.display='none';
+    boot();
+  } else {
+    document.getElementById('auth-error').style.display='block';
+    document.getElementById('auth-input').style.borderColor='var(--red)';
+    document.getElementById('auth-input').value='';
+    setTimeout(()=>{
+      document.getElementById('auth-error').style.display='none';
+      document.getElementById('auth-input').style.borderColor='var(--border)';
+    },2500);
+  }
+}
+
+// On load: check if already authenticated
+(async()=>{
+  const saved=localStorage.getItem('tb_auth');
+  if(saved&&saved===PWD_HASH){
+    document.getElementById('auth-screen').style.display='none';
+    boot();
+  } else {
+    // Show auth, focus input
+    setTimeout(()=>document.getElementById('auth-input').focus(),100);
+  }
+})();
 </script>
 </body>
 </html>
