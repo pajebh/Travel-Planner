@@ -309,6 +309,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .itin-day-label{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--ac)}
 .itin-day-weekday{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:1.5px}
 .itin-event{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:14px 16px;margin-bottom:8px;display:flex;align-items:flex-start;gap:14px;transition:all .2s}
+.itin-left-col{display:flex;align-items:flex-start;gap:14px;flex:1;min-width:0}
+.itin-actions-row{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
 .itin-event:hover{border-color:rgba(122,200,232,.25)}
 .itin-event.done{opacity:.4}
 .itin-event.done .itin-name{text-decoration:line-through}
@@ -361,13 +363,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* ─── ROTEIRO MOBILE ─────────────────────────────────── */
 @media(max-width:640px){
-  .itin-event{flex-wrap:wrap;gap:10px;padding:12px 14px}
-  .itin-check{margin-top:0}
-  .itin-time{width:auto;margin-top:0;min-width:36px}
-  .itin-body{flex-basis:100%;order:3;min-width:0}
+  .itin-event{display:grid;grid-template-columns:1fr auto;padding:12px 14px;gap:0;align-items:start}
+  .itin-left-col{display:flex;align-items:flex-start;gap:10px;min-width:0}
+  .itin-check{margin-top:2px;flex-shrink:0}
+  .itin-time{width:auto;margin-top:3px;flex-shrink:0;min-width:32px}
+  .itin-body{flex:1;min-width:0}
   .itin-name{white-space:normal;word-break:break-word;font-size:14px}
   .itin-place{white-space:normal;word-break:break-word;margin-top:3px}
-  .itin-actions-row{order:2;margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+  .itin-notes{margin-top:4px}
+  .itin-actions-row{display:flex;flex-direction:column;align-items:flex-end;gap:6px;padding-left:10px}
   .itin-type-badge{font-size:9px;padding:2px 6px}
 }
 </style>
@@ -588,9 +592,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="form-group"><label class="form-lbl">Observações</label><input class="form-input" id="doc-notes" placeholder="Ex: cobre emergências médicas..."/></div>
     <div class="form-group">
       <label class="form-lbl">Arquivo do Documento</label>
-      <div class="upload-area" id="doc-upload-area" ondragover="docDragOver(event)" ondragleave="docDragLeave(event)" ondrop="docDrop(event)" onclick="document.getElementById('doc-file-input').click()">
-        <input type="file" id="doc-file-input" accept=".pdf,.jpg,.jpeg,.png,.webp" onchange="docFileSelected(event)"/>
-        <label class="upload-area-label" for="doc-file-input">
+      <div class="upload-area" id="doc-upload-area" ondragover="docDragOver(event)" ondragleave="docDragLeave(event)" ondrop="docDrop(event)">
+        <label class="upload-area-label" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;width:100%">
+        <input type="file" id="doc-file-input" accept=".pdf,.jpg,.jpeg,.png,.webp" onchange="docFileSelected(event)" style="display:none"/>
           <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           <span id="doc-upload-hint">Clique ou arraste um arquivo (PDF, JPG, PNG)</span>
         </label>
@@ -1773,16 +1777,18 @@ function renderItinerary(){
       </div>
       ${events.map(ev=>`
         <div class="itin-event ${ev.done?'done':''}" id="itin-ev-${ev.id}">
-          <div class="itin-check ${ev.done?'checked':''}" onclick="toggleItinDone('${ev.id}')">
-            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <div class="itin-left-col">
+            <div class="itin-check ${ev.done?'checked':''}" onclick="toggleItinDone('${ev.id}')">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="itin-time">${ev.event_time?ev.event_time.slice(0,5):'—'}</div>
+            <div class="itin-body">
+              <div class="itin-name">${ev.name}</div>
+              ${ev.place?`<div class="itin-place"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>${ev.place}</div>`:''}
+              ${ev.notes?`<div class="itin-notes">${ev.notes}</div>`:''}
+            </div>
           </div>
-          <div class="itin-time">${ev.event_time?ev.event_time.slice(0,5):'—'}</div>
-          <div class="itin-body">
-            <div class="itin-name">${ev.name}</div>
-            ${ev.place?`<div class="itin-place"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>${ev.place}</div>`:''}
-            ${ev.notes?`<div class="itin-notes">${ev.notes}</div>`:''}
-          </div>
-          <div class="itin-actions-row" style="flex-shrink:0">
+          <div class="itin-actions-row">
             <span class="itin-type-badge" style="display:inline-flex;align-items:center;gap:4px">${ITIN_ICONS[ev.type]||''} ${ITIN_LABELS[ev.type]||ev.type}</span>
             <button class="action-btn primary" onclick="openEditItinEvent('${ev.id}')"><span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</span></button>
               <button class="action-btn danger" onclick="delItinEvent('${ev.id}')"><span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> Excluir</span></button>
