@@ -421,6 +421,33 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 @keyframes musicBars{0%{height:4px}100%{height:14px}}
 
 /* ─── YOUTUBE EMBED PLAYER ──────────────────────────────── */
+
+/* ─── CITY AUTOCOMPLETE ─────────────────────────────────── */
+#itin-city-dropdown{position:absolute;top:100%;left:0;right:0;z-index:200;background:var(--sf);border:1px solid var(--bd);border-top:none;border-radius:0 0 8px 8px;max-height:200px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+#itin-city-dropdown .ac-item{padding:9px 14px;cursor:pointer;font-size:13px;display:flex;flex-direction:column;gap:1px;border-bottom:1px solid rgba(255,255,255,.04)}
+#itin-city-dropdown .ac-item:last-child{border-bottom:none}
+#itin-city-dropdown .ac-item:hover,#itin-city-dropdown .ac-item.ac-active{background:rgba(232,200,122,.12)}
+#itin-city-dropdown .ac-city{color:var(--tx);font-weight:600;font-size:13px}
+#itin-city-dropdown .ac-country{color:var(--mu);font-size:11px}
+/* ─── ITINERARY ─────────────────────────────────────────── */
+.itin-city-block{margin-bottom:20px}
+.itin-city-header{display:flex;align-items:center;gap:8px;font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ac);padding:10px 16px;background:rgba(232,200,122,0.07);border:1px solid rgba(232,200,122,0.2);border-radius:10px 10px 0 0}
+.itin-city-events{border:1px solid var(--bd);border-top:none;border-radius:0 0 10px 10px;overflow:hidden}
+.itin-day-label{font-size:11px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;padding:7px 16px;background:var(--sf2);border-bottom:1px solid var(--bd)}
+.itin-day-events{padding:6px 0}
+.itin-event{display:flex;align-items:flex-start;padding:8px 16px;position:relative;gap:0}
+.itin-event+.itin-event{border-top:1px solid rgba(255,255,255,.04)}
+.itin-dot-col{display:flex;flex-direction:column;align-items:center;width:24px;flex-shrink:0;padding-top:3px}
+.itin-dot{width:10px;height:10px;border-radius:50%;background:var(--ac);flex-shrink:0;z-index:1}
+.itin-line{width:2px;flex:1;background:var(--bd);margin-top:2px;min-height:16px}
+.itin-event-body{flex:1;min-width:0;padding-left:8px}
+.itin-event-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:2px}
+.itin-event-type{font-size:11px;color:var(--mu)}
+.itin-event-time{font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--ac);flex-shrink:0}
+.itin-event-name{font-size:14px;font-weight:600;color:var(--tx);margin-bottom:2px}
+.itin-event-place{font-size:12px;color:var(--mu);margin-bottom:2px}
+.itin-event-notes{font-size:12px;color:var(--dm);font-style:italic;margin-bottom:4px}
+.itin-event-actions{display:flex;gap:6px;margin-top:6px}
 </style>
 </head>
 <body>
@@ -552,7 +579,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div id="page-itinerary" class="page">
     <div class="topbar">
       <div class="trip-header"><h1>Roteiro <em>Diário</em></h1><div class="trip-meta"><span class="badge" id="itin-badge">—</span></div></div>
-      <div class="topbar-actions"><button class="btn btn-primary" onclick="openModal('addItinDay')">+ Adicionar evento</button></div>
+      <div class="topbar-actions"><button class="btn btn-primary" onclick="openAddItinEvent()">+ Adicionar evento</button></div>
     </div>
     <div id="itinerary-list"></div>
   </div>
@@ -589,24 +616,30 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <div id="modal-addItinDay" class="modal-overlay" onclick="closeBg(event,'addItinDay')">
   <div class="modal">
     <div class="modal-title"><span id="modal-itin-title">Novo Evento</span><span class="modal-close" onclick="closeModal('addItinDay')">×</span></div>
+    <div class="form-group" style="position:relative">
+      <label class="form-lbl">Cidade <span style="color:var(--rd)">*</span></label>
+      <input class="form-input" id="itin-city" placeholder="Ex: Tóquio, Paris, Nova York"
+             autocomplete="off" oninput="_cityAcInput(this)" onkeydown="_cityAcKey(event)" onblur="_cityAcBlur()"/>
+      <div id="itin-city-dropdown" class="ac-dropdown" style="display:none"></div>
+    </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-lbl">Data</label><input class="form-input" id="itin-date" type="date"/></div>
+      <div class="form-group"><label class="form-lbl">Data <span style="color:var(--rd)">*</span></label><input class="form-input" id="itin-date" type="date"/></div>
       <div class="form-group"><label class="form-lbl">Horário</label><input class="form-input" id="itin-time" type="time" placeholder="09:00"/></div>
     </div>
     <div class="form-group"><label class="form-lbl">Tipo</label>
       <select class="form-select" id="itin-type">
-        <option value="passeio">Passeio</option>
-        <option value="restaurante">Restaurante</option>
-        <option value="ponto_turistico">Ponto Turístico</option>
-        <option value="museu">Museu</option>
-        <option value="compras">Compras</option>
-        <option value="transporte">Transporte Local</option>
-        <option value="hospedagem">Check-in / Check-out</option>
-        <option value="outro">Outro</option>
+        <option value="passeio">🗺 Passeio</option>
+        <option value="restaurante">🍽 Restaurante</option>
+        <option value="ponto_turistico">📸 Ponto Turístico</option>
+        <option value="museu">🏛 Museu</option>
+        <option value="compras">🛍 Compras</option>
+        <option value="transporte">🚌 Transporte Local</option>
+        <option value="hospedagem">🏨 Check-in / Check-out</option>
+        <option value="outro">📌 Outro</option>
       </select>
     </div>
-    <div class="form-group"><label class="form-lbl">Nome / Descrição</label><input class="form-input" id="itin-name" placeholder="Ex: Templo Senso-ji"/></div>
-    <div class="form-group"><label class="form-lbl">Endereço / Local</label><input class="form-input" id="itin-place" placeholder="Ex: Asakusa, Tóquio"/></div>
+    <div class="form-group"><label class="form-lbl">Nome / Descrição <span style="color:var(--rd)">*</span></label><input class="form-input" id="itin-name" placeholder="Ex: Templo Senso-ji"/></div>
+    <div class="form-group"><label class="form-lbl">Endereço / Local</label><input class="form-input" id="itin-place" placeholder="Ex: Asakusa, 2-3-1"/></div>
     <div class="form-group"><label class="form-lbl">Observações</label><input class="form-input" id="itin-notes" placeholder="Ex: reservar com antecedência..."/></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('addItinDay')">Cancelar</button>
@@ -1774,6 +1807,184 @@ async function delExpense(id){
   await db.from('daily_expenses').delete().eq('id',id);
   S.expenses=S.expenses.filter(e=>e.id!==id);renderExpenses();renderOverview();showToast('Excluído','success');
 }
+
+// ─── CITY AUTOCOMPLETE ───────────────────────────────────────────────────────
+let _cityAcTimer=null,_cityAcIdx=-1,_cityAcResults=[];
+
+async function _cityAcFetch(q){
+  try{
+    // Open-Meteo Geocoding API: free, no key, no rate limit
+    const url='https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(q)+'&count=8&language=pt&format=json';
+    const r=await fetch(url);const d=await r.json();
+    return(d.results||[]).map(g=>({name:g.name,sub:[g.admin1,g.country].filter(Boolean).join(', ')}));
+  }catch{
+    const q2=q.toLowerCase();
+    return['São Paulo','Rio de Janeiro','Buenos Aires','Santiago','Lima','Bogotá','México','Nova York',
+      'Los Angeles','Miami','Toronto','Lisboa','Madrid','Barcelona','Paris','Londres','Roma','Berlim',
+      'Amsterdã','Praga','Viena','Moscou','Istambul','Atenas','Dubai','Tel Aviv','Tóquio','Osaka',
+      'Seul','Pequim','Xangai','Hong Kong','Singapura','Bangkok','Sydney','Melbourne','Mumbai',
+      'Nova Deli','Cairo','Joanesburgo','Casablanca'
+    ].filter(c=>c.toLowerCase().includes(q2)).slice(0,8).map(c=>({name:c,sub:''}));
+  }
+}
+
+function _cityAcInput(el){
+  clearTimeout(_cityAcTimer);
+  const q=el.value.trim();
+  if(q.length<2){_cityAcClose();return;}
+  _cityAcTimer=setTimeout(async()=>{_cityAcResults=await _cityAcFetch(q);_cityAcRender();},300);
+}
+
+function _cityAcRender(){
+  const dd=document.getElementById('itin-city-dropdown');if(!dd)return;
+  if(!_cityAcResults.length){dd.style.display='none';return;}
+  _cityAcIdx=-1;
+  dd.innerHTML=_cityAcResults.map((c,i)=>
+    `<div class="ac-item" onmousedown="_cityAcPick(${i})"><span class="ac-city">${c.name}</span>${c.sub?`<span class="ac-country">${c.sub}</span>`:''}</div>`
+  ).join('');
+  dd.style.display='block';
+}
+
+function _cityAcPick(i){
+  const c=_cityAcResults[i];if(!c)return;
+  document.getElementById('itin-city').value=c.name;
+  _cityAcClose();
+}
+
+function _cityAcKey(e){
+  const dd=document.getElementById('itin-city-dropdown');
+  if(!dd||dd.style.display==='none')return;
+  const items=dd.querySelectorAll('.ac-item');
+  if(e.key==='ArrowDown'){e.preventDefault();_cityAcIdx=Math.min(_cityAcIdx+1,items.length-1);}
+  else if(e.key==='ArrowUp'){e.preventDefault();_cityAcIdx=Math.max(_cityAcIdx-1,-1);}
+  else if(e.key==='Enter'&&_cityAcIdx>=0){e.preventDefault();_cityAcPick(_cityAcIdx);return;}
+  else if(e.key==='Escape'){_cityAcClose();return;}
+  items.forEach((el,i)=>el.classList.toggle('ac-active',i===_cityAcIdx));
+}
+
+function _cityAcBlur(){setTimeout(_cityAcClose,200);}
+function _cityAcClose(){const dd=document.getElementById('itin-city-dropdown');if(dd)dd.style.display='none';}
+
+// ─── ITINERARY JS ─────────────────────────────────────────────────────────────
+let _editingItinId=null;
+const ITIN_ICON={passeio:'🗺',restaurante:'🍽',ponto_turistico:'📸',museu:'🏛',compras:'🛍',transporte:'🚌',hospedagem:'🏨',outro:'📌'};
+const ITIN_LABEL={passeio:'Passeio',restaurante:'Restaurante',ponto_turistico:'Ponto Turístico',museu:'Museu',compras:'Compras',transporte:'Transporte Local',hospedagem:'Check-in/out',outro:'Outro'};
+
+function openAddItinEvent(prefillCity){
+  _editingItinId=null;
+  document.getElementById('modal-itin-title').textContent='Novo Evento';
+  document.getElementById('btn-save-itin').textContent='Salvar';
+  ['itin-date','itin-time','itin-name','itin-place','itin-notes'].forEach(id=>setVal(id,''));
+  setVal('itin-city', prefillCity||'');
+  document.getElementById('itin-type').value='passeio';
+  openModal('addItinDay');
+}
+
+function openEditItinEvent(id){
+  const ev=S.itinerary.find(x=>x.id===id);if(!ev)return;
+  _editingItinId=id;
+  document.getElementById('modal-itin-title').textContent='Editar Evento';
+  document.getElementById('btn-save-itin').textContent='Salvar Alterações';
+  openModal('addItinDay');
+  setVal('itin-city',ev.city||'');
+  setVal('itin-date',ev.event_date||'');
+  setVal('itin-time',ev.event_time?ev.event_time.slice(0,5):'');
+  setVal('itin-name',ev.name||'');
+  setVal('itin-place',ev.place||'');
+  setVal('itin-notes',ev.notes||'');
+  document.getElementById('itin-type').value=ev.type||'passeio';
+}
+
+async function saveItinEvent(){
+  const trip=curTrip();if(!trip)return showToast('Selecione uma viagem','error');
+  const city=gv('itin-city'),date=gv('itin-date'),name=gv('itin-name');
+  if(!city)return showToast('Cidade é obrigatória','error');
+  if(!date)return showToast('Data é obrigatória','error');
+  if(!name)return showToast('Nome/Descrição é obrigatório','error');
+  setBusy('btn-save-itin',true,'Salvando...');
+  const payload={
+    trip_id:trip.id,city:city.trim(),event_date:date,
+    event_time:gv('itin-time')||null,type:gv('itin-type')||'passeio',
+    name:name.trim(),place:gv('itin-place')||null,notes:gv('itin-notes')||null
+  };
+  let error;
+  if(_editingItinId){({error}=await db.from('itinerary_events').update(payload).eq('id',_editingItinId));}
+  else{({error}=await db.from('itinerary_events').insert(payload));}
+  setBusy('btn-save-itin',false,_editingItinId?'Salvar Alterações':'Salvar');
+  if(error)return showToast('Erro: '+error.message,'error');
+  showToast(_editingItinId?'Evento atualizado!':'Evento adicionado!','success');
+  _editingItinId=null;
+  closeModal('addItinDay');
+  const{data}=await db.from('itinerary_events').select('*').eq('trip_id',trip.id).order('event_date').order('event_time');
+  S.itinerary=data||[];renderItinerary();
+}
+
+async function delItinEvent(id){
+  if(!confirm('Excluir este evento?'))return;
+  await db.from('itinerary_events').delete().eq('id',id);
+  S.itinerary=S.itinerary.filter(e=>e.id!==id);
+  renderItinerary();showToast('Excluído','success');
+}
+
+function renderItinerary(){
+  const trip=curTrip();
+  document.getElementById('itin-badge').textContent=trip?trip.name:'—';
+  const list=document.getElementById('itinerary-list');if(!list)return;
+  if(!S.itinerary||!S.itinerary.length){
+    list.innerHTML='<div class="empty-state"><div class="ei"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.3"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><p>Nenhum evento no roteiro.<br>Clique em "+ Adicionar evento".</p></div>';
+    return;
+  }
+  // Group by city (order of first appearance)
+  const cityOrder=[],byCity={};
+  for(const ev of S.itinerary){
+    const city=ev.city||'Sem cidade';
+    if(!byCity[city]){byCity[city]=[];cityOrder.push(city);}
+    byCity[city].push(ev);
+  }
+  const fmtD=d=>{if(!d)return'';const[y,m,dy]=d.split('-');return`${dy}/${m}/${y}`;};
+
+  list.innerHTML=cityOrder.map(city=>{
+    const evs=byCity[city];
+    // Group by date within city
+    const dateOrder=[],byDate={};
+    for(const ev of evs){const dk=ev.event_date||'';if(!byDate[dk]){byDate[dk]=[];dateOrder.push(dk);}byDate[dk].push(ev);}
+
+    const daysHtml=dateOrder.map(dk=>{
+      const dayEvs=byDate[dk];
+      const evHtml=dayEvs.map((ev,i)=>`
+        <div class="itin-event">
+          <div class="itin-dot-col">
+            <div class="itin-dot"></div>
+            ${i<dayEvs.length-1?'<div class="itin-line"></div>':''}
+          </div>
+          <div class="itin-event-body">
+            <div class="itin-event-header">
+              <span class="itin-event-type">${ITIN_ICON[ev.type]||'📌'} ${ITIN_LABEL[ev.type]||ev.type}</span>
+              ${ev.event_time?`<span class="itin-event-time">${ev.event_time.slice(0,5)}</span>`:''}
+            </div>
+            <div class="itin-event-name">${ev.name}</div>
+            ${ev.place?`<div class="itin-event-place">📍 ${ev.place}</div>`:''}
+            ${ev.notes?`<div class="itin-event-notes">${ev.notes}</div>`:''}
+            <div class="itin-event-actions">
+              <button class="action-btn primary" onclick="openEditItinEvent('${ev.id}')"><span style="display:inline-flex;align-items:center;gap:3px"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</span></button>
+              <button class="action-btn danger" onclick="delItinEvent('${ev.id}')"><span style="display:inline-flex;align-items:center;gap:3px"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg> Excluir</span></button>
+            </div>
+          </div>
+        </div>`).join('');
+      return `<div><div class="itin-day-label">${dk?fmtD(dk):'Sem data'}</div><div class="itin-day-events">${evHtml}</div></div>`;
+    }).join('');
+
+    const cityEsc = city.replace(/'/g,"\\'");
+    return `<div class="itin-city-block">
+      <div class="itin-city-header">
+        <span style="display:flex;align-items:center;gap:8px;flex:1"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> ${city}</span>
+        <button class="action-btn primary" style="font-size:11px;padding:3px 8px" onclick="openAddItinEvent('${cityEsc}')">+ evento</button>
+      </div>
+      <div class="itin-city-events">${daysHtml}</div>
+    </div>`;
+  }).join('');
+}
+
 
 // TRIP
 function openEditTrip(id){
