@@ -2228,11 +2228,9 @@ function _extractVideoId(url) {
 
 // ─── Music player — YouTube IFrame API ───────────────────────────────────────
 // Player is created once at startup so it's ready before user clicks
-let _yt = null;           // YT.Player instance
-let _ytOk = false;        // player onReady fired
-let _ytWantId = null;     // videoId to play when player belse;
-let _musicPlaying = false;
-let _currentVideoId = '';
+// ── Music player ──────────────────────────────────────────────────────────────
+let _ytPlayer = null, _ytReady = false, _ytApiLoaded = false;
+let _musicPlaying = false, _currentVideoId = '';
 
 function renderMusicPlayer(trip, autoplay) {
   const el = document.getElementById('ov-music-player');
@@ -2240,13 +2238,9 @@ function renderMusicPlayer(trip, autoplay) {
   const song = trip && trip.theme_song ? trip.theme_song.trim() : '';
   const vidId = _extractVideoId(song);
   if (!vidId) { el.style.display = 'none'; _stopMusic(); return; }
-
   el.style.display = 'block';
-
-  // If same video already loaded, don't rebuild
-  if (document.getElementById('yt-hidden-player') && _currentVideoId === vidId) return;
+  if (_currentVideoId === vidId) return; // already loaded — don't rebuild
   _currentVideoId = vidId;
-
   el.innerHTML = `
     <div class="trip-music-bar" id="music-bar-inner">
       <button class="music-play-btn" id="music-btn" onclick="_toggleMusic()">
@@ -2263,81 +2257,60 @@ function renderMusicPlayer(trip, autoplay) {
         <div class="music-bar-anim" style="height:7px"></div>
         <div class="music-bar-anim" style="height:12px"></div>
       </div>
-    </div>
-    <div id="yt-hidden-player" style="position:absolute;bottom:-9999px;left:-9999px;width:1px;height:1px;overflow:hidden"></div>`;
-
-  if (autoplay) _startYT(vidId);
+    </div>`;
+  if (autoplay) _playAudio(vidId);
 }
 
-
-function _startYT(vidId) {
-  if (!_ytApiLoaded) {
-    _ytApiLoaded = true;
-    window.onYouTubeIframeAPIReady = function() {
-      _ytReady = false; // will be set in onReady
-      _createYTPlayer(vidId);
-    };
-    const s = document.createElement('script');
-    s.src = 'https://www.youtube.com/iframe_api';
-    document.head.appendChild(s);
-  } else if (_ytReady && _ytPlayer) {
-    _ytPlayer.loadVideoById(vidId);
-    _ytPlayer.playVideo();
-  } else if (_ytPlayer) {
-    // Player exists but not ready — queue
-    window._ytPendingId = vidId;
-  } else {
-    _createYTPlayer(vidId);
+function _playAudio(vidId) {
+  if (_ytReady && _ytPlayer) {
+    _ytPlayer.loadVideoById(vidId); _ytPlayer.playVideo(); return;
   }
-}
-
-function _createYTPlayer(vidId) {
-  // Use the hidden div inside the music bar
-  const wrap = document.getElementById('yt-hidden-player');
-  if (!wrap) return;
-  wrap.innerHTML = '<div id="yt-player-inner"></div>';
-
-  _ytPlayer = new YT.Player('yt-player-inner', {
-    width: '1', height: '1',
-    videoId: vidId,
-    playerVars: { autoplay: 1, controls: 0, disablekb: 1, fs: 0,
-                  rel: 0, iv_load_policy: 3, playsinline: 1,
-                  origin: location.origin || location.href },
-    events: {
-      onReady(e) {
-        _ytReady = true;
-        e.target.setVolume(85);
-        e.target.playVideo();
-        if (window._ytPendingId) {
-          e.target.loadVideoById(window._ytPendingId);
-          window._ytPendingId = null;
-        }
-      },
-      onStateChange(e) {
-        if (e.data === YT.PlayerState.PLAYING) { _musicPlaying = true;  _syncMusicUI(); }
-        if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED)
-          { _musicPlaying = false; _syncMusicUI(); }
-      },
-      onError() { _musicPlaying = false; _syncMusicUI(); }
-    }
-  });
+  window._ytPendingId = vidId;
+  if (_ytApiLoaded) return; // API loading — will play via onReady
+  _ytApiLoaded = true;
+  if (!document.getElementById('_yt_root')) {
+    const d = document.createElement('div');
+    d.id = '_yt_root';
+    d.style.cssText = 'position:fixed;bottom:-9999px;left:-9999px;width:1px;height:1px;overflow:hidden';
+    d.innerHTML = '<div id="_yt_inner"></div>';
+    document.body.appendChild(d);
+  }
+  window.onYouTubeIframeAPIReady = function() {
+    _ytPlayer = new YT.Player('_yt_inner', {
+      width:'1', height:'1',
+      playerVars:{autoplay:1,controls:0,playsinline:1,disablekb:1,fs:0,rel:0},
+      events:{
+        onReady(e){
+          _ytReady = true;
+          if (window._ytPendingId) {
+            e.target.loadVideoById(window._ytPendingId);
+            e.target.playVideo();
+            window._ytPendingId = null;
+          }
+        },
+        onStateChange(e){
+          _musicPlaying = e.data === YT.PlayerState.PLAYING;
+          _syncMusicUI();
+        },
+        onError(){ _musicPlaying = false; _syncMusicUI(); }
+      }
+    });
+  };
+  const s = document.createElement('script');
+  s.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(s);
 }
 
 function _toggleMusic() {
   if (!_ytPlayer || !_ytReady) return;
-  try {
-    if (_musicPlaying) _ytPlayer.pauseVideo();
-    else _ytPlayer.playVideo();
-  } catch(e) {}
+  try { if (_musicPlaying) _ytPlayer.pauseVideo(); else _ytPlayer.playVideo(); } catch(e) {}
 }
 
 function _stopMusic(keepId) {
   if (!keepId) _currentVideoId = '';
-  if (_yt && _ytOk) { try { _yt.stopVideo(); } catch(e) {} }
+  window._ytPendingId = null;
+  if (_ytPlayer && _ytReady) { try { _ytPlayer.stopVideo(); } catch(e) {} }
   _musicPlaying = false;
-  // Stop iframe by clearing src
-  const fr = document.getElementById('yt-iframe');
-  if (fr) { fr.src = ''; }
   const el = document.getElementById('ov-music-player');
   if (el) el.style.display = 'none';
   _syncMusicUI();
@@ -2349,7 +2322,6 @@ function _syncMusicUI() {
   if (bar) bar.classList.toggle('playing', _musicPlaying);
   if (btn) btn.classList.toggle('playing', _musicPlaying);
 }
-
 
 
 // Init Lucide icons
