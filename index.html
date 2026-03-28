@@ -421,13 +421,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 @keyframes musicBars{0%{height:4px}100%{height:14px}}
 
 /* ─── YOUTUBE EMBED PLAYER ──────────────────────────────── */
-.yt-embed-wrap{background:var(--sf);border:1px solid var(--bd);border-radius:12px;overflow:hidden;position:relative}
-.yt-embed-wrap::before{content:'';display:block;padding-top:56.25%} /* 16:9 */
-.yt-embed-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
-.yt-embed-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sf2);border-bottom:1px solid var(--bd)}
-.yt-embed-label{font-family:'Playfair Display',serif;font-size:13px;color:var(--ac);display:flex;align-items:center;gap:7px}
-.yt-embed-close{cursor:pointer;opacity:.5;display:flex;align-items:center;transition:opacity .15s}
-.yt-embed-close:hover{opacity:1}
 </style>
 </head>
 <body>
@@ -492,12 +485,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div>
         <div class="sec-hdr"><div class="sec-title" id="ov-trips-title">Todas as Viagens</div></div>
         <div id="ov-trips-list"></div>
-        <div id="ov-music-player" style="display:none;margin-top:16px"></div>
       </div>
       <div class="side-panel">
         <div class="panel-card">
           <div class="sec-title" style="margin-bottom:14px" id="ov-country-title">Mapa</div>
           <div class="map-ph" id="ov-map-container"></div>
+          <div id="ov-music-player" style="display:none"></div>
           <div id="ov-country-info"></div>
         </div>
         <div class="panel-card" id="ov-budget-card"></div>
@@ -1007,7 +1000,6 @@ async function boot(){
     if(S.trips.length){S.currentTripId=S.trips[0].id;await reloadTrip();}
     await loadAllTripData();
     renderSidebar();renderOverview();
-    _bootYTPlayer(); // pre-init YT player
   }catch(e){
     showToast('Erro de conexão: '+e.message,'error');
     document.getElementById('ov-title').innerHTML='Erro ao conectar';
@@ -2071,7 +2063,8 @@ function renderCountryMap(primaryISOs, allVisited, futurePlanned) {
 
     // Continental bounding boxes to skip overseas territories
     const _CB={'FR':[-5,41,10,52],'ES':[-10,36.2,5,45],'PT':[-10,36.2,-6,42],
-      'NL':[3,50,8,54],'DK':[7,54,16,58],'NO':[4,57,32,72],'US':[-130,24,-65,50]};
+      'NL':[3,50,8,54],'DK':[7,54,16,58],'NO':[4,57,32,72],'US':[-130,24,-65,50],
+      'GR':[19,36.5,30,43]}; // exclude Crete (35.27°N) and islands near Africa
 
     function drawFeature(f, fill, stroke, lw, iso) {
       const geom=f.geometry;
@@ -2237,79 +2230,9 @@ function _extractVideoId(url) {
 // Player is created once at startup so it's ready before user clicks
 let _yt = null;           // YT.Player instance
 let _ytOk = false;        // player onReady fired
-let _ytWantId = null;     // videoId to play when player becomes ready
+let _ytWantId = null;     // videoId to play when player belse;
 let _musicPlaying = false;
 let _currentVideoId = '';
-
-function _bootYTPlayer() {
-  // Called once from boot() — loads the API and creates hidden player
-  if (document.getElementById('_yt_wrap')) return;
-  const wrap = document.createElement('div');
-  wrap.id = '_yt_wrap';
-  wrap.style.cssText = 'position:fixed;bottom:-9999px;left:-9999px;width:200px;height:113px;opacity:0;pointer-events:none;overflow:hidden';
-  const inner = document.createElement('div');
-  inner.id = '_yt_player';
-  wrap.appendChild(inner);
-  document.body.appendChild(wrap);
-
-  if (window.YT && window.YT.Player) {
-    _createYTPlayer();
-  } else {
-    window.onYouTubeIframeAPIReady = _createYTPlayer;
-    const s = document.createElement('script');
-    s.src = 'https://www.youtube.com/iframe_api';
-    document.head.appendChild(s);
-  }
-}
-
-function _createYTPlayer() {
-  _yt = new YT.Player('_yt_player', {
-    width: '200', height: '113',
-    playerVars: { autoplay:0, controls:0, disablekb:1, fs:0,
-                  rel:0, iv_load_policy:3, modestbranding:1, playsinline:1 },
-    events: {
-      onReady() {
-        _ytOk = true;
-        if (_ytWantId) { _doPlay(_ytWantId); _ytWantId = null; }
-      },
-      onStateChange(e) {
-        const playing = e.data === YT.PlayerState.PLAYING;
-        const stopped = e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED;
-        if (playing && !_musicPlaying)  { _musicPlaying = true;  _syncMusicUI(); }
-        if (stopped && _musicPlaying)   { _musicPlaying = false; _syncMusicUI(); }
-      },
-      onError(e) {
-        if (e.data===101||e.data===150||e.data===153) {
-          // Embedding disabled by video owner — open in YouTube instead
-          showToast('Este vídeo não permite reprodução em sites externos. Abrindo no YouTube...', 'error');
-          setTimeout(() => {
-            if (_currentVideoId) window.open('https://www.youtube.com/watch?v=' + _currentVideoId, '_blank');
-          }, 1500);
-        } else {
-          showToast('Erro de áudio (' + e.data + '). Verifique o link do YouTube.', 'error');
-        }
-        _musicPlaying = false; _syncMusicUI();
-      }
-    }
-  });
-}
-
-function _doPlay(videoId) {
-  if (!_yt) return;
-  try {
-    _yt.loadVideoById({ videoId, startSeconds: 0 });
-    _yt.playVideo();
-  } catch(e) { console.warn('YT play error', e); }
-}
-
-function _playVideoId(videoId) {
-  _currentVideoId = videoId;
-  if (_ytOk) {
-    _doPlay(videoId);
-  } else {
-    _ytWantId = videoId;   // will play once onReady fires
-  }
-}
 
 function renderMusicPlayer(trip, autoplay) {
   const el = document.getElementById('ov-music-player');
@@ -2320,41 +2243,92 @@ function renderMusicPlayer(trip, autoplay) {
 
   el.style.display = 'block';
 
-  // KEY FIX: if iframe already exists for this video, never rebuild it —
-  // rebuilding destroys the playing audio. Just ensure it's visible.
-  const existingIframe = document.getElementById('yt-iframe');
-  if (existingIframe && _currentVideoId === vidId) {
-    return; // already playing — leave it alone
-  }
-
-  // First time or different video: create iframe with autoplay=1
+  // If same video already loaded, don't rebuild
+  if (document.getElementById('yt-hidden-player') && _currentVideoId === vidId) return;
   _currentVideoId = vidId;
-  const src = `https://www.youtube-nocookie.com/embed/${vidId}` +
-    `?autoplay=1&controls=1&rel=0&modestbranding=1&iv_load_policy=3&playsinline=1`;
 
   el.innerHTML = `
-    <div class="yt-embed-header">
-      <span class="yt-embed-label">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-        Música da Viagem
-      </span>
-      <span class="yt-embed-close" onclick="_stopMusic()" title="Fechar">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </span>
+    <div class="trip-music-bar" id="music-bar-inner">
+      <button class="music-play-btn" id="music-btn" onclick="_toggleMusic()">
+        <svg class="icon-play"  viewBox="0 0 24 24" fill="#0d0f14" stroke="none"><polygon points="5,3 19,12 5,21"/></svg>
+        <svg class="icon-pause" viewBox="0 0 24 24" fill="#0d0f14" stroke="none"><rect x="4" y="3" width="5" height="18" rx="1"/><rect x="15" y="3" width="5" height="18" rx="1"/></svg>
+      </button>
+      <div class="music-info">
+        <div class="music-title">Música da Viagem</div>
+        <div class="music-artist" style="cursor:pointer" onclick="window.open('https://youtu.be/${vidId}','_blank')">youtu.be/${vidId}</div>
+      </div>
+      <div class="music-bars">
+        <div class="music-bar-anim" style="height:4px"></div>
+        <div class="music-bar-anim" style="height:10px"></div>
+        <div class="music-bar-anim" style="height:7px"></div>
+        <div class="music-bar-anim" style="height:12px"></div>
+      </div>
     </div>
-    <div class="yt-embed-wrap">
-      <iframe
-        id="yt-iframe"
-        src="${src}"
-        allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen>
-      </iframe>
-    </div>`;
+    <div id="yt-hidden-player" style="position:absolute;bottom:-9999px;left:-9999px;width:1px;height:1px;overflow:hidden"></div>`;
+
+  if (autoplay) _startYT(vidId);
 }
 
 
+function _startYT(vidId) {
+  if (!_ytApiLoaded) {
+    _ytApiLoaded = true;
+    window.onYouTubeIframeAPIReady = function() {
+      _ytReady = false; // will be set in onReady
+      _createYTPlayer(vidId);
+    };
+    const s = document.createElement('script');
+    s.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(s);
+  } else if (_ytReady && _ytPlayer) {
+    _ytPlayer.loadVideoById(vidId);
+    _ytPlayer.playVideo();
+  } else if (_ytPlayer) {
+    // Player exists but not ready — queue
+    window._ytPendingId = vidId;
+  } else {
+    _createYTPlayer(vidId);
+  }
+}
+
+function _createYTPlayer(vidId) {
+  // Use the hidden div inside the music bar
+  const wrap = document.getElementById('yt-hidden-player');
+  if (!wrap) return;
+  wrap.innerHTML = '<div id="yt-player-inner"></div>';
+
+  _ytPlayer = new YT.Player('yt-player-inner', {
+    width: '1', height: '1',
+    videoId: vidId,
+    playerVars: { autoplay: 1, controls: 0, disablekb: 1, fs: 0,
+                  rel: 0, iv_load_policy: 3, playsinline: 1,
+                  origin: location.origin || location.href },
+    events: {
+      onReady(e) {
+        _ytReady = true;
+        e.target.setVolume(85);
+        e.target.playVideo();
+        if (window._ytPendingId) {
+          e.target.loadVideoById(window._ytPendingId);
+          window._ytPendingId = null;
+        }
+      },
+      onStateChange(e) {
+        if (e.data === YT.PlayerState.PLAYING) { _musicPlaying = true;  _syncMusicUI(); }
+        if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED)
+          { _musicPlaying = false; _syncMusicUI(); }
+      },
+      onError() { _musicPlaying = false; _syncMusicUI(); }
+    }
+  });
+}
+
 function _toggleMusic() {
-  // Player is now a visible iframe — user controls playback directly
-  // Legacy: still allow external call without errors
+  if (!_ytPlayer || !_ytReady) return;
+  try {
+    if (_musicPlaying) _ytPlayer.pauseVideo();
+    else _ytPlayer.playVideo();
+  } catch(e) {}
 }
 
 function _stopMusic(keepId) {
@@ -2376,7 +2350,6 @@ function _syncMusicUI() {
   if (btn) btn.classList.toggle('playing', _musicPlaying);
 }
 
-function _updateMusicUI() {} // kept for compatibility
 
 
 // Init Lucide icons
