@@ -488,11 +488,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="nav-item" data-page="docs" onclick="showPage('docs')"><span class="ic"><i data-lucide="file-text"></i></span> Documentos</div>
     <div class="nav-item" data-page="expenses" onclick="showPage('expenses')"><span class="ic"><i data-lucide="wallet"></i></span> Gastos</div>
   </nav>
-  <div class="trip-list">
-    <div class="nav-lbl">Viagens</div>
-    <div id="trip-chips"></div>
-    <div class="trip-chip" style="color:var(--dm);font-style:italic;font-size:12px" onclick="openModal('newTrip')">+ Nova viagem</div>
-  </div>
+  <!-- trip-list removed -->
 </aside>
 
 <!-- MAIN -->
@@ -504,6 +500,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="trip-header"><h1 id="ov-title">Visão <em>Geral</em></h1><div class="trip-meta" id="ov-meta"></div></div>
       <div class="topbar-actions">
         <button class="btn btn-ghost" onclick="ovClearFilter()" id="ov-clear-btn" style="display:none">✕ Limpar filtro</button>
+        <button class="btn btn-ghost eye-toggle-btn" onclick="toggleValues()" title="Ocultar/mostrar valores" style="padding:6px 10px;display:flex;align-items:center"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
         <button class="btn btn-primary" onclick="openModal('newTrip')">+ Nova viagem</button>
       </div>
     </div>
@@ -529,7 +526,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div id="page-transport" class="page">
     <div class="topbar">
       <div class="trip-header"><h1>Passagens & <em>Transporte</em></h1><div class="trip-meta"><span class="badge" id="tr-badge">—</span></div></div>
-      <div class="topbar-actions"><button class="btn btn-primary" onclick="openAddTransport()">+ Novo trecho</button></div>
+      <div class="topbar-actions"><button class="btn btn-ghost eye-toggle-btn" onclick="toggleValues()" title="Ocultar/mostrar valores" style="padding:6px 10px;display:flex;align-items:center"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="btn btn-primary" onclick="openAddTransport()">+ Novo trecho</button></div>
     </div>
     <div class="tabs">
       <div class="tab active" onclick="filterTr('all',this)">Todos</div>
@@ -545,7 +542,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div id="page-accommodation" class="page">
     <div class="topbar">
       <div class="trip-header"><h1><em>Hospedagem</em></h1><div class="trip-meta"><span class="badge" id="ac-badge">—</span></div></div>
-      <div class="topbar-actions"><button class="btn btn-primary" onclick="editingAccommId=null;openModal('addAccomm')">+ Nova hospedagem</button></div>
+      <div class="topbar-actions"><button class="btn btn-ghost eye-toggle-btn" onclick="toggleValues()" title="Ocultar/mostrar valores" style="padding:6px 10px;display:flex;align-items:center"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="btn btn-primary" onclick="editingAccommId=null;openModal('addAccomm')">+ Nova hospedagem</button></div>
     </div>
     <div class="accomm-list" id="accomm-list"></div>
   </div>
@@ -554,7 +551,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div id="page-expenses" class="page">
     <div class="topbar">
       <div class="trip-header"><h1>Gastos <em>Diários</em></h1><div class="trip-meta"><span class="badge" id="ex-badge">—</span></div></div>
-      <div class="topbar-actions"><button class="btn btn-primary" onclick="openModal('addExpense')">+ Registrar dia</button></div>
+      <div class="topbar-actions"><button class="btn btn-ghost eye-toggle-btn" onclick="toggleValues()" title="Ocultar/mostrar valores" style="padding:6px 10px;display:flex;align-items:center"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="btn btn-primary" onclick="openModal('addExpense')">+ Registrar dia</button></div>
     </div>
     <div class="expenses-grid">
       <div id="expense-list"></div>
@@ -1032,7 +1029,7 @@ async function boot(){
     S.trips=data||[];
     if(S.trips.length){S.currentTripId=S.trips[0].id;await reloadTrip();}
     await loadAllTripData();
-    renderSidebar();renderOverview();
+    renderSidebar();renderOverview();syncEyeButtons();
   }catch(e){
     showToast('Erro de conexão: '+e.message,'error');
     document.getElementById('ov-title').innerHTML='Erro ao conectar';
@@ -1054,7 +1051,9 @@ async function reloadTrip(){
 
 // SIDEBAR
 function renderSidebar(){
-  document.getElementById('trip-chips').innerHTML=S.trips.map(t=>`
+  const chipsEl=document.getElementById('trip-chips');
+  if(!chipsEl)return;
+  chipsEl.innerHTML=S.trips.map(t=>`
     <div class="trip-chip ${t.id===S.currentTripId?'active':''}" onclick="switchTrip('${t.id}')">
       <div class="trip-dot ${isPast(t.end_date)?'past':''}"></div>
       <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.name}</span>
@@ -1332,6 +1331,7 @@ function resetCountryTags(countries){
 
 
 function renderOverview() {
+  syncEyeButtons();
   const M = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
   if (!S.trips.length) {
@@ -1370,9 +1370,9 @@ function renderOverview() {
   const grandTotal = totalTr + totalAc + totalEx;
 
   let statsHtml = `
-    <div class="stat-card"><div class="stat-lbl">Total Gasto</div><div class="stat-val" style="color:var(--ac)">R$ ${fmt(grandTotal)}</div><div class="stat-sub">${ovFilterTripId ? 'nesta viagem' : `${S.trips.length} viagem(ns)`}</div></div>
-    <div class="stat-card"><div class="stat-lbl">Passagens</div><div class="stat-val" style="color:var(--ac2)">R$ ${fmt(totalTr)}</div><div class="stat-sub">${ovFilterTripId ? `${S.transports.filter(x=>!x.parent_leg_id).length} trecho(s)` : 'total'}</div></div>
-    <div class="stat-card"><div class="stat-lbl">Hospedagem</div><div class="stat-val" style="color:var(--ac3)">R$ ${fmt(totalAc)}</div><div class="stat-sub">${ovFilterTripId ? `${S.accommodations.length} local(is)` : 'total'}</div></div>`;
+    <div class="stat-card"><div class="stat-lbl">Total Gasto</div><div class="stat-val" style="color:var(--ac)">${moneySpan(grandTotal, "R$ "+fmt(grandTotal))}</div><div class="stat-sub">${ovFilterTripId ? 'nesta viagem' : `${S.trips.length} viagem(ns)`}</div></div>
+    <div class="stat-card"><div class="stat-lbl">Passagens</div><div class="stat-val" style="color:var(--ac2)">${moneySpan(totalTr, "R$ "+fmt(totalTr))}</div><div class="stat-sub">${ovFilterTripId ? `${S.transports.filter(x=>!x.parent_leg_id).length} trecho(s)` : 'total'}</div></div>
+    <div class="stat-card"><div class="stat-lbl">Hospedagem</div><div class="stat-val" style="color:var(--ac3)">${moneySpan(totalAc, "R$ "+fmt(totalAc))}</div><div class="stat-sub">${ovFilterTripId ? `${S.accommodations.length} local(is)` : 'total'}</div></div>`;
 
   if (ovFilterTripId && trip) {
     const isPst = isPast(trip.end_date), days = tripDays(trip), rem = Math.max(0, daysLeft(trip.end_date));
@@ -1412,9 +1412,15 @@ function renderOverview() {
           <span class="badge ${act?'active':''}" style="padding:1px 7px;font-size:9px">${statusLabel}</span>
         </div>
       </div>
-      <div class="ov-trip-right">
-        <div class="ov-trip-total">R$ ${fmt(total)}</div>
+      <div class="ov-trip-right" style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <div class="ov-trip-total">${moneySpan(total, "R$ "+fmt(total))}</div>
         <div class="ov-trip-days">${past ? `${days}d` : rem !== null ? `${rem}d restantes` : ''}</div>
+        <button class="action-btn primary" style="font-size:10px;padding:2px 8px" onclick="event.stopPropagation();openEditTrip('${t.id}')">
+          <span style="display:inline-flex;align-items:center;gap:3px">
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Editar
+          </span>
+        </button>
       </div>
     </div>`;
   }).join('');
@@ -1448,8 +1454,8 @@ function renderOverview() {
     const pct = budget>0 ? Math.min(Math.round(grandTotal/budget*100),100) : 0;
     document.getElementById('ov-budget-card').innerHTML = budget>0 ? `
       <div class="sec-title" style="margin-bottom:14px">Orçamento</div>
-      <div style="margin:12px 0"><div class="bbar-lbl"><span>Gasto: R$ ${fmt(grandTotal)}</span><span>${pct}%</span></div><div class="bbar"><div class="bbar-fill" style="width:${pct}%"></div></div></div>
-      <div style="font-size:12px;color:var(--mu)">Restam <strong style="color:var(--gn)">R$ ${fmt(budget-grandTotal)}</strong></div>`
+      <div style="margin:12px 0"><div class="bbar-lbl"><span>Gasto: ${moneySpan(grandTotal, "R$ "+fmt(grandTotal))}</span><span>${pct}%</span></div><div class="bbar"><div class="bbar-fill" style="width:${pct}%"></div></div></div>
+      <div style="font-size:12px;color:var(--mu)">Restam <strong style="color:var(--gn)">${moneySpan(budget-grandTotal, "R$ "+fmt(budget-grandTotal))}</strong></div>`
       : `<div class="sec-title" style="margin-bottom:10px">Orçamento</div><div style="font-size:13px;color:var(--dm)">Sem orçamento definido.</div>`;
   } else {
     // Global view — derive ISO lists from transport legs of all trips
@@ -1484,11 +1490,13 @@ function renderOverview() {
       <div class="info-row"><span class="info-key">Países</span><span class="info-val">${allCountries.length}</span></div>`;
     document.getElementById('ov-budget-card').innerHTML = `
       <div class="sec-title" style="margin-bottom:14px">Total Geral</div>
-      <div class="info-row"><span class="info-key">Passagens</span><span class="info-val" style="color:var(--ac2)">R$ ${fmt(totalTr)}</span></div>
-      <div class="info-row"><span class="info-key">Hospedagem</span><span class="info-val" style="color:var(--ac3)">R$ ${fmt(totalAc)}</span></div>
-      <div class="info-row"><span class="info-key">Gastos diários</span><span class="info-val" style="color:var(--mu)">R$ ${fmt(totalEx)}</span></div>
-      <div class="info-row" style="border-top:1px solid var(--bd);margin-top:4px;padding-top:12px"><span class="info-key" style="font-weight:600;color:var(--tx)">Total</span><span class="info-val" style="color:var(--ac)">R$ ${fmt(grandTotal)}</span></div>`;
+      <div class="info-row"><span class="info-key">Passagens</span><span class="info-val" style="color:var(--ac2)">${moneySpan(totalTr, "R$ "+fmt(totalTr))}</span></div>
+      <div class="info-row"><span class="info-key">Hospedagem</span><span class="info-val" style="color:var(--ac3)">${moneySpan(totalAc, "R$ "+fmt(totalAc))}</span></div>
+      <div class="info-row"><span class="info-key">Gastos diários</span><span class="info-val" style="color:var(--mu)">${moneySpan(totalEx, "R$ "+fmt(totalEx))}</span></div>
+      <div class="info-row" style="border-top:1px solid var(--bd);margin-top:4px;padding-top:12px"><span class="info-key" style="font-weight:600;color:var(--tx)">Total</span><span class="info-val" style="color:var(--ac)">${moneySpan(grandTotal, "R$ "+fmt(grandTotal))}</span></div>`;
   }
+  // Sync eye button state after every render
+  setTimeout(syncEyeButtons, 0);
 }
 
 
@@ -1513,7 +1521,7 @@ function renderTransport(filter){
               <div class="transport-detail"><span>${fmtDT(t.departure_at)}</span>${t.carrier?`<span>${t.carrier}</span>`:''} ${t.flight_number?`<span>Voo ${t.flight_number}</span>`:''} ${t.booking_ref?`<span>Ref: ${t.booking_ref}</span>`:''} ${t.notes?`<span style="display:inline-flex;align-items:center;gap:3px"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg> ${t.notes}</span>`:''}</div>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-              <div class="transport-price">R$ ${fmt(t.price)}</div>
+              <div class="transport-price">${moneySpan(t.price,"R$ "+fmt(t.price))}</div>
               <span class="type-badge">${t.type}</span>
               <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">
                 <button class="action-btn" onclick="toggleDone('${t.id}')">${t.done?'<span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> Reabrir</span>':'<span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Feito</span>'}</button>
@@ -1670,8 +1678,8 @@ function renderAccomm(){
             </div>
           </div>
           <div style="text-align:right">
-            <div style="font-family:'Playfair Display',serif;font-size:17px;color:var(--ac2)">R$ ${fmt(total)}</div>
-            <div style="font-size:11px;color:var(--dm)">${nights} noites · R$ ${fmt(a.price_per_night)}/noite</div>
+            <div style="font-family:'Playfair Display',serif;font-size:17px;color:var(--ac2)">${moneySpan(total, "R$ "+fmt(total))}</div>
+            <div style="font-size:11px;color:var(--dm)">${nights} noites · ${moneySpan(a.price_per_night,"R$ "+fmt(a.price_per_night))}/noite</div>
           </div>
         </div>
       </div>`;
@@ -1729,7 +1737,7 @@ function renderExpenses(){
       <div class="day-date"><span class="day-date-num">${fmtDayNum(e.expense_date)}</span><span class="day-date-mon">${fmtDayMon(e.expense_date)}</span></div>
       <div style="flex:1"><div class="day-cats">${tags}</div>${e.note?`<div style="font-size:12px;color:var(--mu);margin-top:4px;display:flex;align-items:center;gap:4px"><span style="flex-shrink:0;display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>${e.note}</div>`:''}</div>
       <div style="text-align:right;flex-shrink:0">
-        <div class="day-total">R$ ${fmt(total)}</div>
+        <div class="day-total">${moneySpan(total, "R$ "+fmt(total))}</div>
         <div class="day-total-sub">${fmtDate(e.expense_date)}</div>
         <div style="display:flex;gap:4px;margin-top:4px;justify-content:flex-end">
           <button class="action-btn primary" onclick="openEditExpense('${e.id}')"><span style="display:inline-flex;align-items:center;gap:3px"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</span></button>
@@ -1742,16 +1750,17 @@ function renderExpenses(){
   const grand=S.expenses.reduce((s,e)=>s+daySum(e),0);
   const avg=grand/S.expenses.length,max=Math.max(...S.expenses.map(e=>daySum(e)));
   document.getElementById('expense-summary').innerHTML=`
-    <div class="info-row"><span class="info-key">Total gasto</span><span class="info-val" style="color:var(--ac)">R$ ${fmt(grand)}</span></div>
+    <div class="info-row"><span class="info-key">Total gasto</span><span class="info-val" style="color:var(--ac)">${moneySpan(grand,"R$ "+fmt(grand))}</span></div>
     <div class="info-row"><span class="info-key">Dias registrados</span><span class="info-val">${S.expenses.length}</span></div>
-    <div class="info-row"><span class="info-key">Média por dia</span><span class="info-val">R$ ${fmt(avg)}</span></div>
-    <div class="info-row"><span class="info-key">Maior gasto</span><span class="info-val" style="color:var(--rd)">R$ ${fmt(max)}</span></div>`;
+    <div class="info-row"><span class="info-key">Média por dia</span><span class="info-val">${moneySpan(avg,"R$ "+fmt(avg))}</span></div>
+    <div class="info-row"><span class="info-key">Maior gasto</span><span class="info-val" style="color:var(--rd)">${moneySpan(max,"R$ "+fmt(max))}</span></div>`;
   const totals={food:0,transport:0,activities:0,shopping:0,health:0,other:0};
   S.expenses.forEach(e=>Object.keys(totals).forEach(k=>totals[k]+=(e[k]||0)));
   document.getElementById('category-summary').innerHTML=Object.entries(totals).filter(([,v])=>v>0).map(([k,v])=>{
     const pct=Math.round(v/grand*100);
-    return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--mu)">${CAT[k]}</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px">R$ ${fmt(v)} · ${pct}%</span></div><div class="bbar"><div class="bbar-fill" style="width:${pct}%"></div></div></div>`;
+    return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--mu)">${CAT[k]}</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px">${moneySpan(v,"R$ "+fmt(v))} · ${pct}%</span></div><div class="bbar"><div class="bbar-fill" style="width:${pct}%"></div></div></div>`;
   }).join('');
+  setTimeout(syncEyeButtons,0);
 }
 
 let _editingExpenseId = null;
@@ -1986,6 +1995,40 @@ function renderItinerary(){
 }
 
 
+// ─── EYE TOGGLE — hide/show monetary values ──────────────────────────────────
+let _valuesHidden = true;
+
+function toggleValues() {
+  _valuesHidden = !_valuesHidden;
+  document.querySelectorAll('.money-val').forEach(el => {
+    el.textContent = _valuesHidden ? '••••••' : el.dataset.val;
+  });
+  // Update ALL eye buttons across all tabs
+  document.querySelectorAll('.eye-toggle-btn').forEach(btn => {
+    btn.innerHTML = _valuesHidden ? _eyeOffIcon() : _eyeIcon();
+  });
+}
+
+function syncEyeButtons() {
+  document.querySelectorAll('.eye-toggle-btn').forEach(btn => {
+    btn.innerHTML = _valuesHidden ? _eyeOffIcon() : _eyeIcon();
+  });
+}
+
+function _eyeIcon() {
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+}
+function _eyeOffIcon() {
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+}
+
+// Wrap a monetary string for eye-toggle support
+function moneySpan(val, formatted) {
+  const display = _valuesHidden ? '••••••' : formatted;
+  return `<span class="money-val" data-val="${formatted}">${display}</span>`;
+}
+
+
 // TRIP
 function openEditTrip(id){
   const t=S.trips.find(x=>x.id===id);if(!t)return;
@@ -2013,7 +2056,7 @@ async function saveTrip(){
     if(idx>=0)S.trips[idx]={...S.trips[idx],...payload};
     showToast('Viagem atualizada!','success');editingTripId=null;closeModal('newTrip');
     await loadAllTripData();
-    renderSidebar();renderOverview();
+    renderSidebar();renderOverview();syncEyeButtons();
   } else {
     const{data,error}=await db.from('trips').insert(payload).select().single();
     setBusy('btn-save-trip',false,'Criar Viagem');
@@ -2021,7 +2064,7 @@ async function saveTrip(){
     showToast('Viagem criada!','success');closeModal('newTrip');
     S.trips.unshift(data);S.currentTripId=data.id;S.transports=[];S.accommodations=[];S.expenses=[];S.itinerary=[];S.docs=[];
     await loadAllTripData();
-    renderSidebar();renderOverview();
+    renderSidebar();renderOverview();syncEyeButtons();
   }
   ['trip-name','trip-currency','trip-start','trip-end','trip-budget','trip-theme-song'].forEach(id=>setVal(id,''));
   resetCountryTags('');
@@ -2034,10 +2077,10 @@ function showPage(id){
   const page=document.getElementById('page-'+id);if(page)page.classList.add('active');
   const sideItem=document.querySelector('.nav-item[data-page="'+id+'"]');if(sideItem)sideItem.classList.add('active');
   document.querySelectorAll('.bn-item[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
-  if(id==='transport')renderTransport();
-  if(id==='accommodation')renderAccomm();
+  if(id==='transport'){renderTransport();syncEyeButtons();}
+  if(id==='accommodation'){renderAccomm();syncEyeButtons();}
   if(id==='addExpense'){_editingExpenseId=null;document.getElementById('modal-expense-title')&&(document.getElementById('modal-expense-title').textContent='Adicionar Gastos');document.getElementById('btn-save-expense')&&(document.getElementById('btn-save-expense').textContent='Salvar');}
-  if(id==='expenses')renderExpenses();
+  if(id==='expenses'){renderExpenses();syncEyeButtons();}
   if(id==='itinerary')renderItinerary();
   if(id==='docs')renderDocs();
   if(id==='trips')renderTripsPage();
@@ -2072,8 +2115,9 @@ const setVal=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v};
 const num=id=>parseFloat((document.getElementById(id)||{}).value)||0;
 
 function localDT(iso){
+  // Slice directly — no Date() to avoid timezone conversion bug
   if(!iso)return'';
-  try{const d=new Date(iso);const p=n=>String(n).padStart(2,'0');return`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`}catch{return''}
+  return iso.slice(0,16);
 }
 function fmtDate(d){
   if(!d)return'—';const s=d.split('T')[0].split('-');
