@@ -448,6 +448,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .itin-event-place{font-size:12px;color:var(--mu);margin-bottom:2px}
 .itin-event-notes{font-size:12px;color:var(--dm);font-style:italic;margin-bottom:4px}
 .itin-event-actions{display:flex;gap:6px;margin-top:6px}
+
+/* ─── DRIVE EMBED ───────────────────────────────────── */
+#drive-iframe{transition:opacity .2s}
+#drive-embed-panel .panel-card{border-radius:10px}
 </style>
 </head>
 <body>
@@ -585,7 +589,65 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div id="page-docs" class="page">
     <div class="topbar">
       <div class="trip-header"><h1><em>Documentos</em></h1><div class="trip-meta"><span class="badge" id="docs-badge">—</span></div></div>
-      <div class="topbar-actions"><button class="btn btn-primary" onclick="openModal('addDoc')">+ Adicionar</button></div>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost" id="drive-view-toggle" onclick="_driveToggleView()" title="Alternar lista/grade" style="display:none">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Grade
+        </button>
+        <button class="btn btn-ghost" id="drive-open-btn" onclick="_driveOpenFolder()" title="Abrir no Google Drive" style="display:none">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Drive
+        </button>
+        <button class="btn btn-primary" onclick="openModal('addDoc')">+ Adicionar</button>
+      </div>
+    </div>
+    <!-- Google Drive embed panel -->
+    <div id="drive-embed-panel" style="display:none;margin-bottom:20px">
+      <!-- Header -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:8px;flex:1">
+          <!-- Google Drive "triangle" logo in app colors -->
+          <svg width="20" height="18" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg">
+            <path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#e8c87a" opacity=".7"/>
+            <path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0 -1.2 4.5h27.5z" fill="#e8c87a" opacity=".5"/>
+            <path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#e8c87a" opacity=".9"/>
+            <path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#7ac8e8" opacity=".6"/>
+            <path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#e8c87a" opacity=".4"/>
+            <path d="m73.4 26.8-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 27.7h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#7ac8e8" opacity=".5"/>
+          </svg>
+          <span style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--tx)">Google Drive</span>
+          <span id="drive-folder-name" style="font-size:12px;color:var(--mu)"></span>
+        </div>
+      </div>
+      <!-- iframe container with dark border frame -->
+      <div style="border-radius:var(--r);overflow:hidden;border:1px solid var(--bd);box-shadow:0 4px 24px rgba(0,0,0,.4)">
+        <!-- thin accent bar on top -->
+        <div style="height:3px;background:linear-gradient(90deg,var(--ac),var(--ac2));opacity:.6"></div>
+        <iframe id="drive-iframe" src="" width="100%" height="500" frameborder="0"
+          style="display:block"></iframe>
+        <!-- bottom bar -->
+        <div style="padding:8px 14px;background:var(--sf2);border-top:1px solid var(--bd);display:flex;align-items:center;gap:8px">
+          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--dm)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span style="font-size:11px;color:var(--dm);font-family:'JetBrains Mono',monospace">A pasta deve estar compartilhada como "qualquer pessoa com o link"</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- No drive linked -->
+    <div id="docs-no-drive" style="display:none">
+      <div class="panel-card" style="border:1px dashed var(--bd);background:transparent;display:flex;align-items:center;gap:16px;padding:24px">
+        <div style="width:48px;height:48px;border-radius:12px;background:var(--sf2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--dm)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:600;color:var(--tx);margin-bottom:4px">Nenhuma pasta do Google Drive vinculada</div>
+          <div style="font-size:12px;color:var(--mu)">Adicione o link da pasta do Drive na configuração da viagem para visualizar os documentos aqui.</div>
+        </div>
+        <button class="btn btn-ghost" style="white-space:nowrap;flex-shrink:0" onclick="openEditTrip(S.currentTripId)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Editar viagem
+        </button>
+      </div>
     </div>
     <div id="docs-list"></div>
   </div>
@@ -601,7 +663,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <button class="bn-item" data-page="itinerary" onclick="showPage('itinerary')"><span class="ic"><i data-lucide="calendar-days"></i></span>Roteiro</button>
     <button class="bn-item" data-page="docs" onclick="showPage('docs')"><span class="ic"><i data-lucide="file-text"></i></span>Docs</button>
     <button class="bn-item" data-page="expenses" onclick="showPage('expenses')"><span class="ic"><i data-lucide="wallet"></i></span>Gastos</button>
-    <button class="bn-item" data-page="trips" onclick="showPage('trips')"><span class="ic"><i data-lucide="globe"></i></span>Viagens</button>
+
   </div>
 </nav>
 
@@ -806,6 +868,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div class="form-group"><label class="form-lbl">Orçamento Total (BRL)</label><input class="form-input" id="trip-budget" type="number" placeholder="Ex: 18000" min="0"/></div>
     <div class="form-group"><label class="form-lbl">Música Tema</label><input class="form-input" id="trip-theme-song" placeholder="Ex: https://youtu.be/dQw4w9WgXcQ"/><div style="font-size:11px;color:var(--dm);margin-top:5px;font-family:'JetBrains Mono',monospace">Cole o link do YouTube</div></div>
+   <div class="form-group"><label class="form-lbl">Pasta do Google Drive</label><input class="form-input" id="trip-drive-url" placeholder="Ex: https://drive.google.com/drive/folders/..."/><div style="font-size:11px;color:var(--dm);margin-top:5px;font-family:'JetBrains Mono',monospace">Pasta compartilhada com "qualquer pessoa com o link"</div></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('newTrip')">Cancelar</button>
       <button class="btn btn-primary" id="btn-save-trip" onclick="saveTrip()">Criar Viagem</button>
@@ -2029,6 +2092,131 @@ function moneySpan(val, formatted) {
 }
 
 
+// ─── DOCS + GOOGLE DRIVE ──────────────────────────────────────────────────────
+let _driveView = 'grid'; // 'list' or 'grid' — default: grid
+let _driveFolderUrl = '';
+
+function _extractDriveFolderId(url) {
+  if (!url) return null;
+  const patterns = [
+    /\/folders\/([a-zA-Z0-9_-]{10,})/,
+    /id=([a-zA-Z0-9_-]{10,})/,
+  ];
+  for (const p of patterns) {
+    const m = url.match(p);
+    if (m) return m[1];
+  }
+  return null;
+}
+
+function _driveToggleView() {
+  _driveView = _driveView === 'list' ? 'grid' : 'list';
+  const btn = document.getElementById('drive-view-toggle');
+  if (btn) {
+    const isGrid = _driveView === 'grid';
+    btn.innerHTML = isGrid
+      ? '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> Lista'
+      : '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg> Grade';
+  }
+  const id = _extractDriveFolderId(_driveFolderUrl);
+  if (id) {
+    const fr = document.getElementById('drive-iframe');
+    if (fr) fr.src = `https://drive.google.com/embeddedfolderview?id=${id}#${_driveView}`;
+  }
+}
+
+function _driveOpenFolder() {
+  if (_driveFolderUrl) window.open(_driveFolderUrl, '_blank');
+}
+
+function renderDocs() {
+  const trip = curTrip();
+  document.getElementById('docs-badge').textContent = trip ? trip.name : '—';
+
+  const embedPanel  = document.getElementById('drive-embed-panel');
+  const noDriveMsg  = document.getElementById('docs-no-drive');
+  const toggleBtn   = document.getElementById('drive-view-toggle');
+  const openBtn     = document.getElementById('drive-open-btn');
+
+  _driveFolderUrl = trip ? (trip.drive_folder_url || '') : '';
+  const folderId = _extractDriveFolderId(_driveFolderUrl);
+
+  if (folderId) {
+    embedPanel.style.display = 'block';
+    noDriveMsg.style.display = 'none';
+    toggleBtn.style.display  = '';
+    openBtn.style.display    = '';
+    const fr = document.getElementById('drive-iframe');
+    const newSrc = `https://drive.google.com/embeddedfolderview?id=${folderId}#${_driveView}`;
+    if (fr.src !== newSrc) fr.src = newSrc;
+  } else {
+    embedPanel.style.display = 'none';
+    noDriveMsg.style.display = trip ? 'block' : 'none';
+    toggleBtn.style.display  = 'none';
+    openBtn.style.display    = 'none';
+  }
+
+  // Supabase docs list (kept for any extra docs stored there)
+  const list = document.getElementById('docs-list');
+  if (!S.docs || !S.docs.length) {
+    list.innerHTML = '';
+    return;
+  }
+  const TYPE_LABEL = {
+    seguro:'Seguro Viagem', passaporte:'Passaporte', visto:'Visto',
+    voucher_hotel:'Voucher Hotel', passagem:'Passagem', outro:'Outro'
+  };
+  list.innerHTML = `<div class="sec-hdr" style="margin-top:16px"><div class="sec-title">Documentos cadastrados</div></div>` +
+    S.docs.map(d => `
+    <div class="panel-card" style="margin-bottom:10px;display:flex;align-items:center;gap:14px">
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:600;color:var(--tx)">${d.title||'—'}</div>
+        <div style="font-size:12px;color:var(--mu);margin-top:2px">${TYPE_LABEL[d.type]||d.type}${d.notes ? ' · '+d.notes : ''}</div>
+        ${d.expiry_date ? `<div style="font-size:11px;color:var(--rd);margin-top:2px">Vence: ${fmtDate(d.expiry_date)}</div>` : ''}
+      </div>
+      ${d.file_url ? `<a href="${d.file_url}" target="_blank" class="btn btn-ghost" style="font-size:11px;padding:4px 10px;white-space:nowrap">Abrir</a>` : ''}
+      <button class="action-btn danger" onclick="delDoc('${d.id}')">
+        <span style="display:inline-flex;align-items:center;gap:3px">
+          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          Excluir
+        </span>
+      </button>
+    </div>`).join('');
+}
+
+async function saveDoc() {
+  const trip = curTrip(); if (!trip) return showToast('Selecione uma viagem','error');
+  const title = gv('doc-title');
+  if (!title) return showToast('Título é obrigatório','error');
+  setBusy('btn-save-doc', true, 'Salvando...');
+  const payload = {
+    trip_id: trip.id,
+    type: gv('doc-type')||'outro',
+    title: title.trim(),
+    notes: gv('doc-notes')||null,
+    expiry_date: gv('doc-expiry')||null,
+    file_url: gv('doc-url')||null,
+  };
+  const {error} = await db.from('trip_documents').insert(payload);
+  setBusy('btn-save-doc', false, 'Salvar');
+  if (error) return showToast('Erro: '+error.message,'error');
+  showToast('Documento adicionado!','success');
+  closeModal('addDoc');
+  ['doc-title','doc-notes','doc-expiry','doc-url'].forEach(id=>setVal(id,''));
+  const {data} = await db.from('trip_documents').select('*').eq('trip_id',trip.id).order('type');
+  S.docs = data||[];
+  renderDocs();
+}
+
+async function delDoc(id) {
+  if (!confirm('Excluir este documento?')) return;
+  await db.from('trip_documents').delete().eq('id',id);
+  S.docs = S.docs.filter(d=>d.id!==id);
+  renderDocs();
+  showToast('Excluído','success');
+}
+
+
 // TRIP
 function openEditTrip(id){
   const t=S.trips.find(x=>x.id===id);if(!t)return;
@@ -2036,7 +2224,7 @@ function openEditTrip(id){
   document.getElementById('modal-trip-title').textContent='Editar Viagem';
   document.getElementById('btn-save-trip').textContent='Salvar Alterações';
   setVal('trip-name',t.name);setVal('trip-currency',t.currency||'BRL');
-  setVal('trip-theme-song',t.theme_song||'');
+  setVal('trip-theme-song',t.theme_song||'');setVal('trip-drive-url',t.drive_folder_url||'');
   resetCountryTags(t.country||'');
   setVal('trip-start',t.start_date||'');setVal('trip-end',t.end_date||'');setVal('trip-budget',t.budget||'');
   openModal('newTrip');
@@ -2046,7 +2234,7 @@ async function saveTrip(){
   if(!gv('trip-name'))return showToast('Nome é obrigatório','error');
   setBusy('btn-save-trip',true,editingTripId?'Salvando...':'Criando...');
   const countriesISO=_tripCountries.map(c=>c.iso).join(',');
-  const payload={name:gv('trip-name'),country:countriesISO||null,currency:gv('trip-currency')||'BRL',theme_song:gv('trip-theme-song')||null,
+  const payload={name:gv('trip-name'),country:countriesISO||null,currency:gv('trip-currency')||'BRL',theme_song:gv('trip-theme-song')||null,drive_folder_url:gv('trip-drive-url')||null,
     start_date:gv('trip-start')||null,end_date:gv('trip-end')||null,budget:num('trip-budget')};
   if(editingTripId){
     const{error}=await db.from('trips').update(payload).eq('id',editingTripId);
@@ -2066,7 +2254,7 @@ async function saveTrip(){
     await loadAllTripData();
     renderSidebar();renderOverview();syncEyeButtons();
   }
-  ['trip-name','trip-currency','trip-start','trip-end','trip-budget','trip-theme-song'].forEach(id=>setVal(id,''));
+  ['trip-name','trip-currency','trip-start','trip-end','trip-budget','trip-theme-song','trip-drive-url'].forEach(id=>setVal(id,''));
   resetCountryTags('');
 }
 
