@@ -2175,12 +2175,7 @@ function renderDocs() {
         ${d.expiry_date ? `<div style="font-size:11px;color:var(--rd);margin-top:2px">Vence: ${fmtDate(d.expiry_date)}</div>` : ''}
       </div>
       ${d.file_url ? `<a href="${d.file_url}" target="_blank" class="btn btn-ghost" style="font-size:11px;padding:4px 10px;white-space:nowrap">Abrir</a>` : ''}
-      <button class="action-btn danger" onclick="delDoc('${d.id}')">
-        <span style="display:inline-flex;align-items:center;gap:3px">
-          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-          Excluir
-        </span>
-      </button>
+      <button class="action-btn danger" onclick="delDoc('${d.id}')"><span style="display:inline-flex;align-items:center;gap:3px"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg> Excluir</span></button>
     </div>`).join('');
 }
 
