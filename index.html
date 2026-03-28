@@ -97,12 +97,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 /* ─── SIDE PANEL ─────────────────────────────────────── */
 .side-panel{display:flex;flex-direction:column;gap:20px}
 .panel-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);padding:20px}
-.map-ph{background:#0d1018;border-radius:10px;height:180px;position:relative;overflow:hidden;margin-bottom:14px}
+.map-ph{background:#0d1018;border-radius:10px;height:200px;position:relative;overflow:hidden;margin-bottom:14px}
 .map-dot{width:10px;height:10px;border-radius:50%;background:var(--ac);box-shadow:0 0 0 4px rgba(232,200,122,.25);z-index:1}
-#world-map-svg{width:100%;height:100%;display:block;border-radius:10px}
-#world-map-svg .land{fill:var(--bd);transition:fill .3s}
-#world-map-svg .land.highlight{fill:var(--ac2)}
-#world-map-svg .land.highlight-main{fill:var(--ac)}
 .map-country-label{position:absolute;bottom:8px;left:10px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ac);letter-spacing:1px;text-transform:uppercase;opacity:.9}
 .info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd);font-size:13px}
 .info-row:last-child{border-bottom:none}
@@ -374,6 +370,64 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   .itin-actions-row{display:flex;flex-direction:column;align-items:flex-end;gap:6px;padding-left:10px}
   .itin-type-badge{font-size:9px;padding:2px 6px}
 }
+
+/* ─── OVERVIEW TRIP CARDS ───────────────────────────── */
+.ov-trip-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px 20px;margin-bottom:10px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:16px;border-left:3px solid transparent}
+.ov-trip-card:hover{background:var(--sf2)}
+.ov-trip-card.selected{border-left-color:var(--ac);background:rgba(232,200,122,.05)}
+.ov-trip-card.status-active{border-left-color:var(--gn)}
+.ov-trip-card.status-active.selected{border-left-color:var(--ac)}
+.ov-trip-card.status-past{opacity:.7}
+.ov-trip-status-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.ov-trip-info{flex:1;min-width:0}
+.ov-trip-name{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+.ov-trip-meta{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mu);display:flex;gap:10px;flex-wrap:wrap}
+.ov-trip-right{text-align:right;flex-shrink:0}
+.ov-trip-total{font-family:'Playfair Display',serif;font-size:16px;color:var(--ac)}
+.ov-trip-days{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mu);margin-top:2px}
+@media(max-width:640px){
+  .ov-trip-card{padding:12px 14px;gap:12px}
+  .ov-trip-total{font-size:14px}
+}
+
+/* ─── COUNTRY TAGS ───────────────────────────────────── */
+.country-tags-wrap{background:var(--sf2);border:1px solid var(--bd);border-radius:8px;padding:6px 10px;min-height:44px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;cursor:text;transition:border-color .15s}
+.country-tags-wrap:focus-within{border-color:var(--ac)}
+.country-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(232,200,122,.12);border:1px solid rgba(232,200,122,.25);color:var(--ac);border-radius:5px;padding:3px 8px;font-size:12px;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.country-tag-remove{cursor:pointer;opacity:.6;display:flex;align-items:center;transition:opacity .15s;line-height:1}
+.country-tag-remove:hover{opacity:1}
+.country-tag-remove svg{width:10px;height:10px;stroke:currentColor;stroke-width:2.5}
+.country-tags-input{border:none;background:transparent;outline:none;color:var(--tx);font-family:'Inter',sans-serif;font-size:14px;min-width:120px;flex:1;padding:2px 0}
+.country-tags-input::placeholder{color:var(--dm)}
+
+/* ─── MUSIC PLAYER ───────────────────────────────────── */
+.trip-music-bar{display:flex;align-items:center;gap:10px;background:var(--sf2);border:1px solid var(--bd);border-radius:10px;padding:10px 14px;margin-bottom:16px;transition:all .3s;flex-wrap:wrap}
+.trip-music-bar.playing{border-color:rgba(232,200,122,.3);background:rgba(232,200,122,.05)}
+.music-play-btn{width:32px;height:32px;border-radius:50%;background:var(--ac);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.music-play-btn:hover{background:#f0d48a;transform:scale(1.05)}
+.music-play-btn svg{width:14px;height:14px;stroke:#0d0f14;stroke-width:2.5;fill:none}
+.music-play-btn.playing svg.icon-play{display:none}
+.music-play-btn.playing svg.icon-pause{display:flex}
+.music-play-btn svg.icon-pause{display:none}
+.music-info{flex:1;min-width:0}
+.music-title{font-family:'Playfair Display',serif;font-size:13px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.music-artist{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mu);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.music-bars{display:flex;gap:2px;align-items:flex-end;height:16px;flex-shrink:0}
+.music-bar-anim{width:3px;border-radius:2px;background:var(--ac);opacity:0}
+.playing .music-bar-anim{opacity:1;animation:musicBars .8s ease infinite alternate}
+.playing .music-bar-anim:nth-child(2){animation-delay:.15s}
+.playing .music-bar-anim:nth-child(3){animation-delay:.3s}
+.playing .music-bar-anim:nth-child(4){animation-delay:.1s}
+@keyframes musicBars{0%{height:4px}100%{height:14px}}
+
+/* ─── YOUTUBE EMBED PLAYER ──────────────────────────────── */
+.yt-embed-wrap{background:var(--sf);border:1px solid var(--bd);border-radius:12px;overflow:hidden;position:relative}
+.yt-embed-wrap::before{content:'';display:block;padding-top:56.25%} /* 16:9 */
+.yt-embed-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.yt-embed-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sf2);border-bottom:1px solid var(--bd)}
+.yt-embed-label{font-family:'Playfair Display',serif;font-size:13px;color:var(--ac);display:flex;align-items:center;gap:7px}
+.yt-embed-close{cursor:pointer;opacity:.5;display:flex;align-items:center;transition:opacity .15s}
+.yt-embed-close:hover{opacity:1}
 </style>
 </head>
 <body>
@@ -427,22 +481,23 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <!-- OVERVIEW -->
   <div id="page-overview" class="page active">
     <div class="topbar">
-      <div class="trip-header"><h1 id="ov-title">Carregando...</h1><div class="trip-meta" id="ov-meta"></div></div>
+      <div class="trip-header"><h1 id="ov-title">Visão <em>Geral</em></h1><div class="trip-meta" id="ov-meta"></div></div>
       <div class="topbar-actions">
-        <button class="btn btn-ghost" onclick="openModal('newTrip')">+ Nova viagem</button>
-        <button class="btn btn-primary" onclick="openAddTransport()">+ Adicionar</button>
+        <button class="btn btn-ghost" onclick="ovClearFilter()" id="ov-clear-btn" style="display:none">✕ Limpar filtro</button>
+        <button class="btn btn-primary" onclick="openModal('newTrip')">+ Nova viagem</button>
       </div>
     </div>
     <div class="stats-row" id="ov-stats"></div>
     <div class="content-grid">
       <div>
-        <div class="sec-hdr"><div class="sec-title">Itinerário</div><button class="btn btn-ghost" style="font-size:13px;padding:7px 14px" onclick="showPage('transport')">Ver tudo</button></div>
-        <div id="ov-timeline"></div>
+        <div class="sec-hdr"><div class="sec-title" id="ov-trips-title">Todas as Viagens</div></div>
+        <div id="ov-trips-list"></div>
+        <div id="ov-music-player" style="display:none;margin-top:16px"></div>
       </div>
       <div class="side-panel">
         <div class="panel-card">
-          <div class="sec-title" style="margin-bottom:14px" id="ov-country-title">—</div>
-          <div class="map-ph" id="ov-map-container"><svg id="world-map-svg" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"></svg><div class="map-country-label" id="ov-map-label"></div></div>
+          <div class="sec-title" style="margin-bottom:14px" id="ov-country-title">Mapa</div>
+          <div class="map-ph" id="ov-map-container"></div>
           <div id="ov-country-info"></div>
         </div>
         <div class="panel-card" id="ov-budget-card"></div>
@@ -461,7 +516,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="tab" onclick="filterTr('voo',this)"><span class="ic"><i data-lucide="plane"></i></span> Voos</div>
       <div class="tab" onclick="filterTr('trem',this)"><span class="ic"><i data-lucide="train-front"></i></span> Trem</div>
       <div class="tab" onclick="filterTr('onibus',this)"><span class="ic"><i data-lucide="bus"></i></span> Ônibus</div>
-      <div class="tab" onclick="filterTr('metro',this)"><span class="ic"><i data-lucide="train-subway-tunnel" style=""></i></span> Metrô</div>
+      <div class="tab" onclick="filterTr('metro',this)"><span class="ic"><i data-lucide="cable-car"></i></span> Metrô</div>
     </div>
     <div id="transport-list"></div>
   </div>
@@ -620,7 +675,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <div id="modal-addTransport" class="modal-overlay" onclick="closeBg(event,'addTransport')">
   <div class="modal wide">
     <div class="modal-title"><span id="modal-transport-title">Novo Trecho</span><span class="modal-close" onclick="closeModal('addTransport')">×</span></div>
-    <div class="form-group"><label class="form-lbl">Tipo</label><select class="form-select" id="t-type" onchange="onTypeChange()"><option value="voo">Voo</option><option value="trem"><span class="ic"><i data-lucide="train-front"></i></span> Trem</option><option value="onibus"><span class="ic"><i data-lucide="bus"></i></span> Ônibus</option><option value="metro"><span class="ic"><i data-lucide="train-subway-tunnel" style=""></i></span> Metrô</option><option value="barco">Barco</option><option value="outro">Outro</option></select></div>
+    <div class="form-group"><label class="form-lbl">Tipo</label><select class="form-select" id="t-type" onchange="onTypeChange()"><option value="voo">Voo</option><option value="trem"><span class="ic"><i data-lucide="train-front"></i></span> Trem</option><option value="onibus"><span class="ic"><i data-lucide="bus"></i></span> Ônibus</option><option value="metro"><span class="ic"><i data-lucide="cable-car"></i></span> Metrô</option><option value="barco">Barco</option><option value="outro">Outro</option></select></div>
     <div class="form-section-title"><span class="ic"><i data-lucide="plane"></i></span> Trecho principal</div>
     <div class="form-row">
       <div class="form-group"><label class="form-lbl" id="lbl-origin">Aeroporto de Origem</label><div class="ac-wrap"><input class="ac-input" id="t-origin" placeholder="Ex: GRU — Guarulhos" autocomplete="off" oninput="acSearch('origin',this.value)" onfocus="acSearch('origin',this.value)" onkeydown="acKey(event,'origin')"/><div class="ac-dropdown" id="ac-origin"></div></div></div>
@@ -676,7 +731,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <!-- MODAL: EXPENSE -->
 <div id="modal-addExpense" class="modal-overlay" onclick="closeBg(event,'addExpense')">
   <div class="modal">
-    <div class="modal-title">Gastos do Dia <span class="modal-close" onclick="closeModal('addExpense')">×</span></div>
+    <div class="modal-title"><span id="modal-expense-title">Gastos do Dia</span><span class="modal-close" onclick="closeModal('addExpense')">×</span></div>
     <div class="form-group"><label class="form-lbl">Data</label><input class="form-input" id="e-date" type="date"/></div>
     <div class="form-row">
       <div class="form-group"><label class="form-lbl">Alimentação (BRL)</label><input class="form-input" id="e-food" type="number" placeholder="0" min="0"/></div>
@@ -703,8 +758,17 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div class="modal">
     <div class="modal-title"><span id="modal-trip-title">Nova Viagem</span><span class="modal-close" onclick="closeModal('newTrip')">×</span></div>
     <div class="form-group"><label class="form-lbl">Nome da Viagem</label><input class="form-input" id="trip-name" placeholder="Ex: Japão 2025"/></div>
-    <div class="form-row">
-      <div class="form-group"><label class="form-lbl">País</label><input class="form-input" id="trip-country" placeholder="Ex: Japão"/></div>
+    <div class="form-row" style="grid-template-columns:1fr">
+      <div class="form-group" style="grid-column:1/-1"><label class="form-lbl">Países</label>
+        <div class="ac-wrap">
+          <div class="country-tags-wrap" id="country-tags-wrap" onclick="document.getElementById('trip-country-input').focus()">
+            <div id="country-tags-list"></div>
+            <input class="country-tags-input" id="trip-country-input" placeholder="Buscar país..." autocomplete="off"
+              oninput="acCountry(this.value)" onfocus="acCountry(this.value)" onkeydown="countryTagKey(event)"/>
+          </div>
+          <div class="ac-dropdown" id="ac-country"></div>
+        </div>
+      </div>
       <div class="form-group"><label class="form-lbl">Moeda Local</label>
       <div class="ac-wrap">
         <input class="ac-input" id="trip-currency" placeholder="Ex: JPY — Iene Japonês" autocomplete="off"
@@ -718,6 +782,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="form-group"><label class="form-lbl">Data de Volta</label><input class="form-input" id="trip-end" type="date"/></div>
     </div>
     <div class="form-group"><label class="form-lbl">Orçamento Total (BRL)</label><input class="form-input" id="trip-budget" type="number" placeholder="Ex: 18000" min="0"/></div>
+    <div class="form-group"><label class="form-lbl">Música Tema</label><input class="form-input" id="trip-theme-song" placeholder="Ex: https://youtu.be/dQw4w9WgXcQ"/><div style="font-size:11px;color:var(--dm);margin-top:5px;font-family:'JetBrains Mono',monospace">Cole o link do YouTube</div></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('newTrip')">Cancelar</button>
       <button class="btn btn-primary" id="btn-save-trip" onclick="saveTrip()">Criar Viagem</button>
@@ -939,8 +1004,10 @@ async function boot(){
     const{data,error}=await db.from('trips').select('*').order('start_date',{ascending:false});
     if(error)throw error;
     S.trips=data||[];
-    if(S.trips.length){S.currentTripId=S.trips[0].id;await reloadTrip()}
+    if(S.trips.length){S.currentTripId=S.trips[0].id;await reloadTrip();}
+    await loadAllTripData();
     renderSidebar();renderOverview();
+    _bootYTPlayer(); // pre-init YT player
   }catch(e){
     showToast('Erro de conexão: '+e.message,'error');
     document.getElementById('ov-title').innerHTML='Erro ao conectar';
@@ -973,7 +1040,10 @@ function renderSidebar(){
 async function switchTrip(id){
   S.currentTripId=id;showLoading(true,'Carregando...');
   await reloadTrip();showLoading(false);
-  renderSidebar();renderOverview();
+  renderSidebar();
+  // If a trip is filtered in overview, update filter to this trip
+  if(ovFilterTripId)ovFilterTripId=id;
+  renderOverview();
   if(document.getElementById('page-transport').classList.contains('active'))renderTransport();
   if(document.getElementById('page-accommodation').classList.contains('active'))renderAccomm();
   if(document.getElementById('page-expenses').classList.contains('active'))renderExpenses();
@@ -983,67 +1053,420 @@ async function switchTrip(id){
 }
 
 // OVERVIEW
-function renderOverview(){
-  const trip=curTrip();
-  if(!trip){
-    document.getElementById('ov-title').innerHTML='Sem viagens';
-    document.getElementById('ov-meta').innerHTML='<span class="badge">Crie sua primeira viagem →</span>';
-    document.getElementById('ov-stats').innerHTML='';
-    document.getElementById('ov-timeline').innerHTML='<div class="empty-state"><div class="ei"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.3"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 2c-2-2-4-2-5.5-.5L10 5 1.8 6.2c-.5.1-.9.5-.8 1.1l1.1 4a1 1 0 0 0 .7.7l4 1.1a1 1 0 0 1 .6.5l2.4 4.2c.3.5.9.7 1.4.4l2.9-1.7a1 1 0 0 0 .4-1.3Z"/></svg></div><p>Nenhuma viagem.<br>Clique em "+ Nova viagem".</p></div>';
-    document.getElementById('ov-budget-card').innerHTML='';
+
+// ─── OVERVIEW STATE ───────────────────────────────────────────────────────────
+// null = visão global (todas as viagens); string = trip_id filtrado
+let ovFilterTripId = null;
+let _autoplayMusic = false;
+
+// Cache de agregados por viagem: { trip_id: {totTr, totAc, totEx, total} }
+let _ovCache = {};
+let _ovAllTransports = [];
+
+async function loadAllTripData() {
+  // Carrega transports, accommodations e expenses de TODAS as viagens de uma vez
+  const [trRes, acRes, exRes] = await Promise.all([
+    db.from('transport_legs').select('trip_id,price,parent_leg_id,origin,destination').is('parent_leg_id', null),
+    db.from('accommodations').select('trip_id,check_in,check_out,price_per_night'),
+    db.from('daily_expenses').select('trip_id,food,transport,activities,shopping,health,other'),
+  ]);
+  _ovCache = {};
+  S.trips.forEach(t => { _ovCache[t.id] = {totTr:0, totAc:0, totEx:0}; });
+  _ovAllTransports = trRes.data||[];
+  _ovAllTransports.forEach(r => { if(_ovCache[r.trip_id]) _ovCache[r.trip_id].totTr += (r.price||0); });
+  (acRes.data||[]).forEach(r => { if(_ovCache[r.trip_id]) _ovCache[r.trip_id].totAc += calcNights(r.check_in,r.check_out)*(r.price_per_night||0); });
+  (exRes.data||[]).forEach(r => { if(_ovCache[r.trip_id]) _ovCache[r.trip_id].totEx += daySum(r); });
+  Object.keys(_ovCache).forEach(id => { _ovCache[id].total = _ovCache[id].totTr + _ovCache[id].totAc + _ovCache[id].totEx; });
+}
+
+function ovClearFilter() {
+  ovFilterTripId = null;
+  document.getElementById('ov-clear-btn').style.display = 'none';
+  renderOverview();
+}
+
+async function ovSelectTrip(tripId) {
+  if (ovFilterTripId === tripId) {
+    ovFilterTripId = null;
+    document.getElementById('ov-clear-btn').style.display = 'none';
+    _stopMusic();
+    renderOverview();
+  } else {
+    ovFilterTripId = tripId;
+    document.getElementById('ov-clear-btn').style.display = '';
+    S.currentTripId = tripId;
+
+    // ── Start music IMMEDIATELY (synchronous, before any await) ──────────────
+    // The browser only allows autoplay within the synchronous user gesture context.
+    // We must create the iframe HERE before await reloadTrip() breaks that context.
+    const trip = S.trips.find(t => t.id === tripId);
+    if (trip && trip.theme_song) {
+      renderMusicPlayer(trip, true); // creates iframe with autoplay=1 right now
+    }
+
+    // ── Now load trip data (async — gesture context already used above) ───────
+    showLoading(true, 'Carregando...');
+    await reloadTrip();
+    showLoading(false);
+    _autoplayMusic = false; // already played above
+    renderOverview();
+  }
+}
+
+// ─── IATA → ISO2 + TRIP COUNTRY DETECTION ────────────────────────────────────
+const IATA_ISO={
+  GRU:'BR',CGH:'BR',VCP:'BR',GIG:'BR',SDU:'BR',BSB:'BR',CNF:'BR',PLU:'BR',
+  SSA:'BR',REC:'BR',FOR:'BR',MAO:'BR',BEL:'BR',POA:'BR',CWB:'BR',FLN:'BR',
+  NAT:'BR',MCZ:'BR',AJU:'BR',SLZ:'BR',CGB:'BR',CGR:'BR',VIX:'BR',JPA:'BR',GYN:'BR',
+  LHR:'GB',LGW:'GB',EDI:'GB',MAN:'GB',STN:'GB',BHX:'GB',
+  CDG:'FR',ORY:'FR',NCE:'FR',MRS:'FR',LYS:'FR',BOD:'FR',
+  AMS:'NL',FRA:'DE',MUC:'DE',BER:'DE',DUS:'DE',HAM:'DE',STR:'DE',CGN:'DE',
+  MAD:'ES',BCN:'ES',PMI:'ES',AGP:'ES',VLC:'ES',SVQ:'ES',
+  LIS:'PT',OPO:'PT',FAO:'PT',
+  FCO:'IT',MXP:'IT',LIN:'IT',VCE:'IT',NAP:'IT',BLQ:'IT',
+  ATH:'GR',SKG:'GR',ZRH:'CH',GVA:'CH',BSL:'CH',
+  VIE:'AT',PRG:'CZ',BUD:'HU',WAW:'PL',KRK:'PL',
+  ARN:'SE',GOT:'SE',OSL:'NO',CPH:'DK',HEL:'FI',DUB:'IE',
+  IST:'TR',SAW:'TR',ADB:'TR',ESB:'TR',
+  RIX:'LV',VNO:'LT',TLL:'EE',KBP:'UA',SOF:'BG',OTP:'RO',
+  BEG:'RS',ZAG:'HR',LJU:'SI',SKP:'MK',TIA:'AL',
+  JFK:'US',LGA:'US',EWR:'US',LAX:'US',SFO:'US',ORD:'US',ATL:'US',DFW:'US',
+  MIA:'US',BOS:'US',SEA:'US',DEN:'US',LAS:'US',MCO:'US',IAH:'US',PHX:'US',
+  SAN:'US',DTW:'US',MSP:'US',PHL:'US',CLT:'US',BWI:'US',SLC:'US',
+  YYZ:'CA',YUL:'CA',YVR:'CA',YYC:'CA',YOW:'CA',YEG:'CA',
+  MEX:'MX',CUN:'MX',GDL:'MX',MTY:'MX',TLC:'MX',
+  EZE:'AR',AEP:'AR',COR:'AR',MDZ:'AR',
+  SCL:'CL',BOG:'CO',MDE:'CO',LIM:'PE',UIO:'EC',GYE:'EC',
+  MVD:'UY',PTY:'PA',SDQ:'DO',PUJ:'DO',HAV:'CU',
+  CCS:'VE',GEO:'GY',PBM:'SR',ASU:'PY',VVI:'BO',LPB:'BO',
+  GRU:'BR',
+  NRT:'JP',HND:'JP',KIX:'JP',NGO:'JP',CTS:'JP',
+  ICN:'KR',GMP:'KR',PUS:'KR',
+  PEK:'CN',PVG:'CN',CAN:'CN',CTU:'CN',SZX:'CN',KMG:'CN',XIY:'CN',
+  HKG:'HK',TPE:'TW',KHH:'TW',
+  SIN:'SG',BKK:'TH',HKT:'TH',CNX:'TH',
+  KUL:'MY',DPS:'ID',CGK:'ID',SUB:'ID',MNL:'PH',CEB:'PH',
+  SGN:'VN',HAN:'VN',DAD:'VN',REP:'KH',VTE:'LA',RGN:'MM',
+  DEL:'IN',BOM:'IN',CCU:'IN',MAA:'IN',BLR:'IN',HYD:'IN',
+  DAC:'BD',CMB:'LK',KTM:'NP',
+  DXB:'AE',AUH:'AE',SHJ:'AE',DOH:'QA',RUH:'SA',JED:'SA',
+  MCT:'OM',KWI:'KW',BAH:'BH',AMM:'JO',TLV:'IL',BEY:'LB',
+  CAI:'EG',LXR:'EG',HRG:'EG',CMN:'MA',RAK:'MA',TNG:'MA',
+  ALG:'DZ',TUN:'TN',TRP:'LY',ADD:'ET',NBO:'KE',MBA:'KE',
+  DAR:'TZ',ZNZ:'TZ',EBB:'UG',KGL:'RW',
+  JNB:'ZA',CPT:'ZA',DUR:'ZA',PLZ:'ZA',
+  LOS:'NG',ABV:'NG',ACC:'GH',ABJ:'CI',DKR:'SN',CMN:'MA',
+  SVO:'RU',DME:'RU',LED:'RU',ALA:'KZ',TAS:'UZ',
+  TBS:'GE',EVN:'AM',GYD:'AZ',ASB:'TM',KBL:'AF',ISB:'PK',KHI:'PK',LHE:'PK',
+  SYD:'AU',MEL:'AU',BNE:'AU',PER:'AU',ADL:'AU',CBR:'AU',
+  AKL:'NZ',CHC:'NZ',WLG:'NZ',
+};
+
+function getTripCountries(tripTransports) {
+  const isos = new Set();
+  (tripTransports||[]).filter(t => !t.parent_leg_id).forEach(t => {
+    const getIATA = str => {
+      if (!str) return null;
+      const m = str.trim().match(/^([A-Z]{3})\b/);
+      return m ? m[1] : null;
+    };
+    const oIATA = getIATA(t.origin);
+    const dIATA = getIATA(t.destination);
+    if (oIATA && IATA_ISO[oIATA]) isos.add(IATA_ISO[oIATA]);
+    if (dIATA && IATA_ISO[dIATA]) isos.add(IATA_ISO[dIATA]);
+  });
+  return [...isos];
+}
+
+
+// ─── COUNTRIES LIST + TAG SYSTEM ─────────────────────────────────────────────
+const COUNTRIES_LIST=[
+  {iso:'AF',name:'Afeganistão'},{iso:'ZA',name:'África do Sul'},{iso:'AL',name:'Albânia'},
+  {iso:'DE',name:'Alemanha'},{iso:'AD',name:'Andorra'},{iso:'AO',name:'Angola'},
+  {iso:'AG',name:'Antígua e Barbuda'},{iso:'SA',name:'Arábia Saudita'},
+  {iso:'DZ',name:'Argélia'},{iso:'AR',name:'Argentina'},{iso:'AM',name:'Armênia'},
+  {iso:'AU',name:'Austrália'},{iso:'AT',name:'Áustria'},{iso:'AZ',name:'Azerbaijão'},
+  {iso:'BS',name:'Bahamas'},{iso:'BH',name:'Bahrein'},{iso:'BD',name:'Bangladesh'},
+  {iso:'BB',name:'Barbados'},{iso:'BE',name:'Bélgica'},{iso:'BZ',name:'Belize'},
+  {iso:'BJ',name:'Benin'},{iso:'BY',name:'Bielorrússia'},{iso:'BO',name:'Bolívia'},
+  {iso:'BA',name:'Bósnia e Herzegovina'},{iso:'BW',name:'Botsuana'},{iso:'BR',name:'Brasil'},
+  {iso:'BN',name:'Brunei'},{iso:'BG',name:'Bulgária'},{iso:'BF',name:'Burkina Faso'},
+  {iso:'BI',name:'Burundi'},{iso:'BT',name:'Butão'},{iso:'CV',name:'Cabo Verde'},
+  {iso:'CM',name:'Camarões'},{iso:'KH',name:'Camboja'},{iso:'CA',name:'Canadá'},
+  {iso:'QA',name:'Catar'},{iso:'KZ',name:'Cazaquistão'},{iso:'TD',name:'Chade'},
+  {iso:'CL',name:'Chile'},{iso:'CN',name:'China'},{iso:'CY',name:'Chipre'},
+  {iso:'CO',name:'Colômbia'},{iso:'KM',name:'Comores'},{iso:'CG',name:'Congo'},
+  {iso:'CD',name:'Congo (RDC)'},{iso:'KP',name:'Coreia do Norte'},{iso:'KR',name:'Coreia do Sul'},
+  {iso:'CR',name:'Costa Rica'},{iso:'CI',name:"Costa do Marfim"},{iso:'HR',name:'Croácia'},
+  {iso:'CU',name:'Cuba'},{iso:'DK',name:'Dinamarca'},{iso:'DJ',name:'Djibuti'},
+  {iso:'DM',name:'Dominica'},{iso:'EG',name:'Egito'},{iso:'AE',name:'Emirados Árabes Unidos'},
+  {iso:'EC',name:'Equador'},{iso:'ER',name:'Eritreia'},{iso:'SK',name:'Eslováquia'},
+  {iso:'SI',name:'Eslovênia'},{iso:'ES',name:'Espanha'},{iso:'US',name:'Estados Unidos'},
+  {iso:'ET',name:'Etiópia'},{iso:'FJ',name:'Fiji'},{iso:'PH',name:'Filipinas'},
+  {iso:'FI',name:'Finlândia'},{iso:'FR',name:'França'},{iso:'GA',name:'Gabão'},
+  {iso:'GM',name:'Gâmbia'},{iso:'GH',name:'Gana'},{iso:'GE',name:'Geórgia'},
+  {iso:'GD',name:'Granada'},{iso:'GR',name:'Grécia'},{iso:'GL',name:'Groenlândia'},
+  {iso:'GT',name:'Guatemala'},{iso:'GY',name:'Guiana'},{iso:'GF',name:'Guiana Francesa'},
+  {iso:'GN',name:'Guiné'},{iso:'GW',name:'Guiné-Bissau'},{iso:'GQ',name:'Guiné Equatorial'},
+  {iso:'HT',name:'Haiti'},{iso:'HN',name:'Honduras'},{iso:'HK',name:'Hong Kong'},
+  {iso:'HU',name:'Hungria'},{iso:'YE',name:'Iêmen'},{iso:'IN',name:'Índia'},
+  {iso:'ID',name:'Indonésia'},{iso:'IR',name:'Irã'},{iso:'IQ',name:'Iraque'},
+  {iso:'IE',name:'Irlanda'},{iso:'IS',name:'Islândia'},{iso:'IL',name:'Israel'},
+  {iso:'IT',name:'Itália'},{iso:'JM',name:'Jamaica'},{iso:'JP',name:'Japão'},
+  {iso:'JO',name:'Jordânia'},{iso:'KE',name:'Quênia'},{iso:'KI',name:'Kiribati'},
+  {iso:'KW',name:'Kuwait'},{iso:'LA',name:'Laos'},{iso:'LS',name:'Lesoto'},
+  {iso:'LV',name:'Letônia'},{iso:'LB',name:'Líbano'},{iso:'LR',name:'Libéria'},
+  {iso:'LY',name:'Líbia'},{iso:'LI',name:'Liechtenstein'},{iso:'LT',name:'Lituânia'},
+  {iso:'LU',name:'Luxemburgo'},{iso:'MO',name:'Macau'},{iso:'MK',name:'Macedônia do Norte'},
+  {iso:'MG',name:'Madagascar'},{iso:'MY',name:'Malásia'},{iso:'MW',name:'Malaui'},
+  {iso:'MV',name:'Maldivas'},{iso:'ML',name:'Mali'},{iso:'MT',name:'Malta'},
+  {iso:'MA',name:'Marrocos'},{iso:'MU',name:'Maurício'},{iso:'MR',name:'Mauritânia'},
+  {iso:'MX',name:'México'},{iso:'MM',name:'Mianmar'},{iso:'MZ',name:'Moçambique'},
+  {iso:'MD',name:'Moldávia'},{iso:'MC',name:'Mônaco'},{iso:'MN',name:'Mongólia'},
+  {iso:'ME',name:'Montenegro'},{iso:'NA',name:'Namíbia'},{iso:'NR',name:'Nauru'},
+  {iso:'NP',name:'Nepal'},{iso:'NI',name:'Nicarágua'},{iso:'NE',name:'Níger'},
+  {iso:'NG',name:'Nigéria'},{iso:'NO',name:'Noruega'},{iso:'NZ',name:'Nova Zelândia'},
+  {iso:'OM',name:'Omã'},{iso:'NL',name:'Países Baixos'},{iso:'PW',name:'Palau'},
+  {iso:'PA',name:'Panamá'},{iso:'PG',name:'Papua Nova Guiné'},{iso:'PK',name:'Paquistão'},
+  {iso:'PY',name:'Paraguai'},{iso:'PE',name:'Peru'},{iso:'PL',name:'Polônia'},
+  {iso:'PT',name:'Portugal'},{iso:'PR',name:'Porto Rico'},{iso:'GB',name:'Reino Unido'},
+  {iso:'CF',name:'República Centro-Africana'},{iso:'DO',name:'República Dominicana'},
+  {iso:'RO',name:'Romênia'},{iso:'RW',name:'Ruanda'},{iso:'RU',name:'Rússia'},
+  {iso:'SB',name:'Ilhas Salomão'},{iso:'WS',name:'Samoa'},{iso:'SM',name:'San Marino'},
+  {iso:'LC',name:'Santa Lúcia'},{iso:'KN',name:'São Cristóvão e Neves'},
+  {iso:'VC',name:'São Vicente e Granadinas'},{iso:'ST',name:'São Tomé e Príncipe'},
+  {iso:'SN',name:'Senegal'},{iso:'SL',name:'Serra Leoa'},{iso:'RS',name:'Sérvia'},
+  {iso:'SC',name:'Seicheles'},{iso:'SG',name:'Singapura'},{iso:'SY',name:'Síria'},
+  {iso:'SO',name:'Somália'},{iso:'LK',name:'Sri Lanka'},{iso:'SD',name:'Sudão'},
+  {iso:'SS',name:'Sudão do Sul'},{iso:'SE',name:'Suécia'},{iso:'CH',name:'Suíça'},
+  {iso:'SR',name:'Suriname'},{iso:'TH',name:'Tailândia'},{iso:'TW',name:'Taiwan'},
+  {iso:'TJ',name:'Tajiquistão'},{iso:'TZ',name:'Tanzânia'},{iso:'TL',name:'Timor-Leste'},
+  {iso:'TG',name:'Togo'},{iso:'TO',name:'Tonga'},{iso:'TT',name:'Trinidad e Tobago'},
+  {iso:'TN',name:'Tunísia'},{iso:'TM',name:'Turcomenistão'},{iso:'TR',name:'Turquia'},
+  {iso:'UA',name:'Ucrânia'},{iso:'UG',name:'Uganda'},{iso:'UY',name:'Uruguai'},
+  {iso:'UZ',name:'Uzbequistão'},{iso:'VU',name:'Vanuatu'},{iso:'VA',name:'Vaticano'},
+  {iso:'VE',name:'Venezuela'},{iso:'VN',name:'Vietnã'},{iso:'XK',name:'Kosovo'},
+  {iso:'PS',name:'Palestina'},{iso:'EE',name:'Estônia'},{iso:'KG',name:'Quirguistão'},
+  {iso:'ZM',name:'Zâmbia'},{iso:'ZW',name:'Zimbábue'},
+];
+const COUNTRIES_MAP={};
+COUNTRIES_LIST.forEach(c=>{COUNTRIES_MAP[c.iso]=c.name;});
+const COUNTRIES_UNIQUE=Object.entries(COUNTRIES_MAP).map(([iso,name])=>({iso,name})).sort((a,b)=>a.name.localeCompare(b.name,'pt'));
+
+let _tripCountries=[];
+let acCurrIdx2=-1;
+
+function acCountry(q){
+  const dd=document.getElementById('ac-country');
+  if(!dd)return;
+  const selected=new Set(_tripCountries.map(c=>c.iso));
+  const list=q.length<1
+    ?COUNTRIES_UNIQUE.filter(c=>!selected.has(c.iso)).slice(0,8)
+    :COUNTRIES_UNIQUE.filter(c=>!selected.has(c.iso)&&(c.name.toLowerCase().startsWith(q.toLowerCase())||c.iso.toLowerCase()===q.toLowerCase()||c.name.toLowerCase().includes(q.toLowerCase()))).slice(0,10);
+  if(!list.length){dd.innerHTML='<div class="ac-empty">País não encontrado</div>';dd.classList.add('open');return;}
+  dd.innerHTML=list.map((c,i)=>`<div class="ac-item" onmousedown="addCountryTag('${c.iso}','${c.name.replace(/'/g,"&#39;")}')"><span class="ac-iata">${c.iso}</span><span class="ac-name">${c.name}</span></div>`).join('');
+  dd.classList.add('open');
+}
+
+function addCountryTag(iso,name){
+  if(_tripCountries.find(c=>c.iso===iso))return;
+  _tripCountries.push({iso,name});
+  renderCountryTags();
+  const inp=document.getElementById('trip-country-input');
+  if(inp){inp.value='';inp.focus();}
+  const dd=document.getElementById('ac-country');
+  if(dd)dd.classList.remove('open');
+}
+
+function removeCountryTag(iso){
+  _tripCountries=_tripCountries.filter(c=>c.iso!==iso);
+  renderCountryTags();
+  const inp=document.getElementById('trip-country-input');
+  if(inp)inp.focus();
+}
+
+function renderCountryTags(){
+  const list=document.getElementById('country-tags-list');
+  if(!list)return;
+  list.innerHTML=_tripCountries.map(c=>`<span class="country-tag">${c.name}<span class="country-tag-remove" onmousedown="event.preventDefault();removeCountryTag('${c.iso}')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></span>`).join('');
+}
+
+function countryTagKey(e){
+  const inp=document.getElementById('trip-country-input');
+  if(e.key==='Backspace'&&inp&&inp.value===''&&_tripCountries.length){_tripCountries.pop();renderCountryTags();}
+  if(e.key==='Escape'){const dd=document.getElementById('ac-country');if(dd)dd.classList.remove('open');}
+}
+
+function resetCountryTags(countries){
+  _tripCountries=[];
+  if(!countries){renderCountryTags();return;}
+  const isos=Array.isArray(countries)?countries:countries.split(',').map(s=>s.trim()).filter(Boolean);
+  isos.forEach(iso=>{const name=COUNTRIES_MAP[iso]||iso;_tripCountries.push({iso,name});});
+  renderCountryTags();
+}
+
+
+function renderOverview() {
+  const M = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+  if (!S.trips.length) {
+    document.getElementById('ov-title').innerHTML = 'Visão <em>Geral</em>';
+    document.getElementById('ov-meta').innerHTML = '';
+    document.getElementById('ov-stats').innerHTML = '';
+    document.getElementById('ov-trips-list').innerHTML = '<div class="empty-state"><div class="ei"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.3"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><p>Nenhuma viagem criada ainda.<br>Clique em "+ Nova viagem".</p></div>';
+    document.getElementById('ov-budget-card').innerHTML = '';
+    document.getElementById('ov-country-title').textContent = 'Mapa';
+    document.getElementById('ov-country-info').innerHTML = '';
+    _stopMusic();
+    const mpEl2=document.getElementById('ov-music-player');if(mpEl2)mpEl2.style.display='none';
+    renderCountryMap([],[],[]);
     return;
   }
-  const days=tripDays(trip),isAct=isActive(trip),isPst=isPast(trip.end_date);
-  const status=isPst?'Concluída':(isAct?'Em andamento':'Planejada');
-  document.getElementById('ov-title').innerHTML=trip.name.replace(/(\d{4})/,'<em>$1</em>');
-  document.getElementById('ov-meta').innerHTML=`
-    <span class="badge ${isAct?'active':''}"><span style="display:inline-flex;align-items:center"><svg xmlns="http://www.w3.org/2000/svg" width="7" height="7" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/></svg></span>${status}</span>
-    <span class="badge">${fmtDate(trip.start_date)} → ${fmtDate(trip.end_date)}</span>
-    <span class="badge">${days} dias</span>
-    <span class="badge"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>${trip.currency||'BRL'}</span>`;
 
-  const roots=S.transports.filter(t=>!t.parent_leg_id);
-  const totTr=S.transports.reduce((s,t)=>s+(t.price||0),0);
-  const totAc=S.accommodations.reduce((s,a)=>s+(calcNights(a.check_in,a.check_out)*(a.price_per_night||0)),0);
-  const totEx=S.expenses.reduce((s,e)=>s+daySum(e),0);
-  const total=totTr+totAc+totEx,budget=trip.budget||0;
-  const pct=budget>0?Math.min(Math.round(total/budget*100),100):0;
-  const rem=Math.max(0,daysLeft(trip.end_date));
+  const filtered = ovFilterTripId ? S.trips.filter(t => t.id === ovFilterTripId) : S.trips;
+  const trip = ovFilterTripId ? S.trips.find(t => t.id === ovFilterTripId) : null;
 
-  document.getElementById('ov-stats').innerHTML=`
-    <div class="stat-card"><div class="stat-lbl">Total Gasto</div><div class="stat-val" style="color:var(--ac)">R$ ${fmt(total)}</div><div class="stat-sub">${budget>0?`de R$ ${fmt(budget)} orçados`:'sem orçamento'}</div></div>
-    <div class="stat-card"><div class="stat-lbl">Passagens</div><div class="stat-val" style="color:var(--ac2)">R$ ${fmt(totTr)}</div><div class="stat-sub">${roots.length} trecho(s)</div></div>
-    <div class="stat-card"><div class="stat-lbl">Hospedagem</div><div class="stat-val" style="color:var(--ac3)">R$ ${fmt(totAc)}</div><div class="stat-sub">${S.accommodations.length} local(is)</div></div>
-    <div class="stat-card"><div class="stat-lbl">${isPst?'Duração':'Dias restantes'}</div><div class="stat-val" style="color:var(--gn)">${isPst?days:rem}</div><div class="stat-sub">até ${fmtDate(trip.end_date)}</div></div>`;
+  // ── Stats ─────────────────────────────────────────────────────────────────
+  let totalTr = 0, totalAc = 0, totalEx = 0;
+  if (ovFilterTripId) {
+    // Live data for selected trip
+    totalTr = S.transports.filter(x=>!x.parent_leg_id).reduce((s,x)=>s+(x.price||0),0);
+    totalAc = S.accommodations.reduce((s,a)=>s+calcNights(a.check_in,a.check_out)*(a.price_per_night||0),0);
+    totalEx = S.expenses.reduce((s,e)=>s+daySum(e),0);
+  } else {
+    // Aggregated cache across all trips
+    S.trips.forEach(t => {
+      const c = _ovCache[t.id] || {};
+      totalTr += c.totTr||0;
+      totalAc += c.totAc||0;
+      totalEx += c.totEx||0;
+    });
+  }
+  const grandTotal = totalTr + totalAc + totalEx;
 
-  const tl=roots.slice(0,4);
-  document.getElementById('ov-timeline').innerHTML=tl.length
-    ?tl.map((t,i)=>`
-      <div class="timeline-item">
-        <div class="tl-left"><div class="tl-dot">${EMOJI[t.type]||''}</div>${i<tl.length-1?'<div class="tl-line"></div>':''}</div>
-        <div class="transport-card ${t.done?'done':''}">
-          <div class="transport-row">
-            <div><div class="transport-route"><span style="display:inline-flex;align-items:center;margin-right:6px">${EMOJI[t.type]||''}</span><span class="route-city">${t.origin}</span><span class="route-arrow"> → </span><span class="route-city">${t.destination}</span></div>
-            <div class="transport-detail"><span>${fmtDT(t.departure_at)}</span>${t.carrier?`<span>${t.carrier}</span>`:''} ${t.flight_number?`<span>Voo ${t.flight_number}</span>`:''} ${t.booking_ref?`<span>Ref: ${t.booking_ref}</span>`:''}</div></div>
-            <div style="text-align:right"><div class="transport-price">R$ ${fmt(t.price)}</div><span class="type-badge">${t.type}</span></div>
-          </div>
+  let statsHtml = `
+    <div class="stat-card"><div class="stat-lbl">Total Gasto</div><div class="stat-val" style="color:var(--ac)">R$ ${fmt(grandTotal)}</div><div class="stat-sub">${ovFilterTripId ? 'nesta viagem' : `${S.trips.length} viagem(ns)`}</div></div>
+    <div class="stat-card"><div class="stat-lbl">Passagens</div><div class="stat-val" style="color:var(--ac2)">R$ ${fmt(totalTr)}</div><div class="stat-sub">${ovFilterTripId ? `${S.transports.filter(x=>!x.parent_leg_id).length} trecho(s)` : 'total'}</div></div>
+    <div class="stat-card"><div class="stat-lbl">Hospedagem</div><div class="stat-val" style="color:var(--ac3)">R$ ${fmt(totalAc)}</div><div class="stat-sub">${ovFilterTripId ? `${S.accommodations.length} local(is)` : 'total'}</div></div>`;
+
+  if (ovFilterTripId && trip) {
+    const isPst = isPast(trip.end_date), days = tripDays(trip), rem = Math.max(0, daysLeft(trip.end_date));
+    statsHtml += `<div class="stat-card"><div class="stat-lbl">${isPst?'Duração':'Dias restantes'}</div><div class="stat-val" style="color:var(--gn)">${isPst?days:rem}</div><div class="stat-sub">até ${fmtDate(trip.end_date)}</div></div>`;
+  } else {
+    const future = S.trips.filter(t=>!isPast(t.end_date)&&!isActive(t)).length;
+    const active = S.trips.filter(t=>isActive(t)).length;
+    statsHtml += `<div class="stat-card"><div class="stat-lbl">Próximas</div><div class="stat-val" style="color:var(--gn)">${future}</div><div class="stat-sub">${active} em andamento</div></div>`;
+  }
+  document.getElementById('ov-stats').innerHTML = statsHtml;
+
+  // ── Trips list ────────────────────────────────────────────────────────────
+  const secTitle = ovFilterTripId ? `Viagem selecionada` : 'Todas as Viagens';
+  document.getElementById('ov-trips-title').textContent = secTitle;
+
+  document.getElementById('ov-trips-list').innerHTML = S.trips.map(t => {
+    const c = _ovCache[t.id] || {};
+    const act = isActive(t), past = isPast(t.end_date);
+    const statusClass = act ? 'status-active' : past ? 'status-past' : 'status-future';
+    const dotColor = act ? 'var(--gn)' : past ? 'var(--dm)' : 'var(--ac2)';
+    const statusLabel = act ? 'Em andamento' : past ? 'Concluída' : 'Planejada';
+    const sel = ovFilterTripId === t.id;
+    const sd = t.start_date ? t.start_date.split('-') : null;
+    const ed = t.end_date ? t.end_date.split('-') : null;
+    const dateStr = sd&&ed ? `${sd[2]} ${M[parseInt(sd[1])-1]} ${sd[0]} → ${ed[2]} ${M[parseInt(ed[1])-1]} ${ed[0]}` : '—';
+    const total = c.total || 0;
+    const rem = !past ? Math.max(0, daysLeft(t.end_date)) : null;
+    const days = tripDays(t);
+    return `<div class="ov-trip-card ${statusClass} ${sel?'selected':''}" onclick="ovSelectTrip('${t.id}')">
+      <div class="ov-trip-status-dot" style="background:${dotColor}"></div>
+      <div class="ov-trip-info">
+        <div class="ov-trip-name">${t.name}</div>
+        <div class="ov-trip-meta">
+          <span>${dateStr}</span>
+          <span>${(t.country||'').split(',').map(s=>COUNTRIES_MAP[s.trim()]||s.trim()).filter(Boolean).join(', ')||'—'}</span>
+          <span>${t.currency||'BRL'}</span>
+          <span class="badge ${act?'active':''}" style="padding:1px 7px;font-size:9px">${statusLabel}</span>
         </div>
-      </div>`).join('')
-    :'<div class="empty-state"><div class="ei"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.3"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 2c-2-2-4-2-5.5-.5L10 5 1.8 6.2c-.5.1-.9.5-.8 1.1l1.1 4a1 1 0 0 0 .7.7l4 1.1a1 1 0 0 1 .6.5l2.4 4.2c.3.5.9.7 1.4.4l2.9-1.7a1 1 0 0 0 .4-1.3Z"/></svg></div><p>Nenhuma passagem adicionada.</p></div>';
+      </div>
+      <div class="ov-trip-right">
+        <div class="ov-trip-total">R$ ${fmt(total)}</div>
+        <div class="ov-trip-days">${past ? `${days}d` : rem !== null ? `${rem}d restantes` : ''}</div>
+      </div>
+    </div>`;
+  }).join('');
 
-  document.getElementById('ov-country-title').textContent=trip.country?trip.country:'—';
-  renderCountryMap(trip.country||'');
-  document.getElementById('ov-country-info').innerHTML=`
-    <div class="info-row"><span class="info-key">Moeda local</span><span class="info-val">${trip.currency||'—'}</span></div>
-    <div class="info-row"><span class="info-key">Passagens</span><span class="info-val">${roots.length} trechos</span></div>
-    <div class="info-row"><span class="info-key">Hospedagem</span><span class="info-val">${S.accommodations.length} locais</span></div>
-    <div class="info-row"><span class="info-key">Dias c/ gastos</span><span class="info-val">${S.expenses.length}</span></div>`;
-  document.getElementById('ov-budget-card').innerHTML=budget>0?`
-    <div class="sec-title" style="margin-bottom:14px">Orçamento</div>
-    <div style="margin:12px 0"><div class="bbar-lbl"><span>Gasto: R$ ${fmt(total)}</span><span>${pct}%</span></div><div class="bbar"><div class="bbar-fill" style="width:${pct}%"></div></div></div>
-    <div style="font-size:12px;color:var(--mu)">Restam <strong style="color:var(--gn)">R$ ${fmt(budget-total)}</strong></div>`
-    :`<div class="sec-title" style="margin-bottom:10px">Orçamento</div><div style="font-size:13px;color:var(--dm)">Sem orçamento definido.</div>`;
+  // ── Map ───────────────────────────────────────────────────────────────────
+  if (ovFilterTripId && trip) {
+    const priISOs=(trip.country||'').split(',').map(s=>s.trim()).filter(Boolean);
+    const tripCountryNames = priISOs.map(iso=>COUNTRIES_MAP[iso]||iso).join(', ');
+    document.getElementById('ov-country-title').textContent = tripCountryNames || 'Mapa';
+    renderMusicPlayer(trip, _autoplayMusic);
+    _autoplayMusic = false;
+    // Visão de viagem selecionada: dourado = países desta viagem
+    // As outras viagens ficam no fundo: concluídas=dourado suave, futuras=azul
+    const otherVisitedISOs = [...new Set(
+      S.trips.filter(t => t.id!==ovFilterTripId && isPast(t.end_date) && t.country)
+        .flatMap(t => t.country.split(',').map(s=>s.trim()).filter(Boolean))
+    )].filter(c => !priISOs.includes(c));
+    const otherFutureISOs = [...new Set(
+      S.trips.filter(t => t.id!==ovFilterTripId && !isPast(t.end_date) && t.country)
+        .flatMap(t => t.country.split(',').map(s=>s.trim()).filter(Boolean))
+    )].filter(c => !priISOs.includes(c) && !otherVisitedISOs.includes(c));
+    renderCountryMap(priISOs, otherVisitedISOs, otherFutureISOs);
+    document.getElementById('ov-country-info').innerHTML = `
+      <div class="info-row"><span class="info-key">País(es)</span><span class="info-val" style="text-align:right;max-width:160px;white-space:normal;line-height:1.3">${tripCountryNames||'—'}</span></div>
+      <div class="info-row"><span class="info-key">Moeda</span><span class="info-val">${trip.currency||'—'}</span></div>
+      <div class="info-row"><span class="info-key">Passagens</span><span class="info-val">${S.transports.filter(x=>!x.parent_leg_id).length} trechos</span></div>
+      <div class="info-row"><span class="info-key">Hospedagem</span><span class="info-val">${S.accommodations.length} locais</span></div>
+      <div class="info-row"><span class="info-key">Gastos</span><span class="info-val">${S.expenses.length} dias</span></div>`;
+    // Budget card
+    const budget = trip.budget||0;
+    const pct = budget>0 ? Math.min(Math.round(grandTotal/budget*100),100) : 0;
+    document.getElementById('ov-budget-card').innerHTML = budget>0 ? `
+      <div class="sec-title" style="margin-bottom:14px">Orçamento</div>
+      <div style="margin:12px 0"><div class="bbar-lbl"><span>Gasto: R$ ${fmt(grandTotal)}</span><span>${pct}%</span></div><div class="bbar"><div class="bbar-fill" style="width:${pct}%"></div></div></div>
+      <div style="font-size:12px;color:var(--mu)">Restam <strong style="color:var(--gn)">R$ ${fmt(budget-grandTotal)}</strong></div>`
+      : `<div class="sec-title" style="margin-bottom:10px">Orçamento</div><div style="font-size:13px;color:var(--dm)">Sem orçamento definido.</div>`;
+  } else {
+    // Global view — derive ISO lists from transport legs of all trips
+    const getISO = s => {
+      if (!s) return null;
+      const m = s.trim().match(/^([A-Z]{3})\b/);
+      return m ? (IATA_ISO[m[1]] || null) : null;
+    };
+    const pastTripIds  = new Set(S.trips.filter(t => isPast(t.end_date)).map(t => t.id));
+    const futureTripIds = new Set(S.trips.filter(t => !isPast(t.end_date)).map(t => t.id));
+    // Use trip.country field (ISO list) directly for map highlighting
+    const allVisitedISOs = [...new Set(
+      S.trips.filter(t => isPast(t.end_date) && t.country)
+        .flatMap(t => t.country.split(',').map(s=>s.trim()).filter(Boolean))
+    )];
+    const futPlannedISOs = [...new Set(
+      S.trips.filter(t => !isPast(t.end_date) && t.country)
+        .flatMap(t => t.country.split(',').map(s=>s.trim()).filter(Boolean))
+    )].filter(c => !allVisitedISOs.includes(c));
+    const allCountries = [...new Set([...allVisitedISOs, ...futPlannedISOs])];
+    _stopMusic();
+    document.getElementById('ov-country-title').textContent = 'Mapa de Viagens';
+    const mpEl=document.getElementById('ov-music-player');if(mpEl)mpEl.style.display='none';
+    renderCountryMap([], allVisitedISOs, futPlannedISOs);
+    const nActive = S.trips.filter(t=>isActive(t)).length;
+    const nPast = S.trips.filter(t=>isPast(t.end_date)).length;
+    const nFuture = S.trips.filter(t=>!isPast(t.end_date)&&!isActive(t)).length;
+    document.getElementById('ov-country-info').innerHTML = `
+      <div class="info-row"><span class="info-key">Em andamento</span><span class="info-val" style="color:var(--gn)">${nActive}</span></div>
+      <div class="info-row"><span class="info-key">Planejadas</span><span class="info-val" style="color:var(--ac2)">${nFuture}</span></div>
+      <div class="info-row"><span class="info-key">Concluídas</span><span class="info-val" style="color:var(--dm)">${nPast}</span></div>
+      <div class="info-row"><span class="info-key">Países</span><span class="info-val">${allCountries.length}</span></div>`;
+    document.getElementById('ov-budget-card').innerHTML = `
+      <div class="sec-title" style="margin-bottom:14px">Total Geral</div>
+      <div class="info-row"><span class="info-key">Passagens</span><span class="info-val" style="color:var(--ac2)">R$ ${fmt(totalTr)}</span></div>
+      <div class="info-row"><span class="info-key">Hospedagem</span><span class="info-val" style="color:var(--ac3)">R$ ${fmt(totalAc)}</span></div>
+      <div class="info-row"><span class="info-key">Gastos diários</span><span class="info-val" style="color:var(--mu)">R$ ${fmt(totalEx)}</span></div>
+      <div class="info-row" style="border-top:1px solid var(--bd);margin-top:4px;padding-top:12px"><span class="info-key" style="font-weight:600;color:var(--tx)">Total</span><span class="info-val" style="color:var(--ac)">R$ ${fmt(grandTotal)}</span></div>`;
+  }
 }
+
+
 
 // TRANSPORT
 function renderTransport(filter){
@@ -1283,7 +1706,10 @@ function renderExpenses(){
       <div style="text-align:right;flex-shrink:0">
         <div class="day-total">R$ ${fmt(total)}</div>
         <div class="day-total-sub">${fmtDate(e.expense_date)}</div>
-        <button class="action-btn danger" style="margin-top:4px" onclick="delExpense('${e.id}')"<span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> Excluir</span></button>
+        <div style="display:flex;gap:4px;margin-top:4px;justify-content:flex-end">
+          <button class="action-btn primary" onclick="openEditExpense('${e.id}')"><span style="display:inline-flex;align-items:center;gap:3px"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</span></button>
+          <button class="action-btn danger" onclick="delExpense('${e.id}')"><span style="display:inline-flex;align-items:center;gap:3px"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg> Excluir</span></button>
+        </div>
       </div>
     </div>`;
   }).join('');
@@ -1303,20 +1729,50 @@ function renderExpenses(){
   }).join('');
 }
 
+let _editingExpenseId = null;
+
+function openEditExpense(id) {
+  const e = S.expenses.find(x=>x.id===id);
+  if (!e) return;
+  _editingExpenseId = id;
+  openModal('addExpense');
+  setVal('e-date', e.expense_date||'');
+  setVal('e-food', e.food||'');
+  setVal('e-transport', e.transport||'');
+  setVal('e-activities', e.activities||'');
+  setVal('e-shopping', e.shopping||'');
+  setVal('e-health', e.health||'');
+  setVal('e-other', e.other||'');
+  setVal('e-note', e.note||'');
+  const titleEl = document.getElementById('modal-expense-title');
+  if (titleEl) titleEl.textContent = 'Editar Gasto';
+  const btnEl = document.getElementById('btn-save-expense');
+  if (btnEl) btnEl.textContent = 'Salvar Alterações';
+}
+
 async function saveExpense(){
   const trip=curTrip();if(!trip)return showToast('Selecione uma viagem primeiro','error');
   if(!gv('e-date'))return showToast('Data é obrigatória','error');
   setBusy('btn-save-expense',true,'Salvando...');
-  const{error}=await db.from('daily_expenses').insert({
-    trip_id:trip.id,expense_date:gv('e-date'),
+  const payload={
+    expense_date:gv('e-date'),
     food:num('e-food'),transport:num('e-transport'),activities:num('e-activities'),
     shopping:num('e-shopping'),health:num('e-health'),other:num('e-other'),note:gv('e-note')||null
-  });
-  setBusy('btn-save-expense',false,'Salvar');
+  };
+  let error;
+  if (_editingExpenseId) {
+    ({error}=await db.from('daily_expenses').update(payload).eq('id',_editingExpenseId));
+  } else {
+    ({error}=await db.from('daily_expenses').insert({trip_id:trip.id,...payload}));
+  }
+  setBusy('btn-save-expense',false,_editingExpenseId?'Salvar Alterações':'Salvar');
   if(error)return showToast('Erro: '+error.message,'error');
-  showToast('Dia registrado!','success');
+  showToast(_editingExpenseId?'Gasto atualizado!':'Dia registrado!','success');
+  _editingExpenseId=null;
   closeModal('addExpense');
   ['e-date','e-food','e-transport','e-activities','e-shopping','e-health','e-other','e-note'].forEach(id=>setVal(id,''));
+  document.getElementById('modal-expense-title').textContent='Adicionar Gastos';
+  document.getElementById('btn-save-expense').textContent='Salvar';
   const{data}=await db.from('daily_expenses').select('*').eq('trip_id',trip.id).order('expense_date');
   S.expenses=data||[];renderExpenses();renderOverview();
 }
@@ -1333,7 +1789,9 @@ function openEditTrip(id){
   editingTripId=id;
   document.getElementById('modal-trip-title').textContent='Editar Viagem';
   document.getElementById('btn-save-trip').textContent='Salvar Alterações';
-  setVal('trip-name',t.name);setVal('trip-country',t.country||'');setVal('trip-currency',t.currency||'BRL');
+  setVal('trip-name',t.name);setVal('trip-currency',t.currency||'BRL');
+  setVal('trip-theme-song',t.theme_song||'');
+  resetCountryTags(t.country||'');
   setVal('trip-start',t.start_date||'');setVal('trip-end',t.end_date||'');setVal('trip-budget',t.budget||'');
   openModal('newTrip');
 }
@@ -1341,7 +1799,8 @@ function openEditTrip(id){
 async function saveTrip(){
   if(!gv('trip-name'))return showToast('Nome é obrigatório','error');
   setBusy('btn-save-trip',true,editingTripId?'Salvando...':'Criando...');
-  const payload={name:gv('trip-name'),country:gv('trip-country')||null,currency:gv('trip-currency')||'BRL',
+  const countriesISO=_tripCountries.map(c=>c.iso).join(',');
+  const payload={name:gv('trip-name'),country:countriesISO||null,currency:gv('trip-currency')||'BRL',theme_song:gv('trip-theme-song')||null,
     start_date:gv('trip-start')||null,end_date:gv('trip-end')||null,budget:num('trip-budget')};
   if(editingTripId){
     const{error}=await db.from('trips').update(payload).eq('id',editingTripId);
@@ -1349,16 +1808,20 @@ async function saveTrip(){
     if(error)return showToast('Erro: '+error.message,'error');
     const idx=S.trips.findIndex(t=>t.id===editingTripId);
     if(idx>=0)S.trips[idx]={...S.trips[idx],...payload};
-    showToast('Viagem atualizada!','success');editingTripId=null;closeModal('newTrip');renderSidebar();renderOverview();
+    showToast('Viagem atualizada!','success');editingTripId=null;closeModal('newTrip');
+    await loadAllTripData();
+    renderSidebar();renderOverview();
   } else {
     const{data,error}=await db.from('trips').insert(payload).select().single();
     setBusy('btn-save-trip',false,'Criar Viagem');
     if(error)return showToast('Erro: '+error.message,'error');
     showToast('Viagem criada!','success');closeModal('newTrip');
-    S.trips.unshift(data);S.currentTripId=data.id;S.transports=[];S.accommodations=[];S.expenses=[];
+    S.trips.unshift(data);S.currentTripId=data.id;S.transports=[];S.accommodations=[];S.expenses=[];S.itinerary=[];S.docs=[];
+    await loadAllTripData();
     renderSidebar();renderOverview();
   }
-  ['trip-name','trip-country','trip-currency','trip-start','trip-end','trip-budget'].forEach(id=>setVal(id,''));
+  ['trip-name','trip-currency','trip-start','trip-end','trip-budget','trip-theme-song'].forEach(id=>setVal(id,''));
+  resetCountryTags('');
 }
 
 // NAVIGATION
@@ -1370,6 +1833,7 @@ function showPage(id){
   document.querySelectorAll('.bn-item[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
   if(id==='transport')renderTransport();
   if(id==='accommodation')renderAccomm();
+  if(id==='addExpense'){_editingExpenseId=null;document.getElementById('modal-expense-title')&&(document.getElementById('modal-expense-title').textContent='Adicionar Gastos');document.getElementById('btn-save-expense')&&(document.getElementById('btn-save-expense').textContent='Salvar');}
   if(id==='expenses')renderExpenses();
   if(id==='itinerary')renderItinerary();
   if(id==='docs')renderDocs();
@@ -1461,585 +1925,459 @@ async function checkAuth(){
 
 
 
-// ─── WORLD MAP — inline Robinson projection ──────────────────
-const COUNTRY_ISO={
-  'afeganistão':'AF','africa do sul':'ZA','albânia':'AL','alemanha':'DE',
-  'angola':'AO','argentina':'AR','armênia':'AM','austrália':'AU','áustria':'AT',
-  'azerbaijão':'AZ','bangladesh':'BD','bélgica':'BE','bielorrússia':'BY',
-  'bolívia':'BO','bósnia':'BA','botswana':'BW','brasil':'BR','bulgária':'BG',
-  'camboja':'KH','camarões':'CM','canadá':'CA','cazaquistão':'KZ','chile':'CL',
-  'china':'CN','chipre':'CY','colômbia':'CO','coreia do sul':'KR','coreia do norte':'KP',
-  'costa rica':'CR','croácia':'HR','cuba':'CU','dinamarca':'DK','egito':'EG',
-  'emirados árabes':'AE','emirados árabes unidos':'AE','equador':'EC','eslováquia':'SK',
-  'eslovênia':'SI','espanha':'ES','etiópia':'ET','etiopia':'ET','finlândia':'FI',
-  'france':'FR','gana':'GH','grécia':'GR','holanda':'NL','hungria':'HU',
-  'índia':'IN','indonésia':'ID','irã':'IR','iraque':'IQ','irlanda':'IE',
-  'islândia':'IS','israel':'IL','itália':'IT','jamaica':'JM','japão':'JP',
-  'jordânia':'JO','kênia':'KE','quênia':'KE','kuwait':'KW','líbano':'LB',
-  'líbia':'LY','lituânia':'LT','luxemburgo':'LU','malásia':'MY','marrocos':'MA',
-  'méxico':'MX','moçambique':'MZ','mongólia':'MN','namíbia':'NA','nepal':'NP',
-  'nigéria':'NG','noruega':'NO','nova zelândia':'NZ','omã':'OM','países baixos':'NL',
-  'paquistão':'PK','panamá':'PA','paraguai':'PY','peru':'PE','polônia':'PL',
-  'portugal':'PT','qatar':'QA','reino unido':'GB','república dominicana':'DO',
-  'romênia':'RO','rússia':'RU','ruanda':'RW','arábia saudita':'SA','senegal':'SN',
-  'sérvia':'RS','singapura':'SG','sri lanka':'LK','suécia':'SE','suíça':'CH',
-  'tailândia':'TH','taiwan':'TW','tanzânia':'TZ','tunísia':'TN','turquia':'TR',
-  'ucrânia':'UA','uruguai':'UY','venezuela':'VE','vietnã':'VN','vietnam':'VN',
-  'zimbabué':'ZW','zimbabue':'ZW','eua':'US','estados unidos':'US',
-  'south africa':'ZA','albania':'AL','germany':'DE','angola':'AO','argentina':'AR',
-  'australia':'AU','austria':'AT','azerbaijan':'AZ','bangladesh':'BD','belgium':'BE',
-  'belarus':'BY','bolivia':'BO','botswana':'BW','brazil':'BR','bulgaria':'BG',
-  'cambodia':'KH','cameroon':'CM','canada':'CA','kazakhstan':'KZ','chile':'CL',
-  'china':'CN','colombia':'CO','south korea':'KR','north korea':'KP','croatia':'HR',
-  'cuba':'CU','denmark':'DK','egypt':'EG','uae':'AE','united arab emirates':'AE',
-  'ecuador':'EC','spain':'ES','ethiopia':'ET','finland':'FI','france':'FR',
-  'ghana':'GH','greece':'GR','netherlands':'NL','hungary':'HU','india':'IN',
-  'indonesia':'ID','iran':'IR','iraq':'IQ','ireland':'IE','iceland':'IS',
-  'israel':'IL','italy':'IT','japan':'JP','jordan':'JO','kenya':'KE',
-  'kuwait':'KW','lebanon':'LB','libya':'LY','lithuania':'LT','luxembourg':'LU',
-  'malaysia':'MY','morocco':'MA','mexico':'MX','mozambique':'MZ','mongolia':'MN',
-  'namibia':'NA','nepal':'NP','nigeria':'NG','norway':'NO','new zealand':'NZ',
-  'oman':'OM','pakistan':'PK','panama':'PA','paraguay':'PY','peru':'PE',
-  'poland':'PL','portugal':'PT','qatar':'QA','united kingdom':'GB','uk':'GB',
-  'romania':'RO','russia':'RU','rwanda':'RW','saudi arabia':'SA','senegal':'SN',
-  'singapore':'SG','sweden':'SE','switzerland':'CH','thailand':'TH','taiwan':'TW',
-  'tanzania':'TZ','turkey':'TR','ukraine':'UA','uruguay':'UY','venezuela':'VE',
-  'vietnam':'VN','zimbabwe':'ZW','united states':'US','usa':'US'
+
+
+
+// ─── WORLD MAP — Robinson, high-density paths, fully embedded ─────────────────
+const _GEO_PATHS={AD:"M483.4,118.1L484.4,118.1L484.1,118.7L483.4,118.4L483.4,118.1Z",AE:"M615.2,175.6L620.4,175.6L625.6,175.6L626.1,181.8L620.9,181.8L615.7,181.8L615.2,175.6Z",AF:"M628.8,132.2L633.1,132.2L637.5,132.2L641.8,132.2L646.1,132.2L650.5,132.2L654.8,132.2L659.2,132.2L663.5,132.2L662.9,136.3L662.3,140.5L661.7,144.6L658.5,147.3L655.4,149.9L652.2,152.6L649.1,155.2L645.9,157.9L642.8,160.5L639.6,163.2L636.6,160.1L633.6,157.0L632.8,152.9L632.0,148.7L631.2,144.6L630.4,140.5L629.6,136.3L628.8,132.2Z",AL:"M528.6,119.9L531.3,123.0L529.2,126.0L526.7,126.0L528.6,119.9Z",AM:"M586.9,119.9L590.0,123.0L593.0,126.0L589.1,132.2L586.2,129.1L583.2,126.0L586.9,119.9Z",AO:"M512.0,262.4L516.6,262.4L521.1,262.4L525.7,262.4L530.2,262.4L534.8,262.4L539.3,262.4L543.9,262.4L543.8,266.7L543.7,271.1L543.7,275.4L543.6,279.8L543.5,284.1L543.4,288.4L543.3,292.8L543.3,297.1L543.2,301.5L543.1,305.8L538.6,305.8L534.1,305.8L529.6,305.8L525.0,305.8L520.5,305.8L516.0,305.8L511.5,305.8L511.6,301.5L511.6,297.1L511.6,292.8L511.7,288.4L511.8,284.1L511.8,279.8L511.9,275.4L511.9,271.1L511.9,266.7L512.0,262.4Z",AR:"M301.9,312.0L306.0,313.6L310.0,315.1L314.1,316.6L318.2,318.2L322.6,318.2L326.9,318.2L331.3,318.2L332.9,322.0L334.5,325.8L336.1,329.6L337.7,333.4L339.4,337.1L341.0,340.9L342.6,344.7L344.2,348.5L345.8,352.3L343.4,356.2L341.0,360.1L338.6,363.9L336.2,367.8L331.9,370.9L327.6,373.9L324.8,377.0L322.0,380.1L322.4,384.2L322.9,388.2L323.3,392.3L323.8,396.3L324.4,400.4L324.9,404.4L325.7,408.4L326.6,412.3L327.4,416.3L323.6,414.3L319.7,412.3L315.9,410.3L314.5,406.5L313.2,402.8L311.8,399.0L310.4,395.2L309.1,391.4L307.7,387.7L306.4,383.9L305.0,380.1L304.5,375.8L304.0,371.4L303.4,367.1L302.9,362.8L302.4,358.5L301.9,354.1L301.4,349.8L300.8,345.5L300.3,341.1L299.8,336.8L300.1,332.7L300.5,328.5L300.9,324.4L301.2,320.3L301.5,316.1L301.9,312.0Z",AT:"M503.4,101.7L507.5,101.7L511.6,101.7L515.8,101.7L519.9,101.7L520.4,107.7L516.2,107.7L512.0,107.7L507.9,107.7L503.7,107.7L503.4,101.7Z",AU:"M777.5,318.2L780.8,316.0L784.2,313.8L787.5,311.6L790.9,309.3L794.2,307.1L797.6,304.9L800.9,302.7L804.2,300.5L807.6,298.3L810.9,296.1L814.3,293.8L817.6,291.6L821.0,289.4L824.3,287.2L829.6,287.2L834.9,287.2L840.2,287.2L841.7,290.9L843.3,294.6L844.8,298.4L846.4,302.1L847.9,305.8L851.6,308.3L855.2,310.8L858.9,313.2L862.5,315.7L866.2,318.2L868.6,322.3L870.9,326.5L873.3,330.6L871.7,334.3L870.0,338.0L868.4,341.8L866.8,345.5L865.1,349.2L863.5,352.9L861.9,356.6L860.3,360.4L858.6,364.1L857.0,367.8L852.0,367.8L847.0,367.8L842.1,367.8L837.1,367.8L832.9,366.0L828.8,364.3L824.6,362.5L820.5,360.7L816.3,358.9L812.2,357.2L808.0,355.4L804.0,355.4L799.9,355.4L795.9,355.4L791.8,355.4L787.8,355.4L782.8,355.4L777.7,355.4L772.7,355.4L773.1,351.3L773.5,347.1L773.9,343.0L774.2,338.9L774.6,334.7L775.0,330.6L775.8,326.5L776.7,322.3L777.5,318.2Z",AZ:"M591.8,119.9L596.6,119.9L601.5,119.9L602.3,124.0L603.2,128.1L604.0,132.2L599.0,132.2L594.1,132.2L593.3,128.1L592.6,124.0L591.8,119.9Z",BA:"M518.2,110.7L525.4,110.7L525.9,116.9L518.7,116.9L518.2,110.7Z",BD:"M707.7,169.4L712.9,169.4L718.1,169.4L718.8,173.5L719.4,177.7L720.1,181.8L714.9,181.8L709.6,181.8L709.0,177.7L708.3,173.5L707.7,169.4Z",BE:"M486.9,95.6L493.8,92.6L494.0,98.6L487.0,98.6L486.9,95.6Z",BF:"M469.4,203.5L474.7,203.5L480.0,203.5L485.3,203.5L485.3,208.7L485.3,213.8L485.3,219.0L480.0,219.0L474.7,219.0L469.4,219.0L469.4,213.8L469.4,208.7L469.4,203.5Z",BG:"M532.9,113.8L537.7,113.8L542.5,113.8L547.3,113.8L552.1,113.8L548.1,119.9L543.2,119.9L538.4,119.9L533.5,119.9L532.9,113.8Z",BH:"M610.4,168.8L611.1,168.8L611.0,170.0L610.4,169.4L610.4,168.8Z",BI:"M557.3,259.3L562.6,259.3L559.9,265.5L557.2,262.4L557.3,259.3Z",BJ:"M485.3,212.8L490.6,212.8L490.6,217.5L490.6,222.1L490.6,226.8L490.6,231.4L485.3,231.4L485.3,226.8L485.3,222.1L485.3,217.5L485.3,212.8Z",BN:"M783.6,234.5L788.9,234.5L789.0,237.6L783.7,237.6L783.6,234.5Z",BO:"M300.3,293.4L304.5,293.4L308.7,293.4L313.0,293.4L317.2,293.4L321.4,293.4L323.5,297.5L325.5,301.7L327.6,305.8L324.5,309.9L321.3,314.1L318.2,318.2L314.1,316.6L310.0,315.1L306.0,313.6L301.9,312.0L301.5,307.4L301.1,302.7L300.7,298.0L300.3,293.4Z",BR:"M341.5,237.6L344.1,240.7L346.7,243.8L350.7,243.8L354.7,243.8L358.7,243.8L362.7,243.8L365.4,246.9L368.1,250.0L370.8,253.1L373.4,256.2L376.1,259.3L378.8,262.4L381.5,266.5L384.3,270.7L387.0,274.8L385.1,278.7L383.2,282.6L381.4,286.4L379.5,290.3L378.6,294.6L377.8,299.0L376.9,303.3L376.1,307.7L375.2,312.0L371.9,315.1L368.7,318.2L365.4,321.3L360.4,324.4L355.8,330.6L354.5,334.7L353.3,338.9L352.0,343.0L348.9,347.6L345.8,352.3L345.1,347.1L344.3,342.0L343.6,336.8L341.1,333.1L338.7,329.4L336.2,325.6L333.8,321.9L331.3,318.2L330.1,314.1L328.8,309.9L327.6,305.8L326.6,301.4L325.6,296.9L324.6,292.5L323.5,288.1L322.5,283.7L321.5,279.2L320.5,274.8L320.4,270.1L320.3,265.5L320.2,260.9L320.1,256.2L323.2,253.5L326.2,250.9L329.3,248.2L332.3,245.6L335.4,242.9L338.4,240.3L341.5,237.6Z",BT:"M706.5,163.2L711.6,163.2L716.8,163.2L718.1,169.4L712.9,169.4L707.7,169.4L706.5,163.2Z",BW:"M532.6,305.8L536.8,305.8L541.0,305.8L545.2,305.8L549.4,305.8L553.6,305.8L553.4,309.9L553.2,314.1L553.0,318.2L552.9,322.3L552.7,326.5L552.5,330.6L548.4,330.6L544.2,330.6L540.1,330.6L535.9,330.6L531.8,330.6L531.9,326.5L532.1,322.3L532.2,318.2L532.3,314.1L532.5,309.9L532.6,305.8Z",BY:"M533.9,83.7L538.4,83.7L542.8,83.7L547.3,83.7L551.8,83.7L552.6,88.2L553.5,92.6L548.9,92.6L544.3,92.6L539.7,92.6L535.1,92.6L534.5,88.2L533.9,83.7Z",BZ:"M246.2,194.2L248.0,200.4L250.7,200.4L251.4,194.2L246.2,194.2Z",CA:"M181.9,66.4L186.8,69.2L191.6,72.1L190.5,76.0L189.4,79.8L188.3,83.7L189.2,88.7L190.2,93.6L191.1,98.6L195.3,98.6L199.5,98.6L203.8,98.6L208.0,98.6L212.2,98.6L216.4,98.6L220.7,98.6L224.9,98.6L229.1,98.6L233.3,98.6L237.6,98.6L241.8,98.6L246.0,98.6L250.2,98.6L254.5,98.6L258.7,98.6L263.1,100.4L267.4,102.2L271.8,104.1L276.1,105.9L280.5,107.7L284.7,109.2L288.9,110.8L293.1,112.3L297.3,113.8L301.6,112.8L306.0,111.7L310.3,110.7L314.2,108.7L318.0,106.7L321.9,104.7L326.0,104.7L330.1,104.7L334.3,104.7L338.4,104.7L334.1,103.2L329.9,101.7L327.1,105.7L324.2,109.8L321.4,113.8L325.4,112.3L329.4,110.8L333.5,109.2L337.5,107.7L341.7,106.7L346.0,105.7L350.2,104.7L354.9,104.7L354.1,99.7L353.2,94.7L352.4,89.7L349.4,85.2L346.4,80.8L343.8,76.4L341.2,72.1L339.6,66.4L338.0,60.8L333.6,59.4L329.2,58.0L324.8,56.6L320.4,55.2L317.0,52.5L313.7,49.8L317.5,48.0L321.4,46.2L325.2,44.4L322.2,40.5L319.2,36.6L315.3,35.8L311.3,34.9L307.4,34.1L303.5,33.3L299.5,32.4L295.6,31.6L290.4,30.8L285.1,29.9L279.9,29.1L275.3,29.1L270.8,29.1L266.2,29.1L261.7,29.1L257.8,30.4L254.0,31.6L250.2,32.9L246.3,34.1L242.4,35.4L238.6,36.6L234.8,37.9L230.9,39.1L227.5,41.8L224.1,44.6L220.7,47.3L217.3,50.0L213.9,52.8L210.4,55.5L207.0,58.2L203.6,60.9L200.2,63.7L196.8,66.4L191.8,66.4L186.9,66.4L181.9,66.4Z",CD:"M527.9,237.6L532.4,237.6L536.8,237.6L541.2,237.6L545.7,237.6L550.1,237.6L554.6,237.6L556.0,242.2L557.3,246.9L558.6,251.5L560.0,256.2L558.0,260.1L555.9,263.9L553.9,267.8L551.8,271.7L549.8,275.6L547.7,279.4L545.6,283.3L543.6,287.2L538.3,287.2L533.0,287.2L527.7,287.2L525.6,283.5L523.5,279.8L521.5,276.0L519.4,272.3L517.3,268.6L520.0,265.5L522.6,262.4L525.3,259.3L528.0,256.2L528.0,251.5L528.0,246.9L527.9,242.2L527.9,237.6Z",CG:"M517.3,243.8L522.6,243.8L528.0,243.8L528.0,248.4L528.0,253.1L527.9,257.8L527.9,262.4L522.6,262.4L517.3,262.4L517.3,257.8L517.3,253.1L517.3,248.4L517.3,243.8Z",CH:"M494.1,101.7L498.8,101.7L503.4,101.7L503.7,107.7L496.6,107.7L494.2,104.7L494.1,101.7Z",CI:"M458.8,219.0L463.0,219.0L467.3,219.0L471.5,219.0L475.8,219.0L480.0,219.0L480.0,223.7L480.0,228.3L480.0,232.9L480.0,237.6L475.7,237.6L471.5,237.6L467.2,237.6L463.0,237.6L458.7,237.6L458.7,232.9L458.8,228.3L458.8,223.7L458.8,219.0Z",CL:"M296.1,305.8L296.6,310.2L297.2,314.7L297.7,319.1L298.2,323.5L298.7,327.9L299.3,332.4L299.8,336.8L300.3,341.1L300.8,345.5L301.4,349.8L301.9,354.1L302.4,358.5L302.9,362.8L303.4,367.1L304.0,371.4L304.5,375.8L305.0,380.1L306.4,383.9L307.7,387.7L309.1,391.4L310.4,395.2L311.8,399.0L313.2,402.8L314.5,406.5L315.9,410.3L319.7,412.3L323.6,414.3L327.4,416.3L327.3,410.4L327.2,404.4L326.7,400.4L326.1,396.3L325.6,392.3L323.7,387.7L321.7,383.1L319.8,378.5L317.8,373.9L316.0,370.2L314.2,366.5L312.4,362.8L310.6,359.1L308.8,355.4L307.0,351.6L305.2,347.9L303.4,344.2L301.6,340.5L299.8,336.8L299.3,332.4L298.7,327.9L298.2,323.5L297.7,319.1L297.2,314.7L296.6,310.2L296.1,305.8Z",CM:"M517.1,212.8L519.8,215.9L522.5,219.0L521.6,223.1L520.8,227.3L519.9,231.4L519.0,235.5L518.2,239.7L517.3,243.8L512.0,243.8L506.7,243.8L506.7,239.7L506.6,235.5L506.6,231.4L508.7,227.7L510.8,224.0L512.9,220.2L515.0,216.5L517.1,212.8Z",CN:"M666.8,126.0L666.9,122.0L667.1,117.9L667.2,113.8L667.3,109.8L667.5,105.8L667.6,101.7L671.7,101.1L675.8,100.6L679.9,100.0L684.0,99.4L688.1,98.8L692.1,98.3L696.2,97.7L700.3,97.1L704.4,96.6L708.5,96.0L712.6,95.4L716.7,94.8L720.8,94.3L724.9,93.7L729.0,93.1L733.0,92.6L737.1,92.0L741.2,91.4L745.3,90.8L749.4,90.3L753.5,89.7L757.4,91.2L761.3,92.7L765.2,94.2L769.1,95.7L773.1,97.2L777.0,98.7L780.9,100.2L784.8,101.7L784.0,105.8L783.1,109.8L782.3,113.8L781.5,117.9L780.6,122.0L779.8,126.0L780.7,130.1L781.5,134.3L782.4,138.4L783.3,142.5L784.1,146.7L785.0,150.8L783.3,154.5L781.6,158.2L779.9,162.0L778.2,165.7L776.5,169.4L774.9,173.1L773.2,176.8L771.5,180.6L769.8,184.3L768.1,188.0L763.6,187.0L759.0,185.9L754.5,184.9L750.0,183.9L745.4,182.8L740.9,181.8L737.2,179.5L733.6,177.2L729.9,174.8L726.2,172.5L722.6,170.2L718.9,167.8L715.3,165.5L711.6,163.2L707.9,160.9L704.1,158.5L700.4,156.2L696.7,153.9L693.0,151.6L689.2,149.2L685.5,146.9L681.8,144.6L678.8,140.9L675.8,137.2L672.8,133.4L669.8,129.7L666.8,126.0Z",CO:"M275.3,225.2L277.3,221.1L279.4,216.9L281.4,212.8L289.3,212.8L291.8,216.5L294.3,220.2L296.7,224.0L299.2,227.7L301.7,231.4L301.6,235.5L301.5,239.7L301.4,243.8L298.7,246.9L296.1,250.0L293.4,253.1L288.9,252.1L284.5,251.0L280.0,250.0L277.4,246.9L274.8,243.8L274.9,239.2L275.1,234.5L275.2,229.8L275.3,225.2Z",CR:"M254.4,219.0L258.2,222.1L262.1,225.2L262.4,220.6L262.6,215.9L258.6,215.9L254.6,215.9L254.4,219.0Z",CU:"M258.2,181.8L262.4,182.8L266.7,183.9L270.9,184.9L275.1,185.9L279.4,187.0L283.6,188.0L284.3,181.8L280.1,180.8L275.8,179.7L271.6,178.7L267.1,179.7L262.7,180.8L258.2,181.8Z",CY:"M560.1,138.4L564.0,139.9L568.0,141.5L565.5,141.5L560.7,144.6L560.1,138.4Z",CZ:"M507.6,92.6L512.2,92.6L516.7,92.6L521.3,92.6L521.9,98.6L517.3,98.6L512.6,98.6L508.0,98.6L507.6,92.6Z",DE:"M493.8,92.6L494.7,86.7L495.6,80.8L499.6,81.5L503.5,82.2L507.4,83.0L511.4,83.7L513.0,88.2L514.5,92.6L512.5,97.2L510.5,101.7L505.8,101.7L501.1,101.7L496.4,101.7L495.1,97.2L493.8,92.6Z",DJ:"M591.2,212.8L596.5,212.8L596.8,219.0L591.5,219.0L591.2,212.8Z",DK:"M497.8,80.8L503.2,79.3L508.7,77.9L508.9,80.8L503.4,82.2L498.0,83.7L497.8,80.8Z",DO:"M290.8,194.2L296.1,194.2L301.3,194.2L301.9,188.0L296.6,188.0L291.4,188.0L290.8,194.2Z",DZ:"M475.0,138.4L479.1,137.4L483.3,136.3L487.4,135.3L491.5,134.3L495.7,133.2L499.8,132.2L502.4,135.3L505.0,138.4L505.1,142.5L505.2,146.7L505.3,150.8L505.4,154.9L505.6,159.1L505.7,163.2L505.8,167.3L505.9,171.5L506.0,175.6L502.5,177.7L499.1,179.7L495.6,181.8L492.1,183.9L488.7,185.9L485.2,188.0L480.0,188.0L474.7,188.0L469.5,188.0L468.2,183.3L467.0,178.7L465.8,174.1L464.5,169.4L465.8,165.5L467.1,161.7L468.4,157.8L469.8,153.9L471.1,150.0L472.4,146.2L473.7,142.3L475.0,138.4Z",EC:"M266.8,259.3L271.2,258.3L275.7,257.2L280.1,256.2L277.6,262.4L272.3,265.5L269.6,262.4L266.8,259.3Z",EE:"M526.9,66.4L531.1,66.4L535.4,66.4L539.6,66.4L540.5,70.7L541.3,75.0L536.9,75.0L532.5,75.0L528.1,75.0L527.5,70.7L526.9,66.4Z",EG:"M545.0,175.6L549.1,176.5L553.3,177.4L557.4,178.3L561.5,179.1L565.6,180.0L569.8,180.9L573.9,181.8L573.6,177.4L573.2,172.9L572.9,168.5L572.5,164.1L572.2,159.7L571.8,155.2L571.5,150.8L566.4,150.8L561.3,150.8L559.0,154.3L556.6,157.9L554.3,161.4L552.0,165.0L549.7,168.5L547.3,172.1L545.0,175.6Z",ER:"M579.8,194.2L582.6,197.3L585.4,200.4L588.1,203.5L590.9,206.6L593.7,209.7L596.5,212.8L591.2,212.8L585.9,212.8L583.1,209.7L580.4,206.6L580.2,202.5L580.0,198.3L579.8,194.2Z",ES:"M458.4,113.8L462.5,114.2L466.7,114.7L470.8,115.1L474.9,115.6L479.0,116.0L483.2,116.5L487.3,116.9L487.4,121.5L487.4,126.0L482.5,132.2L478.8,135.3L475.0,138.4L470.0,138.4L465.0,138.4L461.4,135.3L457.7,132.2L457.9,127.6L458.0,123.0L458.2,118.4L458.4,113.8Z",ET:"M575.1,206.6L579.4,207.8L583.7,209.1L587.9,210.3L592.2,211.6L596.5,212.8L596.6,216.9L596.7,221.1L596.9,225.2L597.0,229.3L597.1,233.5L597.2,237.6L592.9,237.6L588.7,237.6L584.4,237.6L580.2,237.6L575.9,237.6L574.1,233.5L572.2,229.3L570.4,225.2L571.6,220.5L572.8,215.9L573.9,211.2L575.1,206.6Z",FI:"M522.6,66.4L526.3,63.6L530.0,60.8L533.6,58.0L537.3,55.2L538.0,49.8L538.8,44.4L537.5,39.1L529.8,39.1L527.0,44.4L525.7,48.5L524.4,52.6L523.1,56.7L521.8,60.8L522.6,66.4Z",FJ:"M943.9,299.6L949.2,299.6L954.5,299.6L953.5,303.7L952.5,307.9L951.5,312.0L946.2,312.0L941.0,312.0L942.0,307.9L942.9,303.7L943.9,299.6Z",FR:"M475.4,92.6L479.4,94.1L483.5,95.6L487.6,97.1L491.6,98.6L498.8,101.7L498.1,105.7L497.5,109.8L496.8,113.8L494.5,116.9L487.3,116.9L480.0,116.9L478.4,112.8L476.9,108.8L475.3,104.7L470.6,101.7L473.0,97.2L475.4,92.6Z",GA:"M506.7,243.8L512.0,243.8L517.3,243.8L516.0,248.4L514.6,253.1L513.3,257.8L512.0,262.4L506.6,262.4L506.6,257.8L506.6,253.1L506.7,248.4L506.7,243.8Z",GB:"M468.4,95.6L475.4,95.6L480.0,92.6L482.3,89.7L480.0,83.7L478.6,79.8L477.1,76.0L475.7,72.1L469.2,72.1L469.0,77.9L472.2,80.8L475.5,83.7L470.9,89.7L468.4,95.6Z",GE:"M576.1,113.8L580.0,115.3L584.0,116.8L587.9,118.4L591.8,119.9L593.0,126.0L588.1,126.0L583.2,126.0L578.3,126.0L577.6,121.9L576.8,117.9L576.1,113.8Z",GF:"M336.2,237.6L340.2,237.6L344.2,237.6L341.6,231.4L338.9,234.5L336.2,237.6Z",GH:"M480.0,219.0L485.3,219.0L485.3,223.7L485.3,228.3L485.3,232.9L485.3,237.6L480.0,237.6L480.0,232.9L480.0,228.3L480.0,223.7L480.0,219.0Z",GM:"M435.0,208.2L439.0,208.2L443.0,208.2L443.0,209.7L439.0,209.7L435.0,209.7L435.0,208.2Z",GN:"M437.6,212.8L442.9,212.8L448.2,212.8L453.5,212.8L453.5,216.9L453.4,221.1L453.4,225.2L448.1,225.2L442.8,225.2L440.1,222.1L437.5,219.0L437.6,212.8Z",GQ:"M501.3,243.8L506.6,243.8L512.0,243.8L512.0,250.0L506.6,250.0L501.3,250.0L501.3,243.8Z",GR:"M528.6,119.9L533.5,119.9L538.3,119.9L543.2,119.9L543.6,124.0L544.1,128.1L544.5,132.2L539.8,135.3L535.1,138.4L529.8,135.3L529.4,130.2L529.0,125.0L528.6,119.9Z",GT:"M237.5,200.4L245.4,200.4L246.2,194.2L243.5,194.2L237.9,197.3L237.5,200.4Z",GW:"M437.6,212.8L442.9,212.8L442.8,219.0L437.5,219.0L437.6,212.8Z",GY:"M320.5,225.2L324.4,228.3L328.3,231.4L328.5,225.2L324.5,225.2L320.5,225.2Z",HK:"M777.2,180.3L778.0,180.3L777.9,181.5L777.4,181.5L777.2,180.3Z",HN:"M245.4,200.4L249.7,201.4L253.9,202.5L258.2,203.5L260.9,203.5L261.2,200.4L255.9,200.4L250.7,200.4L245.4,200.4Z",HR:"M513.2,107.7L519.2,107.7L525.1,107.7L525.5,112.3L525.9,116.9L518.7,116.9L513.6,113.8L513.2,107.7Z",HT:"M285.6,194.2L290.8,194.2L291.4,188.0L286.2,188.0L285.6,194.2Z",HU:"M517.5,101.7L522.2,101.7L526.9,101.7L531.6,101.7L532.2,107.7L527.5,107.7L522.7,107.7L518.0,107.7L517.5,101.7Z",ID:"M733.0,234.5L737.2,234.5L741.4,234.5L745.6,234.5L749.7,234.5L753.9,234.5L758.1,234.5L762.3,234.5L763.7,238.4L765.1,242.2L766.6,246.1L768.0,250.0L767.0,254.1L765.9,258.3L764.9,262.4L763.8,266.5L762.8,270.7L761.7,274.8L757.3,273.8L753.0,272.7L748.6,271.7L744.2,270.7L739.9,269.6L735.5,268.6L734.7,264.5L734.0,260.3L733.2,256.2L733.2,251.9L733.1,247.5L733.1,243.2L733.0,238.8L733.0,234.5ZM767.4,268.6L771.9,267.6L776.4,266.5L780.8,265.5L785.3,264.5L789.8,263.4L794.3,262.4L794.0,267.0L793.8,271.7L793.5,276.4L793.2,281.0L788.8,281.0L784.4,281.0L780.0,281.0L775.5,281.0L771.1,281.0L766.7,281.0L766.9,276.9L767.2,272.7L767.4,268.6ZM826.5,256.2L830.9,257.2L835.3,258.3L839.7,259.3L844.1,260.3L848.5,261.4L852.9,262.4L850.9,266.5L848.8,270.7L846.8,274.8L842.5,274.8L838.3,274.8L834.0,274.8L829.8,274.8L825.5,274.8L825.8,270.1L826.0,265.5L826.2,260.9L826.5,256.2Z",IE:"M457.2,89.7L461.8,89.7L466.3,89.7L466.5,85.2L466.6,80.8L462.1,82.2L457.6,83.7L457.2,89.7Z",IL:"M566.1,147.7L571.5,150.8L570.6,155.4L569.8,160.1L567.3,160.1L566.9,156.0L566.5,151.8L566.1,147.7Z",IN:"M657.4,181.8L661.1,180.2L664.9,178.7L668.6,177.2L672.4,175.6L673.5,171.5L674.5,167.3L675.6,163.2L677.1,158.5L678.7,153.9L680.2,149.2L681.8,144.6L685.3,147.3L688.9,149.9L692.4,152.6L695.9,155.2L699.4,157.9L703.0,160.5L706.5,163.2L707.3,167.8L708.0,172.5L708.8,177.2L709.6,181.8L708.1,185.7L706.5,189.7L705.0,193.6L703.4,197.6L701.9,201.5L700.3,205.5L698.8,209.4L697.2,213.4L695.7,217.3L694.1,221.3L692.6,225.2L687.3,225.2L682.0,225.2L680.4,221.3L678.8,217.4L677.2,213.6L675.6,209.7L674.0,205.8L672.4,201.9L670.8,198.1L669.2,194.2L666.2,191.1L663.3,188.0L660.4,184.9L657.4,181.8Z",IQ:"M574.2,132.2L578.3,132.2L582.5,132.2L586.6,132.2L590.7,132.2L594.9,132.2L599.0,132.2L599.6,136.3L600.3,140.5L601.0,144.6L601.6,148.7L602.2,152.9L602.9,157.0L598.1,160.1L593.3,163.2L590.0,160.7L586.6,158.2L583.3,155.8L579.9,153.3L576.6,150.8L576.0,146.2L575.4,141.5L574.8,136.8L574.2,132.2Z",IR:"M589.1,132.2L593.2,132.2L597.2,132.2L601.3,132.2L605.4,132.2L609.4,132.2L613.5,132.2L617.5,132.2L621.6,132.2L625.7,132.2L629.7,132.2L633.8,132.2L634.0,136.3L634.1,140.5L634.3,144.6L634.5,148.7L634.6,152.9L634.8,157.0L635.0,161.1L635.1,165.3L635.3,169.4L632.2,173.5L629.2,177.7L626.1,181.8L620.9,181.8L615.7,181.8L610.5,181.8L607.2,179.3L603.9,176.8L600.5,174.4L597.2,171.9L593.9,169.4L593.4,165.3L592.8,161.1L592.3,157.0L591.8,152.9L591.2,148.7L590.7,144.6L590.2,140.5L589.6,136.3L589.1,132.2Z",IS:"M430.9,55.2L435.5,54.6L440.0,54.1L444.6,53.5L449.1,53.0L453.7,52.4L453.1,58.0L448.6,58.0L444.0,58.0L439.5,58.0L434.9,58.0L430.4,58.0L430.9,55.2Z",IT:"M496.8,113.8L500.9,112.3L505.0,110.8L509.1,109.2L513.2,107.7L514.7,112.3L516.2,116.8L517.8,121.4L519.3,126.0L524.2,126.0L519.7,132.2L516.1,135.3L512.5,138.4L508.6,135.3L504.8,132.2L503.2,128.5L501.6,124.8L500.0,121.2L498.4,117.5L496.8,113.8ZM515.9,130.7L519.6,130.7L519.8,133.8L515.9,130.7Z",JM:"M275.1,194.2L280.0,197.3L277.7,194.2L275.1,194.2Z",JO:"M571.2,147.7L575.2,149.2L579.1,150.8L577.3,157.0L572.2,157.0L571.7,152.3L571.2,147.7Z",JP:"M808.0,144.6L811.7,141.5L815.4,138.4L816.6,133.8L817.8,129.2L819.1,124.5L820.3,119.9L821.3,113.8L822.2,117.9L823.2,121.9L824.1,126.0L823.9,130.7L823.6,135.3L823.4,139.9L823.1,144.6L818.1,144.6L813.0,144.6L808.0,144.6ZM816.5,113.8L821.3,113.8L826.1,113.8L823.2,116.9L816.5,113.8Z",KE:"M570.6,237.6L574.9,237.6L579.1,237.6L583.4,237.6L587.6,237.6L591.9,237.6L591.9,241.7L591.9,245.9L591.9,250.0L591.9,254.1L591.9,258.3L591.9,262.4L587.6,262.4L583.4,262.4L579.1,262.4L574.9,262.4L570.6,262.4L570.6,258.3L570.6,254.1L570.6,250.0L570.6,245.9L570.6,241.7L570.6,237.6Z",KG:"M648.2,113.8L652.2,113.8L656.2,113.8L660.2,113.8L664.3,113.8L668.3,113.8L672.3,113.8L673.7,117.9L675.2,121.9L676.6,126.0L672.5,126.0L668.4,126.0L664.3,126.0L660.2,126.0L656.1,126.0L652.0,126.0L650.7,121.9L649.5,117.9L648.2,113.8Z",KH:"M749.6,206.6L754.9,206.6L760.1,206.6L765.4,206.6L764.1,210.7L762.7,214.9L761.4,219.0L756.0,219.0L750.7,219.0L750.3,214.9L750.0,210.7L749.6,206.6Z",KM:"M596.5,287.2L601.8,287.2L599.1,290.3L596.5,287.2Z",KP:"M781.4,119.9L786.3,119.9L791.1,119.9L796.0,119.9L798.1,124.0L800.3,128.1L802.4,132.2L797.4,132.2L792.5,132.2L787.5,132.2L785.5,128.1L783.4,124.0L781.4,119.9Z",KR:"M792.5,132.2L797.5,132.2L802.4,132.2L802.6,136.3L802.8,140.5L803.0,144.6L797.9,144.6L796.1,140.5L794.3,136.3L792.5,132.2Z",KW:"M600.3,157.0L608.0,157.0L608.7,163.2L601.0,163.2L600.3,157.0Z",KZ:"M594.0,89.7L598.0,89.7L602.1,89.7L606.1,89.7L610.2,89.7L614.2,89.7L618.3,89.7L622.4,89.7L626.4,89.7L630.5,89.7L634.5,89.7L638.5,89.7L642.6,89.7L646.6,89.7L650.7,89.7L654.8,89.7L658.8,89.7L662.9,89.7L666.9,89.7L668.6,93.7L670.3,97.7L672.0,101.8L673.7,105.8L675.4,109.8L677.1,113.8L672.8,114.3L668.5,114.8L664.3,115.3L660.0,115.8L655.7,116.3L651.5,116.8L647.2,117.4L642.9,117.9L638.6,118.4L634.3,118.9L630.1,119.4L625.8,119.9L621.9,118.2L618.1,116.4L614.2,114.7L610.3,112.9L606.4,111.2L602.6,109.4L598.7,107.7L597.5,103.2L596.4,98.7L595.2,94.2L594.0,89.7Z",LA:"M740.9,181.8L746.1,181.8L751.4,181.8L756.6,181.8L757.2,185.9L757.8,190.1L758.4,194.2L758.9,198.3L759.5,202.5L760.1,206.6L756.0,205.1L751.9,203.5L747.7,201.9L743.6,200.4L742.9,195.8L742.2,191.1L741.6,186.5L740.9,181.8Z",LB:"M568.3,144.6L573.4,144.6L573.7,147.7L568.6,147.7L568.3,144.6Z",LI:"M502.4,103.8L502.7,103.8L502.7,104.5L502.4,104.4L502.4,103.8Z",LK:"M692.4,219.0L697.7,219.0L697.9,223.1L698.0,227.3L698.2,231.4L695.4,228.3L692.6,225.2L692.4,219.0Z",LR:"M453.4,225.2L458.7,225.2L458.7,229.3L458.7,233.5L458.7,237.6L453.4,237.6L453.4,233.5L453.4,229.3L453.4,225.2Z",LS:"M549.1,343.0L553.2,339.9L557.2,336.8L555.2,340.9L553.2,345.1L551.2,349.2L549.1,343.0Z",LT:"M525.9,75.0L530.5,76.0L535.0,76.9L539.6,77.9L538.3,83.7L532.7,83.7L527.1,83.7L526.5,79.3L525.9,75.0Z",LU:"M493.9,95.6L494.0,98.6L491.6,98.6L493.9,95.6Z",LV:"M528.1,75.0L532.5,75.0L536.9,75.0L541.3,75.0L541.8,77.9L537.4,77.9L533.0,77.9L528.6,77.9L528.1,75.0Z",LY:"M506.0,175.6L510.3,175.6L514.7,175.6L519.0,175.6L523.3,175.6L527.7,175.6L532.0,175.6L536.3,175.6L540.7,175.6L545.0,175.6L545.2,179.7L545.3,183.9L545.5,188.0L541.1,188.0L536.8,188.0L532.4,188.0L528.0,188.0L523.7,188.0L519.3,188.0L514.9,188.0L510.6,188.0L506.2,188.0L506.1,183.9L506.1,179.7L506.0,175.6Z",MA:"M465.0,138.4L470.0,138.4L475.0,138.4L480.0,138.4L485.1,141.5L490.1,144.6L490.1,148.7L490.2,152.9L490.2,157.0L486.4,158.6L482.5,160.1L478.7,161.6L474.9,163.2L469.7,163.2L464.6,163.2L459.4,163.2L459.5,159.1L459.6,154.9L459.7,150.8L461.5,146.7L463.2,142.5L465.0,138.4Z",MC:"M497.7,114.5L497.9,114.5L497.9,114.6L497.7,114.6L497.7,114.5Z",MD:"M543.3,101.7L550.3,101.7L551.2,107.7L544.1,107.7L543.3,101.7Z",ME:"M525.9,116.9L528.3,116.9L528.6,119.9L526.2,119.9L525.9,116.9Z",MG:"M596.5,287.2L600.3,290.3L604.1,293.4L608.0,296.5L611.8,299.6L611.5,303.7L611.2,307.9L610.9,312.0L610.6,316.1L610.3,320.3L610.0,324.4L606.0,325.9L602.0,327.5L597.9,329.1L593.9,330.6L594.2,326.3L594.4,321.9L594.7,317.6L594.9,313.2L595.2,308.9L595.5,304.6L595.7,300.2L596.0,295.9L596.2,291.5L596.5,287.2Z",MK:"M531.0,119.9L535.9,119.9L536.2,123.0L531.3,123.0L531.0,119.9Z",ML:"M469.5,200.4L473.0,198.3L476.5,196.3L480.0,194.2L483.5,192.1L487.0,190.1L490.5,188.0L490.5,192.1L490.5,196.3L490.6,200.4L490.6,204.5L490.6,208.7L490.6,212.8L486.4,212.8L482.1,212.8L477.9,212.8L473.6,212.8L469.4,212.8L469.4,208.7L469.5,204.5L469.5,200.4Z",MM:"M716.8,163.2L720.2,165.9L723.7,168.5L727.1,171.2L730.6,173.8L734.0,176.5L737.5,179.1L740.9,181.8L741.6,186.5L742.2,191.1L742.9,195.8L743.6,200.4L738.7,203.5L733.7,206.6L731.2,202.9L728.6,199.2L726.1,195.4L723.5,191.7L721.0,188.0L720.3,183.9L719.6,179.7L718.9,175.6L718.2,171.5L717.5,167.3L716.8,163.2Z",MN:"M665.2,95.6L669.2,95.6L673.2,95.6L677.3,95.6L681.3,95.6L685.3,95.6L689.3,95.6L693.4,95.6L697.4,95.6L701.4,95.6L705.4,95.6L709.4,95.6L713.5,95.6L717.5,95.6L721.5,95.6L725.5,95.6L729.5,95.6L733.6,95.6L737.6,95.6L741.6,95.6L745.6,95.6L749.7,95.6L753.7,95.6L757.7,95.6L760.7,98.6L763.7,101.7L766.7,104.7L769.7,107.7L765.7,109.4L761.7,111.0L757.7,112.7L753.7,114.4L749.7,116.0L745.8,117.7L741.8,119.3L737.8,121.0L733.8,122.7L729.8,124.3L725.8,126.0L721.7,125.1L717.6,124.1L713.5,123.2L709.3,122.2L705.2,121.3L701.1,120.4L697.0,119.4L692.9,118.5L688.8,117.6L684.6,116.6L680.5,115.7L676.4,114.7L672.3,113.8L670.5,109.2L668.8,104.7L667.0,100.1L665.2,95.6Z",MR:"M432.6,200.4L436.9,200.4L441.2,200.4L445.4,200.4L449.7,200.4L454.0,200.4L458.2,200.4L462.5,200.4L466.8,200.4L466.8,196.3L466.9,192.1L466.9,188.0L462.8,188.0L458.7,188.0L454.6,188.0L450.4,188.0L446.3,188.0L442.2,188.0L438.1,188.0L436.3,192.1L434.4,196.3L432.6,200.4Z",MT:"M515.8,138.1L516.5,138.1L516.3,139.0L515.8,138.1Z",MX:"M182.6,150.8L186.8,151.6L191.0,152.4L195.2,153.1L199.4,153.9L203.9,156.0L208.5,158.0L213.0,160.1L217.8,161.6L222.6,163.2L225.8,166.3L229.0,169.4L229.7,173.5L230.3,177.7L231.0,181.8L231.7,185.9L232.3,190.1L233.0,194.2L238.2,194.2L243.5,194.2L248.0,200.4L242.4,203.5L237.5,200.4L234.5,196.3L231.6,192.1L228.6,188.0L223.6,186.4L218.6,184.9L214.2,184.9L209.9,184.9L205.5,184.9L201.7,181.8L197.8,178.7L194.0,175.6L192.3,171.9L190.6,168.2L189.0,164.4L187.3,160.7L185.6,157.0L182.6,150.8Z",MY:"M746.1,231.4L750.4,231.4L754.6,231.4L758.9,231.4L763.1,231.4L767.4,231.4L771.7,231.4L775.9,231.4L780.2,231.4L784.4,231.4L788.7,231.4L789.0,237.6L784.7,237.6L780.5,237.6L776.2,237.6L772.0,237.6L767.7,237.6L763.4,237.6L759.2,237.6L754.9,237.6L750.7,237.6L746.4,237.6L746.1,231.4Z",MZ:"M570.2,281.0L574.1,282.6L578.0,284.1L582.0,285.6L585.9,287.2L584.0,291.3L582.0,295.5L580.1,299.6L578.2,303.7L576.2,307.9L574.3,312.0L572.7,316.6L571.1,321.3L569.6,326.0L568.0,330.6L562.8,330.6L563.0,326.5L563.2,322.3L563.5,318.2L563.7,314.1L563.9,309.9L564.1,305.8L565.1,301.7L566.1,297.5L567.2,293.4L568.2,289.3L569.2,285.1L570.2,281.0Z",NA:"M511.5,305.8L515.7,305.8L519.9,305.8L524.2,305.8L528.4,305.8L532.6,305.8L532.4,310.2L532.3,314.7L532.1,319.1L532.0,323.5L531.8,327.9L531.7,332.4L531.5,336.8L529.3,340.5L527.1,344.2L524.8,348.0L522.6,351.7L520.4,355.4L518.5,351.7L516.6,348.0L514.7,344.2L512.8,340.5L510.9,336.8L511.0,332.4L511.1,327.9L511.2,323.5L511.2,319.1L511.3,314.7L511.4,310.2L511.5,305.8Z",NE:"M490.4,181.8L494.9,180.9L499.3,180.0L503.8,179.1L508.2,178.3L512.7,177.4L517.1,176.5L521.6,175.6L521.7,179.7L521.8,183.9L521.9,188.0L522.0,192.1L522.0,196.3L522.1,200.4L522.2,204.5L522.3,208.7L522.4,212.8L517.9,212.8L513.3,212.8L508.8,212.8L504.2,212.8L499.7,212.8L495.1,212.8L490.6,212.8L490.6,208.4L490.5,203.9L490.5,199.5L490.5,195.1L490.5,190.7L490.4,186.2L490.4,181.8Z",NG:"M490.6,206.6L495.0,206.6L499.4,206.6L503.8,206.6L508.2,206.6L512.6,206.6L517.0,206.6L517.0,210.7L517.1,214.9L517.1,219.0L517.2,223.1L517.2,227.3L517.3,231.4L512.8,231.4L508.4,231.4L503.9,231.4L499.5,231.4L495.1,231.4L490.6,231.4L490.6,227.3L490.6,223.1L490.6,219.0L490.6,214.9L490.6,210.7L490.6,206.6Z",NI:"M250.1,206.6L253.4,209.7L256.6,212.8L259.9,215.9L260.2,211.2L260.6,206.6L255.4,206.6L250.1,206.6Z",NL:"M489.2,92.6L492.5,89.7L495.8,86.7L496.1,92.6L489.2,92.6Z",NO:"M488.7,72.1L495.2,72.1L498.7,69.3L502.2,66.4L505.7,63.6L509.2,60.8L512.8,57.1L516.5,53.5L520.1,49.8L523.5,47.1L526.9,44.5L530.3,41.8L533.7,39.1L537.5,39.1L536.8,44.5L536.1,49.8L532.5,52.5L529.0,55.3L525.4,58.0L521.8,60.8L517.8,63.6L513.9,66.4L509.9,69.3L506.0,72.1L501.7,72.1L497.4,72.1L493.0,72.1L488.7,72.1Z",NP:"M684.8,157.0L689.1,158.2L693.5,159.5L697.8,160.7L702.2,162.0L706.5,163.2L707.7,169.4L703.6,169.4L699.4,169.4L695.3,169.4L691.1,169.4L687.0,169.4L686.3,165.3L685.5,161.1L684.8,157.0Z",NZ:"M879.0,392.3L882.5,390.3L886.1,388.2L889.6,386.2L893.2,384.1L896.7,382.1L900.2,380.1L903.8,378.0L907.3,376.0L910.9,373.9L914.4,371.9L918.0,369.8L921.5,367.8L918.8,371.3L916.1,374.8L913.4,378.3L910.8,381.8L908.1,385.3L905.4,388.8L902.7,392.3L898.0,392.3L893.2,392.3L888.5,392.3L883.7,392.3L879.0,392.3ZM914.0,355.4L914.8,359.5L915.7,363.7L916.5,367.8L913.6,370.9L910.7,373.9L907.8,377.0L904.9,380.1L901.9,383.1L899.0,386.2L896.1,389.2L893.2,392.3L888.6,386.2L891.4,382.8L894.2,379.4L897.1,375.9L899.9,372.5L902.7,369.1L905.5,365.7L908.4,362.2L911.2,358.8L914.0,355.4Z",OM:"M625.6,175.6L629.3,177.7L632.9,179.7L636.6,181.8L635.2,185.9L633.8,190.1L632.4,194.2L627.1,194.2L626.7,189.5L626.4,184.9L626.0,180.2L625.6,175.6Z",PA:"M259.4,225.2L264.7,225.2L270.0,225.2L275.3,225.2L275.5,222.1L271.5,222.1L267.5,222.1L263.5,222.1L259.5,222.1L259.4,225.2Z",PE:"M266.9,262.4L271.3,262.4L275.8,262.4L280.2,262.4L284.6,262.4L289.1,262.4L293.5,262.4L294.5,266.8L295.4,271.3L296.4,275.7L297.4,280.1L298.4,284.5L299.3,289.0L300.3,293.4L298.9,297.5L297.5,301.7L296.1,305.8L291.5,303.7L286.9,301.7L282.3,299.6L281.1,295.5L280.0,291.3L278.8,287.2L277.6,283.1L276.5,278.9L275.3,274.8L272.5,270.7L269.7,266.5L266.9,262.4Z",PG:"M852.9,262.4L857.4,262.4L861.8,262.4L866.2,262.4L870.7,262.4L875.1,262.4L879.6,262.4L879.3,266.5L879.0,270.7L878.7,274.8L874.3,274.8L869.8,274.8L865.4,274.8L861.0,274.8L856.5,274.8L852.1,274.8L847.2,268.6L850.0,265.5L852.9,262.4Z",PH:"M790.0,194.2L795.3,194.2L800.6,194.2L802.6,197.7L804.6,201.3L806.6,204.8L808.5,208.4L810.5,211.9L812.5,215.5L814.5,219.0L811.2,223.1L808.0,227.3L804.7,231.4L801.0,229.3L797.3,227.3L793.6,225.2L793.1,220.8L792.6,216.3L792.1,211.9L791.5,207.5L791.0,203.1L790.5,198.6L790.0,194.2Z",PK:"M628.8,132.2L633.1,132.2L637.5,132.2L641.8,132.2L646.1,132.2L650.5,132.2L654.8,132.2L659.2,132.2L663.5,132.2L665.4,136.3L667.2,140.5L669.0,144.6L670.9,148.7L672.8,152.9L674.6,157.0L673.1,160.7L671.6,164.4L670.2,168.2L668.7,171.9L667.2,175.6L662.9,175.6L658.5,175.6L654.2,175.6L649.9,175.6L645.5,175.6L641.2,175.6L638.2,172.5L635.3,169.4L634.6,165.3L633.9,161.1L633.1,157.0L632.4,152.9L631.7,148.7L631.0,144.6L630.2,140.5L629.5,136.3L628.8,132.2Z",PL:"M511.4,83.7L515.9,83.7L520.4,83.7L524.9,83.7L529.4,83.7L533.9,83.7L534.4,87.7L535.0,91.6L535.5,95.6L530.9,95.6L526.3,95.6L521.7,95.6L517.0,94.1L512.2,92.6L511.8,88.2L511.4,83.7Z",PS:"M567.0,151.4L570.3,151.4L570.5,153.3L567.2,153.3L567.0,151.4Z",PT:"M458.1,119.9L465.4,119.9L465.3,125.0L465.2,130.2L465.1,135.3L457.6,135.3L457.8,130.2L457.9,125.0L458.1,119.9Z",PY:"M327.6,305.8L330.6,309.9L333.5,314.1L336.5,318.2L331.3,318.2L323.4,318.2L318.2,318.2L321.3,314.1L324.5,309.9L327.6,305.8Z",QA:"M609.4,169.4L614.6,169.4L612.6,175.6L610.0,175.6L609.4,169.4Z",RO:"M531.6,101.7L536.3,101.7L541.0,101.7L545.6,101.7L550.3,101.7L550.9,105.7L551.5,109.8L552.1,113.8L547.4,114.8L542.7,115.9L538.0,116.9L532.9,113.8L532.5,109.8L532.0,105.7L531.6,101.7Z",RS:"M525.1,107.7L532.2,107.7L532.6,111.8L533.1,115.8L533.5,119.9L526.2,119.9L525.8,115.8L525.5,111.8L525.1,107.7Z",RU:"M127.2,44.4L130.2,48.0L133.2,51.6L136.2,55.2L137.8,60.8L139.3,66.4L135.0,66.4L130.8,66.4L126.5,66.4L122.3,66.4L118.0,66.4L113.7,66.4L109.5,66.4L105.2,66.4L101.0,66.4L96.7,66.4L100.1,64.0L103.5,61.5L106.9,59.1L110.3,56.6L113.6,54.2L117.0,51.7L120.4,49.3L123.8,46.8L127.2,44.4ZM541.8,77.9L542.3,73.7L542.8,69.4L543.3,65.2L543.8,60.9L544.3,56.7L544.8,52.4L549.3,49.7L553.9,47.1L558.4,44.4L562.1,41.8L565.9,39.2L569.6,36.7L573.4,34.1L577.4,33.7L581.4,33.3L585.4,32.9L589.5,32.6L593.5,32.2L597.5,31.8L601.5,31.4L605.5,31.0L609.5,30.6L613.6,30.3L617.6,29.9L621.6,29.5L625.6,29.1L629.6,29.1L633.7,29.1L637.7,29.1L641.8,29.1L645.8,29.1L649.8,29.1L653.9,29.1L657.9,29.1L662.0,29.1L666.0,29.1L670.0,29.1L674.1,29.1L678.1,29.1L682.1,29.1L686.2,29.1L690.2,29.1L694.3,29.1L698.3,29.1L702.3,29.1L706.4,29.1L710.4,29.1L714.5,29.1L718.5,29.1L722.6,29.1L726.6,29.1L730.7,29.1L734.7,29.1L738.7,30.0L742.8,30.9L746.8,31.8L750.9,32.7L754.9,33.6L758.9,34.5L763.0,35.4L767.0,36.3L771.1,37.2L775.1,38.1L779.2,39.0L783.2,39.9L787.2,40.8L791.3,41.7L795.3,42.6L799.4,43.5L803.4,44.4L806.9,46.6L810.3,48.9L813.8,51.1L817.2,53.3L820.7,55.6L824.1,57.8L827.6,60.0L831.0,62.3L834.5,64.5L837.9,66.7L841.4,69.0L844.8,71.2L848.3,73.4L851.7,75.7L855.2,77.9L851.3,79.3L847.3,80.6L843.4,82.0L839.4,83.3L835.5,84.7L831.6,86.1L827.6,87.4L823.7,88.8L819.8,90.2L815.8,91.5L811.9,92.9L807.9,94.2L804.0,95.6L800.0,95.4L796.0,95.1L792.0,94.9L788.0,94.6L784.0,94.4L780.0,94.1L776.0,93.9L772.0,93.6L768.0,93.4L764.0,93.1L760.0,92.9L756.0,92.7L751.9,92.4L747.9,92.2L743.9,91.9L739.9,91.7L735.9,91.4L731.9,91.2L727.9,90.9L723.9,90.7L719.9,90.4L715.9,90.2L711.9,89.9L707.9,89.7L703.8,89.7L699.6,89.7L695.5,89.7L691.3,89.7L687.2,89.7L683.0,89.7L678.9,89.7L674.7,89.7L670.6,89.7L666.4,89.7L662.3,89.7L658.1,88.7L654.0,87.7L649.8,86.8L645.7,85.8L641.5,84.8L637.3,83.8L633.2,82.8L629.0,81.8L624.9,80.9L620.7,79.9L616.6,78.9L612.4,77.9L608.7,80.3L605.0,82.6L601.4,85.0L597.7,87.3L594.0,89.7L590.0,92.1L585.9,94.5L581.9,96.9L577.8,99.3L573.8,101.7L570.9,98.7L568.0,95.7L565.0,92.7L562.1,89.7L558.0,87.3L554.0,85.0L549.9,82.6L545.9,80.3L541.8,77.9Z",RW:"M557.3,253.1L562.6,253.1L562.6,259.3L557.3,259.3L557.3,253.1Z",SA:"M575.2,163.2L579.3,163.2L583.4,163.2L587.4,163.2L591.5,163.2L595.6,163.2L599.7,163.2L603.7,163.2L607.8,163.2L611.9,163.2L616.0,163.2L620.0,163.2L624.1,163.2L624.6,167.8L625.1,172.5L625.6,177.2L626.1,181.8L620.9,181.8L615.7,181.8L610.5,181.8L606.8,184.9L603.0,188.0L599.3,191.1L595.6,194.2L591.6,192.6L587.5,191.1L583.5,189.6L579.5,188.0L576.5,181.8L576.2,177.2L575.9,172.5L575.5,167.8L575.2,163.2Z",SB:"M892.5,268.6L897.1,268.6L901.8,268.6L906.5,268.6L911.1,268.6L910.6,273.2L910.1,277.9L909.6,282.6L909.1,287.2L904.5,287.2L899.8,287.2L895.1,287.2L890.5,287.2L891.0,282.6L891.5,277.9L892.0,273.2L892.5,268.6Z",SD:"M542.6,181.8L547.1,181.8L551.5,181.8L556.0,181.8L560.5,181.8L565.0,181.8L569.4,181.8L573.9,181.8L574.1,185.9L574.3,190.1L574.5,194.2L574.7,198.3L574.8,202.5L575.0,206.6L575.2,210.7L575.4,214.9L575.6,219.0L571.6,219.8L567.6,220.6L563.7,221.3L559.7,222.1L555.7,222.9L551.8,223.6L547.8,224.4L543.8,225.2L541.1,222.1L538.4,219.0L538.9,214.9L539.3,210.7L539.8,206.6L540.3,202.5L540.7,198.3L541.2,194.2L541.7,190.1L542.1,185.9L542.6,181.8Z",SE:"M506.5,77.9L509.4,75.0L512.4,72.2L515.3,69.3L518.3,66.4L519.8,62.2L521.2,58.1L522.6,54.0L524.1,49.8L526.0,46.2L527.9,42.7L529.8,39.1L533.7,39.1L530.5,42.7L527.3,46.2L524.1,49.8L521.9,53.5L519.8,57.1L517.6,60.8L515.3,65.5L512.9,70.3L510.6,75.0L506.5,77.9Z",SG:"M754.6,245.4L757.2,245.4L757.2,246.6L754.6,246.6L754.6,245.4Z",SI:"M513.0,104.7L520.1,104.7L520.6,110.7L513.5,110.7L513.0,104.7Z",SK:"M519.6,98.6L525.4,98.6L531.2,98.6L531.6,101.7L525.8,101.7L519.9,101.7L519.6,98.6Z",SL:"M442.8,219.0L448.1,219.0L453.5,219.0L453.4,225.2L448.1,225.2L442.8,225.2L442.8,219.0Z",SM:"M509.8,113.9L510.2,113.9L510.1,114.2L509.8,114.2L509.8,113.9Z",SN:"M432.6,200.4L437.9,200.4L443.1,200.4L448.4,200.4L448.3,204.5L448.3,208.7L448.2,212.8L442.9,212.8L437.6,212.8L435.0,209.7L432.4,206.6L432.6,200.4Z",SO:"M596.5,212.8L600.7,212.8L605.0,212.8L609.2,212.8L613.5,212.8L617.7,212.8L615.4,216.2L613.2,219.7L610.9,223.1L608.6,226.6L606.4,230.0L604.1,233.5L601.8,236.9L599.6,240.4L597.3,243.8L592.0,243.8L586.6,243.8L587.8,239.9L589.1,236.1L590.3,232.2L591.5,228.3L592.8,224.4L594.0,220.6L595.3,216.7L596.5,212.8Z",SR:"M328.3,231.4L332.2,234.5L336.2,237.6L336.3,231.4L332.3,231.4L328.3,231.4Z",SS:"M543.8,225.2L547.8,224.4L551.8,223.6L555.7,222.9L559.7,222.1L563.7,221.3L567.6,220.6L571.6,219.8L575.6,219.0L575.7,223.7L575.8,228.3L575.8,232.9L575.9,237.6L571.6,237.6L567.4,237.6L563.1,237.6L558.9,237.6L554.6,237.6L549.2,237.6L543.9,237.6L543.9,233.5L543.8,229.3L543.8,225.2Z",SV:"M242.1,206.6L245.9,208.1L249.8,209.7L250.1,206.6L246.1,206.6L242.1,206.6Z",SY:"M569.7,135.3L574.7,135.3L579.6,135.3L584.6,135.3L587.8,139.9L591.0,144.6L587.1,145.8L583.2,147.1L579.3,148.3L575.4,149.6L571.5,150.8L569.4,146.7L567.2,142.5L565.1,138.4L569.7,135.3Z",SZ:"M560.2,330.6L562.4,336.8L557.2,336.8L560.2,330.6Z",TD:"M516.4,175.6L520.2,177.4L524.0,179.1L527.8,180.9L531.5,182.7L535.3,184.5L539.1,186.2L542.9,188.0L543.0,192.4L543.1,196.9L543.2,201.3L543.4,205.7L543.5,210.1L543.6,214.6L543.7,219.0L539.3,220.0L534.9,221.1L530.5,222.1L526.0,223.1L521.6,224.2L517.2,225.2L517.1,221.1L517.1,216.9L517.0,212.8L516.9,208.7L516.9,204.5L516.8,200.4L516.7,196.3L516.7,192.1L516.6,188.0L516.5,183.9L516.5,179.7L516.4,175.6Z",TG:"M480.0,212.8L485.3,212.8L485.3,217.5L485.3,222.1L485.3,226.8L485.3,231.4L480.0,231.4L480.0,226.8L480.0,222.1L480.0,217.5L480.0,212.8Z",TH:"M736.7,188.0L740.9,189.6L745.0,191.1L749.1,192.6L753.3,194.2L752.9,198.3L752.4,202.5L752.0,206.6L751.6,210.7L751.1,214.9L750.7,219.0L749.2,223.1L747.6,227.3L746.1,231.4L743.3,228.3L740.5,225.2L740.1,221.1L739.7,216.9L739.2,212.8L738.8,208.7L738.4,204.5L738.0,200.4L737.5,196.3L737.1,192.1L736.7,188.0Z",TJ:"M645.3,119.9L649.6,121.1L653.9,122.3L658.2,123.6L662.5,124.8L666.8,126.0L663.5,132.2L658.5,132.2L653.6,132.2L648.6,132.2L647.5,128.1L646.4,124.0L645.3,119.9Z",TL:"M809.6,274.8L817.5,274.8L817.1,281.0L813.1,281.0L809.1,281.0L809.6,274.8Z",TM:"M606.4,119.9L610.3,121.7L614.2,123.4L618.1,125.2L622.1,126.9L626.0,128.7L629.9,130.4L633.8,132.2L630.2,138.4L626.2,138.4L622.2,138.4L618.1,138.4L614.1,138.4L610.1,138.4L609.2,133.8L608.2,129.2L607.3,124.5L606.4,119.9Z",TN:"M499.8,132.2L502.4,135.3L505.0,138.4L505.1,143.1L505.3,147.7L505.5,152.3L505.6,157.0L500.5,157.0L500.4,152.9L500.3,148.7L500.1,144.6L500.0,140.5L499.9,136.3L499.8,132.2Z",TR:"M543.2,119.9L547.2,119.9L551.3,119.9L555.4,119.9L559.4,119.9L563.5,119.9L567.5,119.9L571.1,122.0L574.7,124.0L578.3,126.0L581.9,128.1L585.5,130.1L589.1,132.2L590.1,138.4L586.1,138.4L582.1,138.4L578.1,138.4L574.1,138.4L570.1,138.4L566.1,138.4L562.1,138.4L558.1,138.4L554.1,138.4L550.1,138.4L547.3,135.3L544.5,132.2L544.1,128.1L543.6,124.0L543.2,119.9Z",TW:"M790.5,169.4L793.8,172.5L797.1,175.6L793.1,181.8L792.2,177.7L791.4,173.5L790.5,169.4Z",TZ:"M560.0,256.2L564.4,257.2L568.8,258.3L573.2,259.3L577.7,260.3L582.1,261.4L586.5,262.4L586.4,266.5L586.3,270.7L586.2,274.8L586.1,278.9L586.0,283.1L585.9,287.2L580.6,287.2L575.4,287.2L570.1,287.2L567.5,284.1L564.9,281.0L562.3,277.9L559.7,274.8L559.8,270.1L559.9,265.5L559.9,260.9L560.0,256.2Z",UA:"M530.1,89.7L534.2,89.7L538.2,89.7L542.3,89.7L546.3,89.7L550.4,89.7L554.4,89.7L558.5,89.7L562.5,89.7L566.6,89.7L569.0,93.7L571.4,97.7L573.8,101.7L569.4,103.7L565.1,105.7L560.7,107.7L556.0,107.7L551.2,107.7L546.5,107.7L542.8,106.2L539.0,104.7L535.3,103.2L531.6,101.7L531.1,97.7L530.6,93.7L530.1,89.7Z",UG:"M559.9,237.6L565.2,237.6L570.6,237.6L570.6,242.2L570.6,246.9L570.6,251.5L570.6,256.2L565.3,256.2L560.0,256.2L560.0,251.5L560.0,246.9L559.9,242.2L559.9,237.6Z",US:"M191.1,98.6L195.3,98.6L199.5,98.6L203.8,98.6L208.0,98.6L212.2,98.6L216.4,98.6L220.7,98.6L224.9,98.6L229.1,98.6L233.3,98.6L237.6,98.6L241.8,98.6L246.0,98.6L250.2,98.6L254.5,98.6L258.7,98.6L263.1,100.4L267.4,102.2L271.8,104.1L276.1,105.9L280.5,107.7L284.7,109.2L288.9,110.8L293.1,112.3L297.3,113.8L301.4,112.3L305.5,110.8L309.6,109.2L313.7,107.7L317.8,106.2L321.9,104.7L319.1,107.8L316.4,110.8L313.6,113.9L310.8,116.9L308.4,120.4L306.0,123.9L303.6,127.4L301.2,131.0L298.8,134.5L296.4,138.0L294.0,141.5L290.4,144.0L286.8,146.5L283.1,148.9L279.5,151.4L275.9,153.9L270.1,157.0L265.0,157.0L259.8,157.0L254.7,157.0L249.0,160.1L244.2,158.6L239.4,157.0L236.8,160.1L234.2,163.2L231.6,166.3L229.0,169.4L225.8,166.3L222.6,163.2L217.8,161.6L213.0,160.1L208.5,158.0L203.9,156.0L199.4,153.9L195.2,153.1L191.0,152.4L186.8,151.6L182.6,150.8L179.9,147.7L177.2,144.6L176.7,139.9L176.2,135.3L175.8,130.7L175.3,126.0L177.6,122.1L179.8,118.2L182.1,114.3L184.3,110.3L186.6,106.4L188.8,102.5L191.1,98.6Z",UY:"M345.8,352.3L345.1,347.1L344.3,342.0L343.6,336.8L341.1,333.1L338.7,329.4L336.2,325.6L333.8,321.9L331.3,318.2L328.7,318.2L330.6,322.0L332.5,325.8L334.4,329.6L336.3,333.4L338.2,337.1L340.1,340.9L342.0,344.7L343.9,348.5L345.8,352.3Z",UZ:"M616.1,119.9L620.3,119.9L624.4,119.9L628.6,119.9L632.8,119.9L637.0,119.9L641.1,119.9L645.3,119.9L646.4,124.0L647.5,128.1L648.6,132.2L644.4,132.2L640.1,132.2L635.9,132.2L631.6,132.2L627.4,132.2L623.1,132.2L618.9,132.2L618.0,128.1L617.0,124.0L616.1,119.9Z",VA:"M510.2,120.2L510.3,120.2L510.3,120.3L510.2,120.2L510.2,120.2Z",VE:"M286.6,212.8L290.4,214.2L294.1,215.6L297.9,216.9L301.7,218.3L305.4,219.7L309.2,221.1L313.0,222.4L316.7,223.8L320.5,225.2L317.7,231.4L313.7,231.4L309.7,231.4L305.7,231.4L301.7,231.4L297.8,229.9L293.8,228.3L291.3,224.2L288.9,220.0L286.4,215.9L286.6,212.8Z",VN:"M751.4,181.8L754.1,185.5L756.7,189.2L759.4,193.0L762.0,196.7L764.7,200.4L765.2,205.1L765.7,209.7L766.2,214.3L766.7,219.0L761.4,219.0L756.1,219.0L750.7,219.0L751.1,214.9L751.6,210.7L752.0,206.6L752.4,202.5L752.9,198.3L753.3,194.2L752.7,190.1L752.0,185.9L751.4,181.8Z",VU:"M918.7,293.4L924.0,293.4L929.3,293.4L928.3,298.0L927.3,302.7L926.3,307.4L925.3,312.0L920.0,312.0L914.8,312.0L915.8,307.4L916.8,302.7L917.7,298.0L918.7,293.4Z",XK:"M528.3,116.9L533.2,116.9L533.5,119.9L528.6,119.9L528.3,116.9Z",YE:"M595.6,194.2L599.8,194.2L604.0,194.2L608.2,194.2L612.4,194.2L616.6,194.2L616.9,198.3L617.1,202.5L617.4,206.6L613.2,206.6L609.0,206.6L604.7,206.6L600.5,206.6L596.3,206.6L596.1,202.5L595.8,198.3L595.6,194.2Z",ZA:"M521.2,336.8L525.4,336.8L529.6,336.8L533.8,336.8L538.0,336.8L542.2,336.8L546.5,336.8L550.7,336.8L554.9,336.8L559.1,336.8L563.3,336.8L567.5,336.8L567.1,341.4L566.6,346.1L566.2,350.8L565.8,355.4L560.7,355.4L555.7,355.4L550.6,355.4L546.9,353.8L543.2,352.3L539.5,350.8L535.8,349.2L532.1,347.6L528.4,346.1L524.7,344.6L521.0,343.0L521.2,336.8Z",ZM:"M538.5,274.8L542.9,274.8L547.4,274.8L551.8,274.8L556.2,274.8L560.7,274.8L565.1,274.8L565.0,279.2L564.8,283.7L564.7,288.1L564.5,292.5L564.4,296.9L564.2,301.4L564.1,305.8L559.7,305.8L555.3,305.8L551.0,305.8L546.6,305.8L542.2,305.8L537.8,305.8L537.9,301.4L538.0,296.9L538.1,292.5L538.2,288.1L538.3,283.7L538.4,279.2L538.5,274.8Z",ZW:"M548.5,299.6L553.8,299.6L559.0,299.6L564.3,299.6L564.1,304.2L563.9,308.9L563.7,313.6L563.5,318.2L558.3,318.2L553.0,318.2L547.8,318.2L548.0,313.6L548.1,308.9L548.3,304.2L548.5,299.6Z"};
+const _GEO_CENTS={AD:[483.7,118.3],AE:[619.6,178.1],AF:[642.7,143.6],AL:[528.9,123.0],AM:[587.8,124.8],AO:[524.5,279.8],AR:[320.1,362.5],AT:[510.2,104.1],AU:[818.8,330.6],AZ:[596.6,124.8],BA:[521.3,113.2],BD:[712.6,174.4],BE:[489.7,96.2],BF:[475.8,209.7],BG:[539.9,116.2],BH:[610.7,169.2],BI:[558.9,261.2],BJ:[487.4,220.2],BN:[785.8,235.7],BO:[311.6,302.7],BR:[352.0,292.5],BT:[711.1,165.7],BW:[540.6,315.7],BY:[541.6,87.3],BZ:[248.5,196.7],CA:[288.2,77.4],CD:[535.9,258.5],CG:[521.6,251.2],CH:[497.7,104.2],CI:[467.3,226.4],CL:[311.1,366.2],CM:[514.6,227.3],CN:[727.9,136.3],CO:[285.8,233.1],CR:[257.6,219.0],CU:[271.2,182.4],CY:[562.9,140.9],CZ:[513.3,95.0],DE:[502.1,93.4],DJ:[593.4,215.3],DK:[502.2,80.8],DO:[295.2,191.7],DZ:[485.0,158.6],EC:[272.7,260.5],EE:[532.6,69.8],EG:[559.3,166.9],ER:[584.5,204.1],ES:[471.5,126.5],ET:[581.7,221.1],FI:[529.7,52.0],FJ:[947.0,304.6],FR:[484.6,105.6],GA:[509.9,251.2],GB:[474.1,86.2],GE:[583.1,119.9],GF:[339.6,236.1],GH:[482.1,226.4],GM:[438.2,208.8],GN:[443.7,218.0],GQ:[505.6,246.3],GR:[535.0,127.6],GT:[241.3,197.8],GW:[439.7,215.3],GY:[324.4,226.8],HK:[777.5,180.8],HN:[253.6,201.4],HR:[518.3,111.8],HT:[287.9,191.7],HU:[523.4,104.1],ID:[746.7,250.4],IE:[461.0,86.7],IL:[568.2,153.3],IN:[680.5,183.7],IQ:[586.7,144.6],IR:[611.1,157.0],IS:[439.8,55.8],IT:[510.9,123.8],JM:[277.0,195.0],JO:[574.2,152.0],JP:[817.2,133.1],KE:[579.1,247.5],KG:[659.5,118.7],KH:[755.3,211.6],KM:[598.5,288.0],KP:[789.7,124.8],KR:[797.7,137.2],KW:[603.7,159.5],KZ:[626.1,101.8],LA:[748.4,190.5],LB:[570.5,145.8],LI:[502.5,104.1],LK:[694.7,222.7],LR:[455.5,230.2],LS:[551.7,343.0],LT:[531.4,79.1],LU:[493.4,97.1],LV:[533.6,76.2],LY:[521.7,180.6],MA:[473.0,149.2],MC:[497.8,114.5],MD:[546.4,104.1],ME:[527.0,118.1],MG:[601.7,305.8],MK:[533.1,121.1],ML:[477.9,202.9],MM:[728.8,183.9],MN:[709.3,105.7],MR:[447.4,195.4],MT:[516.1,138.3],MX:[216.6,177.0],MY:[763.3,233.9],MZ:[570.8,304.0],NA:[519.7,324.4],NE:[503.1,193.0],NG:[501.2,216.5],NI:[255.2,208.9],NL:[492.6,91.1],NO:[513.7,58.8],NP:[694.2,163.2],NZ:[895.5,386.2],OM:[629.5,184.3],PA:[265.8,224.0],PE:[283.0,280.1],PG:[860.6,267.6],PH:[798.9,209.7],PK:[648.5,153.5],PL:[521.0,89.1],PS:[568.4,152.2],PT:[460.9,126.1],PY:[327.4,314.1],QA:[611.2,171.9],RO:[539.4,108.3],RS:[528.4,112.6],RU:[680.8,70.2],RW:[559.4,255.6],SA:[595.3,177.2],SB:[899.1,276.0],SD:[552.8,201.4],SE:[519.0,59.5],SG:[755.6,245.9],SI:[516.0,107.1],SK:[524.4,99.8],SL:[447.1,221.5],SM:[509.9,114.0],SN:[438.6,205.6],SO:[598.9,225.2],SR:[332.3,232.9],SS:[556.3,230.4],SV:[246.0,207.4],SY:[575.3,140.0],SZ:[560.0,333.7],TD:[527.3,196.7],TG:[482.1,220.2],TH:[744.0,207.6],TJ:[653.9,126.0],TL:[812.6,277.3],TM:[617.4,129.8],TN:[502.1,143.4],TR:[562.2,129.9],TW:[792.8,174.1],TZ:[570.4,270.7],UA:[548.5,98.3],UG:[564.2,245.0],US:[241.7,136.7],UY:[339.0,335.6],UZ:[629.0,124.8],VA:[510.2,120.2],VE:[299.0,222.5],VN:[756.3,202.2],VU:[921.4,300.8],XK:[530.4,118.1],YE:[604.3,199.2],ZA:[541.2,344.0],ZM:[548.8,287.2],ZW:[554.5,307.0]};
+const _SPHERE_D="M960.0,250.0L959.3,234.5L957.8,219.0L955.2,203.5L951.5,188.0L947.0,172.5L940.8,157.0L932.5,141.5L922.4,126.0L910.2,110.7L896.6,95.6L880.8,80.8L863.3,66.4L844.7,52.4L824.9,39.1L803.1,26.6L778.2,15.1L754.7,6.0L735.5,0.0L224.5,500.0L205.3,494.0L181.8,484.9L156.9,473.4L135.1,460.9L115.3,447.6L96.7,433.6L79.2,419.2L63.4,404.4L49.8,389.3L37.6,373.9L27.5,358.5L19.2,343.0L13.0,327.5L8.5,312.0L4.8,296.5L2.2,281.0L0.7,265.5L0.0,250.0Z";
+const _GRAT_D="M224.5,500.0L205.3,494.0L181.8,484.9L156.9,473.4L135.1,460.9L115.3,447.6L96.7,433.6L79.2,419.2L63.4,404.4L49.8,389.3L37.6,373.9L27.5,358.5L19.2,343.0L13.0,327.5L8.5,312.0L4.8,296.5L2.2,281.0L0.7,265.5L0.0,250.0L0.7,234.5L2.2,219.0L4.8,203.5L8.5,188.0L13.0,172.5L19.2,157.0L27.5,141.5L37.6,126.0L49.8,110.7L63.4,95.6L79.2,80.8L96.7,66.4L115.3,52.4L135.1,39.1L156.9,26.6L181.8,15.1L205.3,6.0L224.5,0.0M267.1,500.0L251.1,494.0L231.5,484.9L210.7,473.4L192.6,460.9L176.1,447.6L160.6,433.6L146.0,419.2L132.8,404.4L121.5,389.3L111.4,373.9L102.9,358.5L96.0,343.0L90.8,327.5L87.1,312.0L84.0,296.5L81.8,281.0L80.6,265.5L80.0,250.0L80.6,234.5L81.8,219.0L84.0,203.5L87.1,188.0L90.8,172.5L96.0,157.0L102.9,141.5L111.4,126.0L121.5,110.7L132.8,95.6L146.0,80.8L160.6,66.4L176.1,52.4L192.6,39.1L210.7,26.6L231.5,15.1L251.1,6.0L267.1,0.0M309.7,500.0L296.9,494.0L281.2,484.9L264.6,473.4L250.0,460.9L236.9,447.6L224.4,433.6L212.8,419.2L202.3,404.4L193.2,389.3L185.1,373.9L178.3,358.5L172.8,343.0L168.6,327.5L165.7,312.0L163.2,296.5L161.5,281.0L160.4,265.5L160.0,250.0L160.4,234.5L161.5,219.0L163.2,203.5L165.7,188.0L168.6,172.5L172.8,157.0L178.3,141.5L185.1,126.0L193.2,110.7L202.3,95.6L212.8,80.8L224.4,66.4L236.9,52.4L250.0,39.1L264.6,26.6L281.2,15.1L296.9,6.0L309.7,0.0M352.3,500.0L342.7,494.0L330.9,484.9L318.4,473.4L307.5,460.9L297.7,447.6L288.3,433.6L279.6,419.2L271.7,404.4L264.9,389.3L258.8,373.9L253.8,358.5L249.6,343.0L246.5,327.5L244.3,312.0L242.4,296.5L241.1,281.0L240.3,265.5L240.0,250.0L240.3,234.5L241.1,219.0L242.4,203.5L244.3,188.0L246.5,172.5L249.6,157.0L253.8,141.5L258.8,126.0L264.9,110.7L271.7,95.6L279.6,80.8L288.3,66.4L297.7,52.4L307.5,39.1L318.4,26.6L330.9,15.1L342.7,6.0L352.3,0.0M394.8,500.0L388.4,494.0L380.6,484.9L372.3,473.4L365.0,460.9L358.4,447.6L352.2,433.6L346.4,419.2L341.1,404.4L336.6,389.3L332.5,373.9L329.2,358.5L326.4,343.0L324.3,327.5L322.8,312.0L321.6,296.5L320.7,281.0L320.2,265.5L320.0,250.0L320.2,234.5L320.7,219.0L321.6,203.5L322.8,188.0L324.3,172.5L326.4,157.0L329.2,141.5L332.5,126.0L336.6,110.7L341.1,95.6L346.4,80.8L352.2,66.4L358.4,52.4L365.0,39.1L372.3,26.6L380.6,15.1L388.4,6.0L394.8,0.0M437.4,500.0L434.2,494.0L430.3,484.9L426.1,473.4L422.5,460.9L419.2,447.6L416.1,433.6L413.2,419.2L410.6,404.4L408.3,389.3L406.3,373.9L404.6,358.5L403.2,343.0L402.2,327.5L401.4,312.0L400.8,296.5L400.4,281.0L400.1,265.5L400.0,250.0L400.1,234.5L400.4,219.0L400.8,203.5L401.4,188.0L402.2,172.5L403.2,157.0L404.6,141.5L406.3,126.0L408.3,110.7L410.6,95.6L413.2,80.8L416.1,66.4L419.2,52.4L422.5,39.1L426.1,26.6L430.3,15.1L434.2,6.0L437.4,0.0M480.0,500.0L480.0,494.0L480.0,484.9L480.0,473.4L480.0,460.9L480.0,447.6L480.0,433.6L480.0,419.2L480.0,404.4L480.0,389.3L480.0,373.9L480.0,358.5L480.0,343.0L480.0,327.5L480.0,312.0L480.0,296.5L480.0,281.0L480.0,265.5L480.0,250.0L480.0,234.5L480.0,219.0L480.0,203.5L480.0,188.0L480.0,172.5L480.0,157.0L480.0,141.5L480.0,126.0L480.0,110.7L480.0,95.6L480.0,80.8L480.0,66.4L480.0,52.4L480.0,39.1L480.0,26.6L480.0,15.1L480.0,6.0L480.0,0.0M522.6,500.0L525.8,494.0L529.7,484.9L533.9,473.4L537.5,460.9L540.8,447.6L543.9,433.6L546.8,419.2L549.4,404.4L551.7,389.3L553.7,373.9L555.4,358.5L556.8,343.0L557.8,327.5L558.6,312.0L559.2,296.5L559.6,281.0L559.9,265.5L560.0,250.0L559.9,234.5L559.6,219.0L559.2,203.5L558.6,188.0L557.8,172.5L556.8,157.0L555.4,141.5L553.7,126.0L551.7,110.7L549.4,95.6L546.8,80.8L543.9,66.4L540.8,52.4L537.5,39.1L533.9,26.6L529.7,15.1L525.8,6.0L522.6,0.0M565.2,500.0L571.6,494.0L579.4,484.9L587.7,473.4L595.0,460.9L601.6,447.6L607.8,433.6L613.6,419.2L618.9,404.4L623.4,389.3L627.5,373.9L630.8,358.5L633.6,343.0L635.7,327.5L637.2,312.0L638.4,296.5L639.3,281.0L639.8,265.5L640.0,250.0L639.8,234.5L639.3,219.0L638.4,203.5L637.2,188.0L635.7,172.5L633.6,157.0L630.8,141.5L627.5,126.0L623.4,110.7L618.9,95.6L613.6,80.8L607.8,66.4L601.6,52.4L595.0,39.1L587.7,26.6L579.4,15.1L571.6,6.0L565.2,0.0M607.7,500.0L617.3,494.0L629.1,484.9L641.6,473.4L652.5,460.9L662.3,447.6L671.7,433.6L680.4,419.2L688.3,404.4L695.1,389.3L701.2,373.9L706.2,358.5L710.4,343.0L713.5,327.5L715.7,312.0L717.6,296.5L718.9,281.0L719.7,265.5L720.0,250.0L719.7,234.5L718.9,219.0L717.6,203.5L715.7,188.0L713.5,172.5L710.4,157.0L706.2,141.5L701.2,126.0L695.1,110.7L688.3,95.6L680.4,80.8L671.7,66.4L662.3,52.4L652.5,39.1L641.6,26.6L629.1,15.1L617.3,6.0L607.7,0.0M650.3,500.0L663.1,494.0L678.8,484.9L695.4,473.4L710.0,460.9L723.1,447.6L735.6,433.6L747.2,419.2L757.7,404.4L766.8,389.3L774.9,373.9L781.7,358.5L787.2,343.0L791.4,327.5L794.3,312.0L796.8,296.5L798.5,281.0L799.6,265.5L800.0,250.0L799.6,234.5L798.5,219.0L796.8,203.5L794.3,188.0L791.4,172.5L787.2,157.0L781.7,141.5L774.9,126.0L766.8,110.7L757.7,95.6L747.2,80.8L735.6,66.4L723.1,52.4L710.0,39.1L695.4,26.6L678.8,15.1L663.1,6.0L650.3,0.0M692.9,500.0L708.9,494.0L728.5,484.9L749.3,473.4L767.4,460.9L783.9,447.6L799.4,433.6L814.0,419.2L827.2,404.4L838.5,389.3L848.6,373.9L857.1,358.5L864.0,343.0L869.2,327.5L872.9,312.0L876.0,296.5L878.2,281.0L879.4,265.5L880.0,250.0L879.4,234.5L878.2,219.0L876.0,203.5L872.9,188.0L869.2,172.5L864.0,157.0L857.1,141.5L848.6,126.0L838.5,110.7L827.2,95.6L814.0,80.8L799.4,66.4L783.9,52.4L767.4,39.1L749.3,26.6L728.5,15.1L708.9,6.0L692.9,0.0M735.5,500.0L754.7,494.0L778.2,484.9L803.1,473.4L824.9,460.9L844.7,447.6L863.3,433.6L880.8,419.2L896.6,404.4L910.2,389.3L922.4,373.9L932.5,358.5L940.8,343.0L947.0,327.5L951.5,312.0L955.2,296.5L957.8,281.0L959.3,265.5L960.0,250.0L959.3,234.5L957.8,219.0L955.2,203.5L951.5,188.0L947.0,172.5L940.8,157.0L932.5,141.5L922.4,126.0L910.2,110.7L896.6,95.6L880.8,80.8L863.3,66.4L844.7,52.4L824.9,39.1L803.1,26.6L778.2,15.1L754.7,6.0L735.5,0.0M96.7,433.6L118.0,433.6L139.3,433.6L160.6,433.6L181.9,433.6L203.2,433.6L224.4,433.6L245.7,433.6L267.0,433.6L288.3,433.6L309.6,433.6L330.9,433.6L352.2,433.6L373.5,433.6L394.8,433.6L416.1,433.6L437.4,433.6L458.7,433.6L480.0,433.6L501.3,433.6L522.6,433.6L543.9,433.6L565.2,433.6L586.5,433.6L607.8,433.6L629.1,433.6L650.4,433.6L671.7,433.6L693.0,433.6L714.3,433.6L735.6,433.6L756.8,433.6L778.1,433.6L799.4,433.6L820.7,433.6L842.0,433.6L863.3,433.6M19.2,343.0L44.8,343.0L70.4,343.0L96.0,343.0L121.6,343.0L147.2,343.0L172.8,343.0L198.4,343.0L224.0,343.0L249.6,343.0L275.2,343.0L300.8,343.0L326.4,343.0L352.0,343.0L377.6,343.0L403.2,343.0L428.8,343.0L454.4,343.0L480.0,343.0L505.6,343.0L531.2,343.0L556.8,343.0L582.4,343.0L608.0,343.0L633.6,343.0L659.2,343.0L684.8,343.0L710.4,343.0L736.0,343.0L761.6,343.0L787.2,343.0L812.8,343.0L838.4,343.0L864.0,343.0L889.6,343.0L915.2,343.0L940.8,343.0M0.0,250.0L26.7,250.0L53.3,250.0L80.0,250.0L106.7,250.0L133.3,250.0L160.0,250.0L186.7,250.0L213.3,250.0L240.0,250.0L266.7,250.0L293.3,250.0L320.0,250.0L346.7,250.0L373.3,250.0L400.0,250.0L426.7,250.0L453.3,250.0L480.0,250.0L506.7,250.0L533.3,250.0L560.0,250.0L586.7,250.0L613.3,250.0L640.0,250.0L666.7,250.0L693.3,250.0L720.0,250.0L746.7,250.0L773.3,250.0L800.0,250.0L826.7,250.0L853.3,250.0L880.0,250.0L906.7,250.0L933.3,250.0L960.0,250.0M19.2,157.0L44.8,157.0L70.4,157.0L96.0,157.0L121.6,157.0L147.2,157.0L172.8,157.0L198.4,157.0L224.0,157.0L249.6,157.0L275.2,157.0L300.8,157.0L326.4,157.0L352.0,157.0L377.6,157.0L403.2,157.0L428.8,157.0L454.4,157.0L480.0,157.0L505.6,157.0L531.2,157.0L556.8,157.0L582.4,157.0L608.0,157.0L633.6,157.0L659.2,157.0L684.8,157.0L710.4,157.0L736.0,157.0L761.6,157.0L787.2,157.0L812.8,157.0L838.4,157.0L864.0,157.0L889.6,157.0L915.2,157.0L940.8,157.0M96.7,66.4L118.0,66.4L139.3,66.4L160.6,66.4L181.9,66.4L203.2,66.4L224.4,66.4L245.7,66.4L267.0,66.4L288.3,66.4L309.6,66.4L330.9,66.4L352.2,66.4L373.5,66.4L394.8,66.4L416.1,66.4L437.4,66.4L458.7,66.4L480.0,66.4L501.3,66.4L522.6,66.4L543.9,66.4L565.2,66.4L586.5,66.4L607.8,66.4L629.1,66.4L650.4,66.4L671.7,66.4L693.0,66.4L714.3,66.4L735.6,66.4L756.8,66.4L778.1,66.4L799.4,66.4L820.7,66.4L842.0,66.4L863.3,66.4";
+
+// ─── WORLD MAP — Natural Earth 110m via CDN, Robinson projection ─────────────
+// Fallback: simplified embedded paths when offline
+let _topoCache = null;   // cached topology
+let _topoState = 'idle'; // idle|loading|ready|error
+let _pendingDraws = [];  // queued draw callbacks
+
+const _NUM2={
+  "4":"AF","8":"AL","12":"DZ","20":"AD","24":"AO","28":"AG","31":"AZ",
+  "32":"AR","36":"AU","40":"AT","44":"BS","48":"BH","50":"BD","51":"AM",
+  "52":"BB","56":"BE","64":"BT","68":"BO","70":"BA","72":"BW","76":"BR",
+  "84":"BZ","90":"SB","96":"BN","100":"BG","104":"MM","108":"BI","112":"BY",
+  "116":"KH","120":"CM","124":"CA","132":"CV","140":"CF","144":"LK","148":"TD",
+  "152":"CL","156":"CN","158":"TW","170":"CO","174":"KM","178":"CG","180":"CD",
+  "188":"CR","191":"HR","192":"CU","196":"CY","203":"CZ","204":"BJ","208":"DK",
+  "212":"DM","214":"DO","218":"EC","222":"SV","231":"ET","232":"ER","233":"EE",
+  "242":"FJ","246":"FI","250":"FR","254":"GF","262":"DJ","266":"GA","268":"GE",
+  "276":"DE","288":"GH","296":"KI","300":"GR","308":"GD","320":"GT","324":"GN",
+  "328":"GY","332":"HT","336":"VA","340":"HN","344":"HK","348":"HU","352":"IS",
+  "356":"IN","360":"ID","364":"IR","368":"IQ","372":"IE","376":"IL","380":"IT",
+  "384":"CI","388":"JM","392":"JP","398":"KZ","400":"JO","404":"KE","408":"KP",
+  "410":"KR","414":"KW","418":"LA","422":"LB","426":"LS","428":"LV","430":"LR",
+  "434":"LY","438":"LI","440":"LT","442":"LU","446":"MO","450":"MG","454":"MW",
+  "458":"MY","462":"MV","466":"ML","470":"MT","478":"MR","480":"MU","484":"MX",
+  "492":"MC","496":"MN","498":"MD","499":"ME","504":"MA","508":"MZ","512":"OM",
+  "516":"NA","524":"NP","528":"NL","540":"NC","548":"VU","554":"NZ","558":"NI",
+  "562":"NE","566":"NG","578":"NO","583":"FM","584":"MH","585":"PW","586":"PK",
+  "591":"PA","598":"PG","600":"PY","604":"PE","608":"PH","616":"PL","620":"PT",
+  "624":"GW","626":"TL","630":"PR","634":"QA","642":"RO","643":"RU","646":"RW",
+  "659":"KN","662":"LC","670":"VC","678":"ST","682":"SA","686":"SN","688":"RS",
+  "694":"SL","702":"SG","703":"SK","704":"VN","705":"SI","706":"SO","710":"ZA",
+  "716":"ZW","724":"ES","728":"SS","729":"SD","740":"SR","748":"SZ","752":"SE",
+  "756":"CH","760":"SY","762":"TJ","764":"TH","768":"TG","776":"TO","780":"TT",
+  "784":"AE","788":"TN","792":"TR","795":"TM","800":"UG","804":"UA","807":"MK",
+  "818":"EG","826":"GB","834":"TZ","840":"US","854":"BF","858":"UY","860":"UZ",
+  "862":"VE","882":"WS","887":"YE","894":"ZM"
 };
 
-const COUNTRY_PATHS={"AF":"M659.8,141.2L662.7,142.8L664.6,140.6L667.9,139.4L667.8,136.9L669.8,135.3L672.3,135.9L675.8,136.5L679.7,136.5L682.1,134.0L684.7,133.1L685.0,138.1L688.6,137.8L690.0,132.5L694.2,136.5L693.6,137.2L691.2,137.8L688.2,137.5L685.0,138.1L687.7,144.4L685.2,148.5L683.3,149.7L686.4,155.4L683.9,158.8L676.3,161.0L668.8,160.7L662.1,156.0L660.4,149.7L659.0,146.6L659.8,141.2Z","AO":"M534.1,272.7L536.0,272.1L545.2,272.1L546.0,274.3L547.1,276.5L551.2,278.7L554.6,276.1L555.4,276.5L560.4,276.5L565.0,281.2L560.6,283.4L560.5,288.1L566.3,289.7L567.5,294.4L561.8,303.8L554.8,307.0L549.3,308.5L538.9,308.2L535.7,305.4L532.4,302.2L532.3,291.9L534.6,283.4L534.1,272.7Z","AR":"M348.3,425.7L350.8,425.5L352.5,422.2L355.5,417.0L362.0,414.0L360.7,408.0L364.0,402.4L352.9,395.7L341.1,386.7L337.8,382.3L334.2,381.4L331.4,374.5L339.5,375.8L350.7,373.3L351.0,369.5L347.1,362.3L345.5,357.9L335.3,351.0L332.7,343.7L338.9,340.0L340.8,336.2L352.9,328.3L354.0,318.9L347.5,306.3L342.8,308.8L339.6,298.8L335.3,304.8L329.3,292.8L328.6,295.0L646.0,318.6L341.4,308.8L339.6,298.8L326.5,296.9L324.7,323.0L309.9,311.0L312.5,322.7L317.2,329.0L318.6,329.3L324.4,341.5L314.8,340.0L317.7,341.5L317.3,360.4L316.5,366.7L316.6,373.0L321.2,388.6L323.0,400.9L325.2,410.1L338.1,417.9L348.3,425.7Z","AU":"M809.9,322.7L805.9,335.3L799.6,360.4L803.8,363.6L811.4,360.4L820.6,360.4L826.5,358.8L832.5,360.4L837.8,363.6L841.7,360.4L845.6,357.3L854.1,358.8L857.9,365.1L861.2,371.4L866.0,374.5L881.5,374.5L889.3,369.8L896.9,360.4L911.6,341.5L911.0,343.1L909.5,332.1L904.8,318.0L899.0,313.2L894.6,300.7L888.4,296.0L877.6,294.4L875.0,292.8L873.0,297.5L866.7,292.8L859.1,288.1L857.9,297.5L853.6,299.1L846.0,303.8L839.9,307.0L833.9,310.1L827.4,316.4L809.9,322.7Z","AZ":"M615.7,130.9L617.8,121.9L623.2,122.2L628.8,126.8L627.3,129.6L625.6,128.7L623.8,131.5L618.6,131.2L617.2,130.3L615.7,130.9Z","BD":"M739.9,171.7L747.7,170.2L750.1,184.3L747.1,182.7L744.6,184.3L742.1,185.9L741.5,181.2L738.5,179.6L739.2,174.9L739.9,171.7Z","BE":"M506.0,93.3L515.6,94.5L514.4,95.4L513.8,98.4L511.6,97.5L509.6,96.0L507.0,94.8L506.0,93.3Z","BF":"M1485.8,218.3L485.4,206.6L488.4,211.0L502.8,212.6L505.5,216.7L505.5,218.9L502.8,222.1L499.7,225.2L492.3,223.0L490.3,218.9L487.6,218.9L486.5,221.4L484.8,222.1L485.4,206.6Z","BI":"M580.5,267.7L581.8,267.7L584.6,266.1L585.4,269.2L584.6,270.8L581.2,273.3L580.4,269.2L580.5,267.7Z","BJ":"M502.8,225.2L505.5,218.9L505.5,216.7L504.4,213.9L502.8,214.8L502.2,212.6L501.4,210.4L502.8,206.6L505.5,211.0L509.9,215.8L510.8,220.5L508.3,223.6L505.3,225.8L502.8,225.2Z","BO":"M308.0,287.8L310.3,288.4L319.4,288.1L334.8,304.8L341.5,317.0L341.7,308.8L326.0,296.9L324.7,323.0L323.4,323.0L318.6,329.0L314.8,319.5L309.9,311.0L311.0,308.5L308.2,307.9L308.9,300.7L293.5,297.5L290.9,299.1L298.9,288.1L305.0,288.1L306.4,283.4L310.3,288.4Z","BR":"M403.7,278.7L401.3,269.5L397.4,268.6L393.2,265.1L384.0,262.6L375.6,256.6L365.6,255.1L358.3,253.5L357.4,240.3L333.9,237.1L331.6,237.1L329.4,240.9L324.1,241.2L321.3,240.6L315.1,248.2L306.2,250.0L306.1,267.0L305.3,283.4L303.7,284.9L300.4,284.9L297.7,304.8L291.9,298.2L309.3,307.6L309.9,311.0L323.4,323.0L329.7,323.6L337.5,329.0L341.5,317.0L341.7,308.8L339.3,298.8L357.5,289.3L357.4,276.8L359.5,258.2L362.5,255.1L367.5,251.6L370.0,251.3L375.1,247.2L383.7,241.6L389.8,245.6L395.0,257.3L402.7,270.5L403.7,278.7Z","CA":"M220.2,39.9L253.5,40.9L278.2,40.9L318.8,30.7L330.9,33.2L345.4,32.0L352.2,46.3L357.6,65.8L343.2,104.6L335.5,105.5L332.3,115.3L323.3,120.0L313.9,125.3L316.7,116.9L309.7,115.3L293.5,115.3L294.7,109.2L285.1,103.0L281.2,103.0L269.0,99.9L257.3,99.9L233.1,99.9L208.8,99.9L200.6,101.5L198.6,96.9L197.3,83.3L197.8,77.5L195.4,65.8L188.7,65.8L218.2,39.9L220.2,39.9Z","CF":"M540.1,221.4L541.5,228.3L544.3,231.5L545.7,233.1L551.3,234.6L556.9,239.3L561.0,239.3L562.4,233.1L565.0,226.8L566.4,228.3L569.2,228.3L573.3,222.1L574.6,218.9L573.2,218.9L567.7,222.1L563.5,218.9L562.1,217.3L560.7,214.2L559.3,215.8L556.6,215.8L552.4,215.8L551.0,212.6L548.3,217.3L542.8,218.9L540.1,221.4Z","CG":"M540.1,221.4L542.8,218.9L548.3,217.3L551.0,212.6L552.4,215.8L556.6,215.8L559.3,215.8L560.7,214.2L562.1,217.3L563.5,218.9L567.7,222.1L573.2,218.9L574.6,218.9L576.0,220.5L574.7,223.6L570.6,226.8L566.4,228.3L565.0,226.8L562.4,233.1L561.0,239.3L556.9,239.3L551.3,234.6L545.7,233.1L544.3,231.5L541.5,228.3L540.1,221.4Z","CH":"M520.8,103.6L523.3,104.6L525.7,104.6L525.8,106.7L522.2,107.6L519.7,107.6L516.0,107.6L514.7,106.1L517.2,104.6L520.8,103.6Z","CL":"M308.5,311.4L311.1,322.7L314.3,319.5L317.4,330.5L318.6,329.0L324.4,341.5L314.8,340.0L317.3,360.4L316.5,366.7L316.6,373.0L321.2,388.6L325.9,410.1L338.1,417.9L346.6,425.5L350.8,425.5L352.5,422.2L355.1,428.1L347.1,428.1L344.1,426.6L338.1,417.9L326.4,410.1L321.8,400.9L321.2,388.6L316.6,373.0L316.5,366.7L317.3,360.4L312.8,344.7L317.7,341.5L315.9,329.0L314.3,319.5L311.1,322.7L308.5,311.4Z","CM":"M540.0,212.6L535.8,211.0L531.7,214.2L528.9,212.6L527.6,215.8L523.5,215.8L522.1,218.9L523.5,222.1L526.3,228.3L526.3,233.1L527.7,237.8L527.8,247.2L526.4,248.8L523.6,248.8L525.0,244.1L525.0,239.3L520.8,237.8L515.3,237.8L513.9,233.1L515.2,229.9L513.8,228.3L511.1,223.6L512.4,217.3L517.9,211.0L535.8,211.0L540.0,212.6Z","CN":"M712.0,99.3L716.0,99.9L717.7,98.4L728.3,96.9L736.6,99.9L755.5,96.9L755.8,86.4L766.4,86.4L781.8,104.6L781.8,98.4L786.6,98.4L791.5,102.4L799.9,106.1L808.9,121.5L810.0,134.0L814.0,137.2L815.9,135.6L823.0,152.9L825.3,163.9L826.2,171.7L819.2,176.5L816.2,189.0L800.1,190.6L793.8,185.9L787.8,182.7L782.7,184.3L779.7,182.7L778.6,184.3L771.6,182.7L768.3,179.6L764.9,174.9L762.1,168.6L759.7,163.9L745.3,165.5L735.9,165.5L725.2,165.5L713.1,152.9L708.6,145.0L705.1,141.9L698.6,141.9L692.0,137.2L688.6,129.3L685.8,124.7L692.4,121.5L702.0,120.0L704.0,106.1L712.0,99.3Z","CO":"M313.2,247.2L314.0,244.1L312.0,235.3L313.2,233.7L314.9,231.8L313.6,229.9L317.4,225.2L321.9,222.1L325.8,222.1L327.3,219.5L331.9,221.4L334.0,225.2L331.2,226.8L326.4,228.3L324.0,233.1L324.1,240.9L321.3,240.6L315.1,248.2L306.2,250.0L306.1,267.0L304.4,266.1L301.6,266.1L297.4,266.1L294.7,267.7L291.3,264.5L290.3,256.6L290.3,253.5L288.9,250.4L286.3,244.1L285.2,234.6L286.8,229.3L288.5,227.1L292.4,228.3L293.9,225.2L298.0,225.2L299.8,218.6L299.2,218.9L303.2,216.4L303.1,214.5L299.8,218.6L298.0,225.2L293.9,225.2L292.4,228.3L288.5,227.1L286.8,229.3L285.2,234.6L286.3,244.1L288.9,250.4L290.3,253.5L290.3,256.6L294.7,267.7L297.4,266.1L301.6,266.1L304.4,266.1L306.1,267.0L306.2,250.0L313.2,247.2Z","CD":"M533.8,272.7L535.5,268.9L537.4,268.6L545.7,272.1L547.1,276.5L551.2,278.7L554.6,276.1L560.7,276.5L565.0,281.2L566.4,278.7L569.2,277.1L572.0,275.5L574.7,280.2L577.5,281.8L578.7,288.1L581.3,296.0L580.6,300.7L576.8,305.4L574.0,308.5L572.9,299.1L570.3,292.8L567.6,289.7L566.3,289.7L563.5,289.0L562.2,283.4L560.6,283.4L560.5,288.1L565.0,281.2L560.4,276.5L555.4,276.5L551.2,278.7L547.1,276.5L546.0,274.3L545.2,272.1L536.0,272.1L533.8,272.7Z","CZ":"M531.2,95.4L534.7,93.9L535.9,93.9L538.4,95.4L541.1,98.4L544.4,95.4L544.7,98.4L542.6,101.5L540.2,101.5L535.5,104.6L531.6,101.5L530.5,103.0L531.2,95.4Z","DE":"M514.3,93.3L516.6,89.4L518.6,83.3L523.2,81.8L529.1,83.3L533.9,84.8L535.9,93.9L534.7,93.9L531.2,95.4L530.5,103.0L531.9,104.6L535.5,104.6L540.2,101.5L542.3,98.4L538.3,93.9L535.9,93.9L533.9,84.8L529.1,83.3L523.2,81.8L518.6,83.3L516.6,89.4L514.3,93.3L515.7,98.4L517.0,101.5L519.6,104.6L516.9,98.4L514.3,93.3Z","DK":"M518.2,74.5L522.6,73.1L527.6,78.9L528.7,78.9L524.4,81.8L523.2,81.8L518.2,74.5Z","DZ":"M522.1,137.2L524.6,135.6L522.1,138.7L524.6,135.6L529.8,135.6L522.1,137.2L494.8,141.9L494.8,143.4L485.5,146.6L477.2,165.5L486.3,204.8L510.9,193.8L524.6,192.2L532.5,179.6L531.1,178.0L522.7,160.7L522.4,149.7L524.6,135.6L522.1,137.2Z","EC":"M290.3,253.5L278.0,262.9L278.1,269.2L278.6,269.2L287.9,270.8L291.3,264.5L290.3,256.6L290.3,253.5Z","EG":"M568.0,184.3L600.6,184.3L599.5,168.6L592.1,160.7L590.3,156.0L586.4,156.0L582.2,154.4L575.7,156.0L566.3,154.4L568.0,184.3Z","ER":"M599.9,196.9L604.5,206.3L609.9,204.8L617.2,214.2L618.6,214.2L618.7,217.3L616.0,218.9L611.9,220.5L610.4,217.3L612.8,207.9L612.3,198.5L611.0,200.0L604.0,196.9L599.9,196.9Z","ES":"M477.2,121.5L482.5,115.3L496.2,116.9L507.5,116.9L507.6,123.1L503.8,126.2L501.3,132.5L500.0,135.6L496.1,137.2L494.8,137.2L485.7,140.3L483.1,137.2L480.5,137.2L478.0,134.0L476.9,129.3L475.7,126.2L477.2,121.5Z","ET":"M599.9,239.3L605.5,242.5L617.9,240.9L623.2,226.8L632.5,217.3L624.4,220.5L618.6,214.2L616.6,201.6L609.9,204.8L604.5,206.3L600.6,214.2L598.0,217.3L599.9,239.3Z","FI":"M557.5,42.3L558.5,38.3L558.5,42.3L555.8,43.6L553.1,45.0L555.6,51.7L554.4,55.9L552.2,61.6L548.8,67.2L546.6,67.2L544.2,65.8L541.9,65.8L543.1,58.7L544.3,53.1L543.9,45.0L547.7,43.6L551.9,39.6L554.5,38.3L557.5,42.3Z","FR":"M495.2,92.4L507.2,93.9L516.9,98.4L519.6,104.6L517.6,116.9L507.5,116.9L502.5,116.9L495.0,116.9L496.3,106.1L493.9,101.5L495.2,92.4Z","GA":"M525.0,247.2L526.4,248.8L530.5,250.4L531.9,247.2L537.5,247.2L540.2,245.6L538.8,239.3L531.9,239.3L530.5,242.5L526.4,242.5L525.0,247.2Z","GB":"M493.3,71.6L496.7,67.2L500.0,67.2L502.3,84.8L500.0,92.4L495.2,93.9L487.9,96.9L486.9,92.4L489.4,87.9L491.8,83.3L493.3,71.6Z","GH":"M508.3,234.6L505.3,225.8L502.8,225.2L499.7,225.2L500.0,220.5L501.4,218.9L501.4,209.5L502.8,206.6L505.5,211.0L509.9,215.8L510.8,220.5L508.3,223.6L505.3,225.8L508.3,234.6Z","GN":"M458.5,220.5L458.6,217.3L461.4,217.3L466.9,212.6L471.1,213.6L473.8,214.2L476.5,217.3L476.5,222.1L473.7,226.8L470.9,226.8L465.4,226.8L459.9,223.6L458.5,220.5Z","GR":"M551.8,135.6L556.8,134.0L561.4,127.8L567.5,124.7L571.5,126.2L565.7,132.5L562.1,135.6L557.1,137.2L551.8,135.6Z","HR":"M540.7,107.6L542.1,109.2L546.1,112.2L547.4,113.8L546.3,115.3L544.1,118.4L541.5,118.4L540.1,115.3L536.2,113.8L534.7,110.7L538.2,107.6L540.7,107.6Z","HU":"M542.6,101.5L544.4,95.4L554.4,98.4L555.0,103.0L553.7,103.0L550.1,103.0L546.3,101.5L542.6,101.5Z","ID":"M763.4,236.2L788.8,248.8L799.9,250.4L816.5,248.8L826.3,248.8L827.7,250.4L830.5,251.9L833.2,250.4L837.4,250.4L844.4,251.9L852.7,250.4L855.4,247.2L858.1,245.6L856.8,250.4L852.7,251.9L847.2,253.5L845.7,256.6L841.5,259.8L833.1,262.9L827.4,266.1L821.8,267.7L815.5,280.2L807.3,278.7L800.5,277.1L793.8,272.4L791.2,270.8L791.5,258.2L787.4,256.6L783.2,248.8L780.4,248.8L777.5,244.1L771.8,237.8L763.4,236.2Z","IN":"M684.3,179.6L685.7,179.6L690.1,182.7L697.1,184.3L698.1,193.8L704.2,200.0L700.6,204.8L703.7,209.5L712.9,222.1L711.7,226.8L714.6,228.3L722.7,223.6L719.8,222.1L721.4,226.8L722.7,223.6L727.2,196.9L718.3,190.6L713.6,185.9L707.5,181.2L697.7,178.0L693.6,168.6L689.0,165.5L687.4,163.9L682.6,167.0L681.6,179.6L684.3,179.6Z","IQ":"M599.7,135.6L607.9,138.7L614.2,137.2L615.2,135.6L618.6,140.3L621.5,141.9L627.2,145.0L629.1,157.6L626.8,160.7L624.2,160.7L619.0,162.3L613.1,157.6L607.0,151.3L604.9,145.0L607.9,138.7L599.7,135.6Z","IR":"M614.2,129.3L618.7,126.2L621.9,123.1L624.4,129.3L626.9,135.6L629.8,137.2L641.1,135.6L647.0,138.7L652.2,138.7L656.1,138.7L660.7,141.9L660.0,145.0L665.9,148.2L663.4,156.0L661.6,160.7L655.2,173.3L651.7,167.0L648.3,171.7L645.6,171.7L640.4,162.3L632.0,159.2L629.1,157.6L626.0,154.4L622.4,148.2L618.6,140.3L615.5,137.2L614.2,129.3Z","IT":"M517.6,116.9L520.0,113.8L525.1,116.9L530.0,115.3L535.5,123.1L538.8,134.0L542.4,130.9L546.1,127.8L541.4,135.6L540.0,134.0L535.0,135.6L532.3,134.0L533.3,127.8L530.5,123.1L533.9,116.9L535.2,118.4L532.3,110.7L533.4,109.2L530.7,106.1L525.9,107.6L521.0,109.2L517.6,116.9Z","JP":"M844.8,154.4L844.9,148.2L850.2,148.2L854.2,145.0L858.1,145.0L861.4,143.4L866.0,145.0L865.0,140.3L864.3,134.0L856.4,124.7L854.3,115.3L862.0,113.8L862.3,120.0L863.9,130.9L868.6,132.5L868.9,140.3L867.1,141.9L864.0,143.4L856.6,141.9L857.4,146.6L851.5,148.2L845.6,146.6L846.1,154.4Z","KE":"M615.2,242.5L615.2,250.4L613.8,258.2L611.0,266.1L611.9,286.5L604.9,289.7L599.4,289.7L595.4,283.4L592.7,283.4L591.6,256.6L595.8,248.8L599.9,239.3L606.8,242.5L615.2,242.5Z","KH":"M780.7,207.9L786.2,207.9L795.1,214.2L790.2,220.5L784.6,220.5L783.9,212.6L780.7,207.9Z","KP":"M818.7,127.8L824.2,126.2L831.5,127.8L829.1,121.5L824.4,120.0L821.2,123.1L821.7,126.2L818.7,127.8Z","KR":"M831.9,145.0L837.1,145.0L838.4,141.9L840.0,137.2L835.1,132.5L833.3,134.0L828.6,132.5L825.5,134.0L825.0,135.6L828.3,137.2L831.9,145.0Z","KZ":"M633.8,120.0L645.2,110.7L652.3,113.8L670.7,116.9L698.9,118.4L698.3,98.4L704.0,106.1L702.0,120.0L692.4,121.5L685.8,124.7L672.2,121.5L650.2,115.3L638.8,101.5L627.0,80.4L624.2,73.1L630.4,71.6L639.2,81.8L644.9,84.8L659.5,83.3L670.7,84.8L680.0,84.8L692.6,93.9L698.6,93.9L711.1,99.9L706.4,103.0L698.3,98.4L698.9,118.4L670.7,116.9L652.3,113.8L645.2,110.7L633.8,120.0Z","LA":"M771.6,182.7L778.6,184.3L782.7,184.3L786.2,198.5L786.7,201.6L783.4,207.9L780.7,207.9L783.9,212.6L784.6,220.5L782.8,215.8L778.2,211.0L776.4,206.3L776.4,196.9L771.6,182.7Z","LY":"M525.3,157.6L526.7,159.2L530.3,149.7L535.6,149.7L539.9,157.6L553.5,163.9L566.3,154.4L568.0,184.3L524.6,192.2L525.6,170.2L525.3,157.6Z","MA":"M494.8,141.9L488.2,141.9L485.7,140.3L484.3,143.4L485.5,148.2L482.9,148.2L477.6,148.2L474.8,152.9L474.7,159.2L477.2,165.5L476.7,166.4L465.1,166.4L464.9,174.9L453.7,187.5L454.4,166.4L465.1,166.4L477.2,165.5L474.7,159.2L474.8,152.9L477.6,148.2L482.9,148.2L485.5,148.2L484.3,143.4L488.2,141.9L494.8,141.9L500.0,141.9L506.5,141.9L514.3,140.3L513.1,143.4L506.5,141.9L500.0,141.9L494.8,141.9Z","MG":"M621.4,291.2L637.3,303.8L636.3,333.7L628.2,333.7L618.1,324.3L619.2,308.5L621.4,291.2Z","ML":"M489.2,176.5L510.9,193.8L510.9,193.8L500.0,206.6L501.4,210.4L502.2,212.6L502.8,214.8L504.4,213.9L505.5,216.7L505.5,211.0L509.9,215.8L511.1,222.1L512.4,217.3L517.9,211.0L527.6,215.8L529.0,218.9L529.1,225.2L522.1,223.6L519.4,226.8L519.4,226.8L515.2,228.3L513.8,222.1L511.1,222.1L490.3,218.9L487.6,218.9L486.5,221.4L484.8,222.1L485.4,206.6L488.4,211.0L497.2,206.3L489.1,190.6L489.2,176.5Z","MM":"M748.0,165.5L754.5,178.0L764.0,178.0L764.9,174.9L768.3,179.6L771.6,182.7L776.4,187.5L772.8,190.6L772.1,195.3L769.1,203.2L765.5,196.9L760.8,203.2L756.2,211.0L771.0,222.1L771.6,214.2L778.3,229.9L780.0,234.6L782.8,236.2L778.3,229.9L773.0,214.2L769.3,204.8L765.5,196.9L759.3,182.7L754.3,176.5L748.0,165.5Z","MX":"M190.5,151.3L196.6,151.3L205.4,155.1L213.3,155.1L218.0,152.9L220.8,159.2L224.6,162.3L230.5,165.5L234.2,167.0L238.6,165.5L238.5,171.7L247.0,170.2L250.3,160.7L259.4,162.3L256.6,206.3L252.4,207.9L247.1,205.4L246.0,203.2L249.2,200.0L253.7,196.9L256.6,195.3L260.7,195.3L263.1,187.5L263.8,185.9L253.8,185.9L251.5,192.2L248.4,195.3L241.4,196.9L237.9,192.2L235.1,192.2L228.6,200.0L216.9,195.3L212.2,190.6L211.1,181.2L202.9,181.2L200.8,178.0L195.4,171.7L189.8,162.3L188.6,146.6L190.5,151.3Z","MZ":"M595.2,289.7L599.4,289.7L611.9,286.5L611.4,300.7L605.4,310.1L600.7,321.1L596.0,330.5L593.0,335.3L590.4,333.7L587.7,333.7L585.0,333.7L581.5,324.3L588.7,316.4L591.6,311.7L596.0,305.4L597.7,299.1L595.2,289.7Z","MR":"M453.7,187.5L454.4,166.4L465.1,166.4L476.7,166.4L484.9,206.3L485.4,206.6L476.6,212.6L472.4,212.6L469.7,214.2L466.9,212.6L461.4,217.3L458.6,217.3L453.1,217.3L453.2,209.5L453.7,187.5Z","NA":"M532.9,307.0L534.2,308.5L537.0,308.5L539.7,308.5L547.9,310.1L554.7,310.1L555.8,321.1L563.0,308.5L562.5,322.7L555.4,332.1L551.4,332.1L545.5,343.1L541.5,343.1L540.3,338.4L536.4,335.3L531.1,330.5L531.5,308.5L532.9,307.0Z","NE":"M505.5,218.9L511.0,218.9L512.4,217.3L517.9,211.0L535.8,211.0L540.0,212.6L540.0,212.6L538.3,195.3L534.2,195.3L531.2,179.6L524.6,192.2L510.9,193.8L500.0,206.6L501.4,210.4L502.8,214.8L504.4,213.9L505.5,216.7L505.5,218.9Z","NG":"M508.3,234.6L512.5,229.9L511.1,223.6L512.4,217.3L517.9,211.0L535.8,211.0L540.0,212.6L540.1,220.5L537.4,226.8L537.4,231.5L534.7,234.6L527.7,233.1L523.6,239.3L515.3,239.3L511.1,236.2L508.3,234.6Z","NO":"M510.1,71.6L510.9,61.6L511.5,51.7L529.4,43.6L534.9,39.6L536.7,38.3L539.7,38.3L547.0,35.8L554.8,35.8L553.9,39.6L548.7,43.6L545.2,46.3L542.0,51.7L539.8,58.7L541.0,67.2L536.0,71.6L533.0,76.0L528.7,78.9L525.3,78.9L518.1,73.1L512.4,73.1L510.1,71.6Z","NZ":"M913.1,397.8L915.5,399.4L918.1,397.8L923.1,396.3L931.8,390.1L940.5,383.9L943.0,382.3L945.6,383.9L948.8,376.1L955.7,371.4L958.3,371.4L959.9,373.0L962.2,371.4L961.7,368.3L952.9,369.8L940.4,380.8L930.5,388.6L921.9,396.3L916.8,397.8L913.1,397.8Z","PK":"M664.3,174.9L667.7,176.5L681.4,178.0L682.6,167.0L687.4,163.9L686.6,146.6L691.2,138.7L695.9,137.2L702.0,140.3L696.4,143.4L691.9,146.6L683.0,148.2L677.0,157.6L666.9,170.2L666.0,173.3L663.5,174.9L664.3,174.9Z","PE":"M290.3,253.5L278.0,262.9L278.1,269.2L275.5,272.4L277.1,278.7L279.4,284.9L289.4,297.5L293.5,297.5L308.9,300.7L308.1,307.0L306.1,267.0L304.4,266.1L301.6,266.1L297.4,266.1L294.7,267.7L291.3,264.5L290.3,256.6L290.3,253.5Z","PL":"M533.9,84.8L538.4,83.3L541.8,81.8L546.6,83.3L553.6,83.3L556.1,84.8L555.6,89.4L557.2,92.4L554.4,98.4L553.4,99.9L549.6,98.4L546.0,98.4L544.4,95.4L542.0,95.4L537.1,93.9L535.9,93.9L534.2,87.9L533.9,84.8Z","PT":"M478.5,121.5L481.0,121.5L482.1,126.2L480.5,137.2L478.0,134.0L475.7,126.2L477.2,121.5L478.5,121.5Z","RO":"M555.0,103.0L558.6,103.0L564.5,101.5L571.7,109.2L575.2,107.6L573.2,110.7L572.2,112.2L569.5,110.7L567.0,110.7L564.9,113.8L562.8,116.9L560.1,115.3L557.7,116.9L556.2,113.8L554.6,110.7L553.7,103.0L555.0,103.0Z","RU":"M554.8,35.8L562.3,34.5L596.4,40.9L620.5,45.0L629.4,50.4L639.9,50.4L650.1,45.0L652.7,33.2L654.5,30.7L673.1,24.6L687.0,21.1L708.5,29.4L718.4,33.2L774.3,34.5L826.7,45.0L847.5,55.9L870.5,67.2L861.6,67.2L851.5,70.1L836.5,68.7L851.4,107.6L841.4,109.2L838.9,116.9L829.8,118.4L829.1,121.5L828.2,120.0L787.1,93.9L765.2,86.4L759.2,87.9L756.0,93.9L739.3,93.9L725.8,95.4L711.1,99.9L698.6,93.9L680.0,84.8L670.7,84.8L659.5,83.3L644.9,84.8L639.2,81.8L631.1,78.9L627.0,80.4L624.2,73.1L628.7,67.2L630.5,61.6L633.5,58.7L630.8,53.1L622.2,46.3L616.4,45.0L607.6,43.6L600.9,42.3L596.4,40.9L585.8,45.0L576.3,40.9L566.6,42.3L558.5,38.3L554.8,35.8Z","SA":"M639.5,178.0L648.3,171.7L649.8,173.3L654.2,176.5L661.6,182.7L659.5,189.0L655.5,190.6L646.7,200.0L634.6,204.8L622.4,206.3L618.0,201.6L617.8,198.5L613.1,189.0L610.1,184.3L604.3,178.0L601.1,171.7L598.9,162.3L602.7,159.2L605.9,152.9L611.4,154.4L620.2,160.7L628.5,163.9L630.2,167.0L631.2,176.5L639.5,178.0Z","SD":"M560.0,189.0L565.5,192.2L568.1,189.0L566.6,184.3L597.9,184.3L600.6,184.3L601.1,193.8L600.6,214.2L598.0,217.3L599.9,239.3L594.3,240.9L588.8,240.9L583.1,233.1L581.8,239.3L574.9,239.3L572.1,234.6L569.2,229.9L565.0,226.8L566.4,228.3L569.2,228.3L573.3,222.1L574.6,218.9L573.2,218.9L567.7,222.1L563.5,218.9L562.1,217.3L560.7,214.2L559.3,215.8L556.6,215.8L552.4,215.8L551.0,212.6L548.3,217.3L545.5,214.2L542.8,218.9L540.0,212.6L538.3,195.3L542.4,195.3L540.8,185.9L542.0,179.6L533.9,179.6L531.2,179.6L524.6,192.2L510.9,193.8L500.0,206.6L501.4,210.4L502.2,212.6L502.8,214.8L504.4,213.9L505.5,216.7L505.5,218.9L511.0,218.9L512.4,217.3L517.9,211.0L527.6,212.6L537.1,207.9L541.2,204.8L549.4,203.2L560.0,189.0Z","SE":"M525.3,78.9L528.7,78.9L533.0,76.0L536.0,71.6L541.0,67.2L539.8,58.7L542.0,51.7L545.2,46.3L548.7,43.6L551.0,45.0L550.1,50.4L547.2,51.7L547.1,57.3L545.3,65.8L541.8,73.1L538.6,74.5L534.5,78.9L528.7,78.9L525.3,78.9Z","SO":"M615.2,258.2L615.2,250.4L615.2,242.5L622.1,239.3L630.1,228.3L634.2,225.2L640.8,217.3L642.0,214.2L621.4,215.8L618.6,214.2L617.2,214.2L612.8,207.9L612.3,198.5L619.5,204.8L620.0,215.8L624.4,220.5L623.2,226.8L617.9,240.9L612.5,258.2L615.2,258.2Z","SS":"M566.4,228.3L569.2,229.9L572.1,234.6L574.9,239.3L581.8,239.3L583.1,233.1L588.8,240.9L594.3,240.9L599.9,239.3L598.0,217.3L600.6,214.2L601.1,193.8L597.9,184.3L566.6,184.3L568.1,189.0L565.5,192.2L560.0,189.0L549.4,203.2L541.2,204.8L537.1,207.9L527.6,212.6L523.5,215.8L522.1,218.9L523.5,222.1L526.3,228.3L526.3,233.1L527.7,237.8L533.3,237.8L540.2,234.6L544.3,229.9L545.7,233.1L551.3,234.6L556.9,239.3L561.0,239.3L562.4,233.1L565.0,226.8L566.4,228.3Z","TH":"M782.8,236.2L784.1,233.1L789.6,233.1L786.5,211.0L783.4,207.9L784.4,204.8L786.7,201.6L788.5,195.3L787.8,190.6L779.7,182.7L771.6,182.7L768.3,179.6L767.6,192.2L765.5,196.9L769.3,204.8L773.0,214.2L778.3,229.9L781.5,236.2L782.8,236.2Z","TN":"M522.0,135.6L525.9,135.6L529.8,135.6L531.2,138.7L530.2,146.6L527.6,146.6L525.1,149.7L522.4,149.7L519.9,156.0L522.7,160.7L525.3,157.6L526.7,159.2L525.6,170.2L524.6,192.2L510.9,193.8L500.0,206.6L501.4,210.4L502.2,212.6L502.8,214.8L504.4,213.9L505.5,216.7L505.5,218.9L505.5,211.0L509.9,215.8L511.1,222.1L512.4,217.3L517.9,211.0L535.8,211.0L540.0,212.6L538.3,195.3L534.2,195.3L531.2,179.6L524.6,192.2L510.9,193.8L489.2,176.5L489.1,190.6L497.2,206.3L488.4,211.0L485.4,206.6L484.8,222.1L486.5,221.4L487.6,218.9L490.3,218.9L487.6,218.9L485.4,206.6L476.6,212.6L472.4,212.6L469.7,214.2L466.9,212.6L461.4,217.3L458.6,217.3L458.5,220.5L459.9,223.6L465.4,226.8L470.9,226.8L473.7,226.8L476.5,222.1L476.5,217.3L473.8,214.2L471.1,213.6L466.9,212.6L461.4,217.3L458.6,217.3L453.1,217.3L453.2,209.5L453.7,187.5L464.3,174.9L465.1,166.4L476.7,166.4L477.2,165.5L474.7,159.2L474.8,152.9L477.6,148.2L482.9,148.2L485.5,148.2L484.3,143.4L488.2,141.9L494.8,141.9L500.0,141.9L506.5,141.9L514.3,140.3L513.1,143.4L519.4,135.6L522.0,135.6Z","TR":"M591.1,121.5L592.7,123.1L597.9,132.5L607.9,138.7L611.3,135.6L615.5,137.2L613.4,132.5L614.2,129.3L616.2,126.2L618.7,126.2L621.9,123.1L611.4,121.5L610.4,123.1L605.7,124.7L601.6,123.1L599.7,120.0L591.9,118.4L588.6,121.5L581.0,121.5L578.7,123.1L571.1,123.1L567.5,124.7L569.1,127.8L573.0,127.8L577.3,132.5L583.2,138.7L593.8,140.3L591.1,121.5Z","TZ":"M611.9,286.5L610.7,278.7L609.6,269.2L604.0,267.7L594.4,261.4L586.0,262.9L583.2,269.2L584.5,275.5L588.5,283.4L592.7,283.4L595.4,283.4L599.4,289.7L604.9,289.7L611.9,286.5Z","UA":"M552.0,89.4L557.2,92.4L566.2,89.4L571.2,90.9L575.7,89.4L579.5,90.9L584.0,89.4L592.5,95.4L597.4,101.5L596.8,104.6L591.9,104.6L588.8,107.6L581.4,107.6L577.7,107.6L575.2,107.6L571.3,106.1L567.4,104.6L564.7,103.0L562.9,98.4L559.3,98.4L554.4,98.4L552.0,89.4Z","US":"M200.6,101.5L269.0,99.9L285.1,103.0L294.7,109.2L293.5,115.3L309.7,115.3L322.0,112.2L335.5,105.5L332.3,115.3L323.3,120.0L313.9,125.3L310.0,129.6L305.4,132.5L299.6,145.0L297.6,146.6L291.6,149.7L288.2,152.9L283.1,157.6L281.8,163.9L279.7,160.7L276.0,159.2L272.0,159.2L265.3,159.2L260.7,162.3L259.4,162.3L250.3,160.7L247.0,170.2L238.5,171.7L238.6,165.5L234.2,167.0L230.5,165.5L224.6,162.3L220.8,159.2L218.0,152.9L213.3,155.1L205.4,155.1L196.6,151.3L190.5,151.3L188.6,146.6L183.4,137.2L182.6,127.8L193.0,107.6L200.6,101.5Z","VE":"M331.5,218.9L334.2,220.5L332.6,226.8L327.0,228.3L324.0,233.1L324.1,240.9L321.3,240.6L315.1,248.2L313.2,233.7L313.6,229.9L317.4,225.2L321.9,222.1L327.3,219.5L331.5,218.9Z","VN":"M777.0,182.7L782.7,184.3L791.4,187.5L795.1,193.8L793.6,201.6L798.1,204.8L800.7,215.8L798.3,218.9L795.7,220.5L788.8,220.5L787.7,223.6L786.0,220.5L782.8,215.8L780.7,207.9L780.3,195.3L783.4,207.9L786.2,207.9L786.2,198.5L786.7,201.6L788.5,195.3L787.8,190.6L779.7,182.7L777.0,182.7Z","YE":"M622.4,206.3L634.6,204.8L646.7,200.0L655.5,190.6L659.5,189.0L661.6,182.7L654.2,176.5L649.8,173.3L646.2,178.0L643.9,182.7L639.5,178.0L631.2,176.5L630.2,167.0L628.5,163.9L620.2,160.7L611.4,154.4L605.9,152.9L602.7,159.2L598.9,162.3L601.1,171.7L604.3,178.0L610.1,184.3L613.1,189.0L617.8,198.5L618.0,201.6L622.4,206.3Z","ZA":"M545.5,344.7L546.7,346.3L548.2,343.1L550.7,346.3L553.4,346.3L554.9,343.1L559.2,336.8L562.5,322.7L572.0,322.7L573.3,324.3L576.0,324.3L580.1,324.3L579.9,329.0L582.4,332.1L585.0,333.7L586.0,338.4L587.1,341.5L588.6,340.0L585.7,343.1L579.7,351.0L575.2,357.3L572.4,358.8L569.8,358.8L565.7,360.4L559.0,362.0L552.4,363.6L548.5,362.0L546.2,357.3L545.3,349.4L545.5,344.7Z","ZM":"M584.4,278.7L587.2,280.2L589.9,283.4L592.7,283.4L595.4,283.4L598.0,289.7L596.4,297.5L595.2,289.7L592.6,286.5L588.5,283.4L584.4,278.7Z","ZW":"M571.2,308.5L574.0,308.5L576.8,305.4L583.7,303.8L590.2,311.7L589.6,324.3L588.3,324.3L580.1,324.3L579.9,329.0L576.0,324.3L573.3,324.3L572.0,322.7L572.4,314.8L571.2,308.5Z","IE":"M486.1,81.8L481.4,81.8L475.4,86.4L479.8,90.9L485.8,90.9L485.9,87.9L486.1,81.8Z","IS":"M472.0,49.0L449.9,50.4L452.0,55.9L455.0,57.3L471.1,57.3L472.0,49.0Z","AT":"M523.3,104.6L530.7,106.1L533.4,109.2L536.9,106.1L537.7,101.5L541.4,101.5L541.7,104.6L540.2,101.5L535.5,104.6L531.9,104.6L530.5,103.0L525.7,104.6L523.3,104.6Z","NL":"M509.4,86.4L516.5,87.9L516.6,90.9L515.5,92.4L513.2,93.9L510.7,90.9L509.5,89.4L509.4,86.4Z","BY":"M557.2,92.4L566.2,89.4L571.2,90.9L575.7,89.4L579.5,90.9L577.6,99.9L571.3,106.1L565.5,92.4L562.0,92.4L557.2,92.4Z","LT":"M547.9,76.0L550.4,77.5L555.6,74.5L561.2,80.4L561.7,83.3L558.4,84.8L551.2,83.3L548.9,83.3L547.5,81.8L547.9,76.0Z","LV":"M547.9,76.0L555.6,74.5L561.3,74.5L562.7,76.0L563.5,74.5L562.1,73.1L559.0,74.5L556.7,74.5L555.6,74.5L547.9,76.0Z","EE":"M549.7,73.1L553.5,68.7L561.3,68.7L562.7,70.1L564.7,74.5L559.0,74.5L556.7,74.5L555.6,74.5L549.7,73.1Z","KW":"M624.0,159.2L629.5,160.7L629.9,163.9L627.0,162.3L624.2,160.7L624.0,159.2Z","QA":"M636.1,171.7L638.6,170.2L639.2,174.9L636.5,174.9L636.1,171.7Z","AE":"M639.5,178.0L649.8,173.3L652.9,176.5L654.2,176.5L650.7,182.7L642.6,182.7L639.6,179.6L639.5,178.0Z","IL":"M593.6,149.7L596.5,151.3L594.2,154.4L591.5,154.4L591.8,157.6L593.5,160.7L592.1,160.7L591.8,157.6L593.6,149.7Z","JO":"M592.7,152.9L599.1,151.3L601.4,148.2L602.7,159.2L598.9,162.3L594.3,156.0L592.7,152.9Z","LB":"M593.5,148.2L596.1,148.2L595.8,145.0L594.4,145.0L593.5,148.2Z","SY":"M593.8,140.3L591.1,121.5L599.7,135.6L607.9,138.7L609.3,148.2L607.0,151.3L601.4,148.2L596.5,151.3L593.6,149.7L596.1,148.2L593.8,140.3Z","TW":"M826.2,184.3L828.4,174.9L830.1,176.5L827.2,182.7L826.2,184.3Z","MY":"M787.4,248.8L788.8,248.8L789.8,236.2L788.2,233.1L784.1,234.6L781.5,236.2L778.3,229.9L774.4,234.6L771.8,236.2L782.8,236.2L787.4,248.8Z","PH":"M834.7,211.0L844.5,212.6L848.5,223.6L844.7,228.3L838.8,223.6L834.6,222.1L834.7,211.0Z","MN":"M712.0,99.3L716.0,99.9L717.7,98.4L728.3,96.9L736.6,99.9L755.5,96.9L755.8,86.4L766.4,86.4L781.8,104.6L781.8,98.4L786.6,98.4L791.5,102.4L799.9,106.1L808.9,121.5L805.5,124.7L794.1,124.7L779.9,116.9L779.0,120.0L771.9,118.4L766.0,124.7L751.8,118.4L744.1,115.3L729.1,118.4L717.1,110.7L712.0,99.3Z"};
-const COUNTRY_CENTROIDS={"AF":[677.4,142.7],"AO":[548.9,286.7],"AR":[340.2,357.4],"AU":[858.5,333.6],"AZ":[621.4,128.4],"BD":[743.1,178.7],"BE":[510.5,95.4],"BF":[564.5,217.3],"BI":[582.4,268.9],"BJ":[505.0,217.2],"BO":[314.4,302.8],"BR":[348.5,271.7],"CA":[268.8,80.6],"CF":[557.2,223.8],"CG":[558.0,223.6],"CH":[520.6,105.7],"CL":[321.9,370.8],"CM":[524.5,226.7],"CN":[761.0,139.2],"CO":[303.5,240.1],"CD":[559.7,282.2],"CZ":[537.1,98.3],"DE":[526.3,93.0],"DK":[523.2,77.7],"DZ":[514.6,155.2],"EC":[285.6,262.5],"EG":[583.0,165.9],"ER":[610.6,207.9],"ES":[489.7,128.7],"ET":[611.8,221.9],"FI":[551.3,50.7],"FR":[504.2,105.1],"GA":[531.3,245.2],"GB":[494.3,82.5],"GH":[505.0,221.3],"GN":[467.1,219.9],"GR":[560.7,132.1],"HR":[541.5,112.5],"HU":[548.6,100.9],"ID":[816.1,254.8],"IN":[703.1,194.8],"IQ":[614.8,146.5],"IR":[638.8,146.5],"IT":[531.7,121.1],"JP":[858.5,139.3],"KE":[605.1,262.8],"KH":[785.9,213.1],"KP":[823.7,125.0],"KR":[832.3,138.2],"KZ":[668.9,103.2],"LA":[780.4,200.9],"LY":[538.3,163.3],"MA":[483.9,151.9],"MG":[626.2,312.3],"ML":[505.3,212.4],"MM":[767.5,198.2],"MX":[229.7,178.7],"MZ":[595.8,312.4],"MR":[465.6,200.0],"NA":[544.1,320.8],"NE":[517.9,207.8],"NG":[523.4,227.3],"NO":[532.9,56.3],"NZ":[937.9,384.8],"PK":[681.1,159.5],"PE":[291.7,274.0],"PL":[545.2,90.5],"PT":[478.9,126.2],"RO":[563.1,109.5],"RU":[690.4,63.9],"SA":[628.3,178.8],"SD":[552.4,211.1],"SE":[539.9,64.4],"SO":[621.7,227.6],"SS":[560.1,221.9],"TH":[780.0,208.9],"TN":[495.9,188.2],"TR":[596.3,127.1],"TZ":[598.4,277.6],"UA":[573.6,98.4],"US":[257.3,141.1],"VE":[323.9,229.0],"VN":[787.8,202.6],"YE":[628.2,180.3],"ZA":[565.9,343.6],"ZM":[591.4,284.9],"ZW":[578.5,316.7],"IE":[482.9,85.9],"IS":[462.0,53.1],"AT":[533.2,104.3],"NL":[512.6,89.7],"BY":[568.4,93.6],"LT":[553.1,80.1],"LV":[557.2,74.8],"EE":[557.0,72.4],"KW":[626.4,161.0],"QA":[637.3,172.7],"AE":[646.1,178.4],"IL":[593.2,155.1],"JO":[597.4,154.7],"LB":[594.7,146.9],"SY":[599.2,143.0],"TW":[827.6,180.5],"MY":[783.2,238.5],"PH":[840.1,218.9],"MN":[759.7,107.4]};
+// Robinson projection (no D3 needed)
+const _ROB=[[0,1,0],[5,.9986,.062],[10,.9954,.124],[15,.99,.186],[20,.9822,.248],
+  [25,.973,.31],[30,.96,.372],[35,.9427,.434],[40,.9216,.4958],[45,.8962,.5571],
+  [50,.8679,.6176],[55,.835,.6769],[60,.7986,.7346],[65,.7597,.7903],
+  [70,.7186,.8435],[75,.6732,.8936],[80,.6213,.9394],[85,.5722,.9761],[90,.5322,1]];
 
-function getCountryISO(name){
-  if(!name)return null;
-  return COUNTRY_ISO[name.toLowerCase().trim()]||null;
+function _robXY(lon, lat, W, H) {
+  const s=lat>=0?1:-1, a=Math.abs(lat), i=Math.min(Math.floor(a/5),17), f=(a-i*5)/5;
+  const ll=_ROB[i][1]+f*(_ROB[i+1][1]-_ROB[i][1]);
+  const pf=_ROB[i][2]+f*(_ROB[i+1][2]-_ROB[i][2]);
+  return [(ll*(lon/180)+1)/2*W, (1-(s*pf+1)/2)*H];
 }
 
-function renderCountryMap(countryName){
-  const svg=document.getElementById('world-map-svg');
-  const label=document.getElementById('ov-map-label');
-  if(!svg)return;
+function _loadTopo(cb) {
+  if (_topoState==='ready') { cb(_topoCache); return; }
+  _pendingDraws.push(cb);
+  if (_topoState==='loading') return;
+  _topoState = 'loading';
 
-  const W=1000,H=507;
-  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
-  const ns='http://www.w3.org/2000/svg';
-
-  const C={
-    ocean:'#0b0e15',
-    land:'#252a38',
-    border:'rgba(255,255,255,0.06)',
-    ellipseBorder:'rgba(122,200,232,0.2)',
-    hi:'rgba(232,200,122,0.65)',
-    hiBorder:'#e8c87a',
-    graticule:'rgba(122,200,232,0.035)',
+  // Load topojson-client then world-atlas
+  const s1 = document.createElement('script');
+  s1.src = 'https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js';
+  s1.onload = () => {
+    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+      .then(r=>r.json())
+      .then(topo => {
+        _topoCache = topo;
+        _topoState = 'ready';
+        _pendingDraws.forEach(fn=>fn(topo));
+        _pendingDraws = [];
+      })
+      .catch(() => { _topoState='error'; _pendingDraws=[]; });
   };
+  s1.onerror = () => { _topoState='error'; _pendingDraws=[]; };
+  document.head.appendChild(s1);
+}
 
-  // Helper
-  const el=(tag,attrs={})=>{
-    const e=document.createElementNS(ns,tag);
-    Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));
-    return e;
-  };
+function renderCountryMap(primaryISOs, allVisited, futurePlanned) {
+  const container = document.getElementById('ov-map-container');
+  if (!container) return;
 
-  svg.innerHTML='';
+  const pri = new Set(primaryISOs||[]);
+  const vis = new Set((allVisited||[]).filter(c=>!pri.has(c)));
+  const fut = new Set((futurePlanned||[]).filter(c=>!pri.has(c)&&!vis.has(c)));
 
-  // Robinson ellipse clip
-  const defs=el('defs');
-  const clip=el('clipPath',{id:'rb'});
-  const ellipseClip=el('ellipse',{cx:W/2,cy:H/2,rx:W/2-2,ry:H/2-2});
-  clip.appendChild(ellipseClip);
-  defs.appendChild(clip);
-  svg.appendChild(defs);
-
-  // Ocean fill
-  svg.appendChild(el('ellipse',{cx:W/2,cy:H/2,rx:W/2-2,ry:H/2-2,fill:C.ocean}));
-
-  // Graticule lines (30° grid)
-  const gGroup=el('g',{'clip-path':'url(#rb)','stroke':C.graticule,'stroke-width':'0.5','fill':'none'});
-  // Longitude lines
-  for(let lon=-180;lon<=180;lon+=30){
-    const pts=[];
-    for(let lat=-90;lat<=90;lat+=5){
-      const[x,y]=robProj(lon,lat,W,H);
-      pts.push(`${x},${y}`);
-    }
-    const p=el('polyline',{points:pts.join(' ')});
-    gGroup.appendChild(p);
+  let canvas = container.querySelector('canvas#map-canvas');
+  if (!canvas) {
+    container.innerHTML='';
+    canvas=document.createElement('canvas');
+    canvas.id='map-canvas';
+    canvas.style.cssText='width:100%;height:100%;display:block;border-radius:10px';
+    container.appendChild(canvas);
   }
-  // Latitude lines
-  for(let lat=-60;lat<=60;lat+=30){
-    const pts=[];
-    for(let lon=-180;lon<=180;lon+=5){
-      const[x,y]=robProj(lon,lat,W,H);
-      pts.push(`${x},${y}`);
-    }
-    const p=el('polyline',{points:pts.join(' ')});
-    gGroup.appendChild(p);
-  }
-  svg.appendChild(gGroup);
+  canvas._pri=pri; canvas._vis=vis; canvas._fut=fut;
 
-  // Country paths
-  const iso=getCountryISO(countryName);
-  const landGroup=el('g',{'clip-path':'url(#rb)'});
-  for(const[code,d] of Object.entries(COUNTRY_PATHS)){
-    const isTarget=iso&&code===iso;
-    const p=el('path',{
-      d,
-      fill: isTarget?C.hi:C.land,
-      stroke: isTarget?C.hiBorder:C.border,
-      'stroke-width': isTarget?'1.0':'0.4'
+  function drawWithTopo(topo) {
+    const cpri=canvas._pri, cvis=canvas._vis, cfut=canvas._fut;
+    const W=canvas.offsetWidth||container.offsetWidth||400;
+    const H=canvas.offsetHeight||container.offsetHeight||200;
+    const dpr=window.devicePixelRatio||1;
+    canvas.width=W*dpr; canvas.height=H*dpr;
+    const ctx=canvas.getContext('2d');
+    ctx.scale(dpr,dpr);
+
+    // Ocean
+    ctx.fillStyle='#0d1219';
+    ctx.beginPath();
+    ctx.ellipse(W/2,H/2,W/2-1,H/2-1,0,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.ellipse(W/2,H/2,W/2-1,H/2-1,0,0,Math.PI*2);
+    ctx.clip();
+
+    // Graticule
+    ctx.strokeStyle='rgba(122,200,232,0.06)';
+    ctx.lineWidth=0.3;
+    for(let lon=-180;lon<=180;lon+=30){
+      ctx.beginPath();
+      for(let lat=-90;lat<=90;lat+=5){
+        const[x,y]=_robXY(lon,lat,W,H);
+        lat===-90?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    }
+    for(let lat=-60;lat<=60;lat+=30){
+      ctx.beginPath();
+      for(let lon=-180;lon<=180;lon+=5){
+        const[x,y]=_robXY(lon,lat,W,H);
+        lon===-180?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    }
+
+    // Draw countries from TopoJSON — real Natural Earth 110m borders
+    const features=topojson.feature(topo,topo.objects.countries).features;
+
+    // Continental bounding boxes to skip overseas territories
+    const _CB={'FR':[-5,41,10,52],'ES':[-10,36.2,5,45],'PT':[-10,36.2,-6,42],
+      'NL':[3,50,8,54],'DK':[7,54,16,58],'NO':[4,57,32,72],'US':[-130,24,-65,50]};
+
+    function drawFeature(f, fill, stroke, lw, iso) {
+      const geom=f.geometry;
+      if(!geom) return;
+      const polys=geom.type==='Polygon'?[geom.coordinates]:
+                  geom.type==='MultiPolygon'?geom.coordinates:[];
+      ctx.fillStyle=fill; ctx.strokeStyle=stroke; ctx.lineWidth=lw;
+      const bounds = iso ? _CB[iso] : null;
+      for(const poly of polys){
+        // If this country has continental bounds, check each polygon
+        if(bounds){
+          const ring0=poly[0];
+          let cLon=0,cLat=0;
+          for(const[lo,la] of ring0){cLon+=lo;cLat+=la;}
+          cLon/=ring0.length; cLat/=ring0.length;
+          // Skip if centroid is outside expected continental bounds
+          if(cLon<bounds[0]||cLat<bounds[1]||cLon>bounds[2]||cLat>bounds[3]) continue;
+        }
+        for(const ring of poly){
+          ctx.beginPath();
+          let first=true;
+          for(const[lon,lat] of ring){
+            const[x,y]=_robXY(lon,lat,W,H);
+            first?ctx.moveTo(x,y):ctx.lineTo(x,y);
+            first=false;
+          }
+          ctx.closePath();
+        }
+        ctx.fill(); ctx.stroke();
+      }
+    }
+
+    // Layers: neutral → visited → future → primary
+    for(const f of features){
+      const id=String(f.id||'');
+      const iso=_NUM2[id]||_NUM2[id.padStart(3,'0')]||null;
+      if(iso&&(cpri.has(iso)||cvis.has(iso)||cfut.has(iso))) continue;
+      drawFeature(f,'#252d3d','rgba(255,255,255,0.09)',0.4, iso);
+    }
+    for(const f of features){
+      const id=String(f.id||'');
+      const iso=_NUM2[id]||_NUM2[id.padStart(3,'0')]||null;
+      if(!iso||!cvis.has(iso)) continue;
+      drawFeature(f,'rgba(232,200,122,0.22)','rgba(232,200,122,0.45)',0.7, iso);
+    }
+    for(const f of features){
+      const id=String(f.id||'');
+      const iso=_NUM2[id]||_NUM2[id.padStart(3,'0')]||null;
+      if(!iso||!cfut.has(iso)) continue;
+      drawFeature(f,'rgba(122,200,232,0.38)','rgba(122,200,232,0.75)',0.8, iso);
+    }
+    for(const f of features){
+      const id=String(f.id||'');
+      const iso=_NUM2[id]||_NUM2[id.padStart(3,'0')]||null;
+      if(!iso||!cpri.has(iso)) continue;
+      drawFeature(f,'rgba(232,200,122,0.82)','#e8c87a',1.1, iso);
+    }
+
+    ctx.restore();
+
+    // Ellipse border
+    ctx.strokeStyle='rgba(122,200,232,0.25)'; ctx.lineWidth=1.4;
+    ctx.beginPath();
+    ctx.ellipse(W/2,H/2,W/2-1,H/2-1,0,0,Math.PI*2);
+    ctx.stroke();
+
+    // Dots on primary countries
+    for(const f of features){
+      const id=String(f.id||'');
+      const iso=_NUM2[id]||_NUM2[id.padStart(3,'0')]||null;
+      if(!iso||!cpri.has(iso)) continue;
+      // centroid from bbox
+      const geom=f.geometry;
+      if(!geom) continue;
+      const coords=(geom.type==='Polygon'?[geom.coordinates[0]]:
+                    geom.type==='MultiPolygon'?geom.coordinates.map(p=>p[0]):[]);
+      let sx=0,sy=0,n=0;
+      for(const ring of coords)
+        for(const[lon,lat] of ring){const[x,y]=_robXY(lon,lat,W,H);sx+=x;sy+=y;n++;}
+      if(!n) continue;
+      const cx=sx/n, cy=sy/n;
+      ctx.strokeStyle='rgba(232,200,122,0.45)'; ctx.lineWidth=5;
+      ctx.beginPath(); ctx.arc(cx,cy,7,0,Math.PI*2); ctx.stroke();
+      ctx.fillStyle='#e8c87a';
+      ctx.beginPath(); ctx.arc(cx,cy,3.5,0,Math.PI*2); ctx.fill();
+    }
+  }
+
+  function drawFallback() {
+    // Use embedded simplified paths when CDN unavailable
+    const sc = d=>d.replace(/(-?[\d.]+),(-?[\d.]+)/g,(_,x,y)=>{
+      const W2=canvas.offsetWidth||400, H2=canvas.offsetHeight||200;
+      return `${(+x*(W2/960)).toFixed(1)},${(+y*(H2/500)).toFixed(1)}`;
     });
-    landGroup.appendChild(p);
+    const cpri=canvas._pri, cvis=canvas._vis, cfut=canvas._fut;
+    const W=canvas.offsetWidth||400, H=canvas.offsetHeight||200;
+    const dpr=window.devicePixelRatio||1;
+    canvas.width=W*dpr; canvas.height=H*dpr;
+    const ctx=canvas.getContext('2d');
+    ctx.scale(dpr,dpr);
+    ctx.fillStyle='#0d1219'; ctx.fillRect(0,0,W,H);
+    ctx.save();
+    const ell=new Path2D(sc(_SPHERE_D));
+    ctx.fill(ell); ctx.clip(ell);
+    ctx.strokeStyle='rgba(122,200,232,0.06)'; ctx.lineWidth=0.3;
+    ctx.stroke(new Path2D(sc(_GRAT_D)));
+    const layers=[
+      [c=>!cpri.has(c)&&!cfut.has(c)&&!cvis.has(c),'#252d3d','rgba(255,255,255,0.09)',0.4],
+      [c=>cvis.has(c),'rgba(232,200,122,0.22)','rgba(232,200,122,0.45)',0.7],
+      [c=>cfut.has(c),'rgba(122,200,232,0.38)','rgba(122,200,232,0.75)',0.8],
+      [c=>cpri.has(c),'rgba(232,200,122,0.82)','#e8c87a',1.1],
+    ];
+    for(const[test,fill,stroke,lw] of layers){
+      ctx.fillStyle=fill; ctx.strokeStyle=stroke; ctx.lineWidth=lw;
+      for(const[iso,d] of Object.entries(_GEO_PATHS)){
+        if(!test(iso)) continue;
+        const p=new Path2D(sc(d)); ctx.fill(p); ctx.stroke(p);
+      }
+    }
+    ctx.restore();
+    ctx.strokeStyle='rgba(122,200,232,0.25)'; ctx.lineWidth=1.4;
+    ctx.stroke(new Path2D(sc(_SPHERE_D)));
+    for(const iso of cpri){
+      const ct=_GEO_CENTS[iso]; if(!ct) continue;
+      const cx=ct[0]*(W/960), cy=ct[1]*(H/500);
+      ctx.strokeStyle='rgba(232,200,122,0.45)'; ctx.lineWidth=5;
+      ctx.beginPath(); ctx.arc(cx,cy,7,0,Math.PI*2); ctx.stroke();
+      ctx.fillStyle='#e8c87a';
+      ctx.beginPath(); ctx.arc(cx,cy,3.5,0,Math.PI*2); ctx.fill();
+    }
   }
-  svg.appendChild(landGroup);
 
-  // Ellipse border
-  svg.appendChild(el('ellipse',{cx:W/2,cy:H/2,rx:W/2-2,ry:H/2-2,fill:'none',stroke:C.ellipseBorder,'stroke-width':'1.2'}));
+  // Show skeleton
+  {
+    const W=canvas.offsetWidth||400, H=canvas.offsetHeight||200;
+    canvas.width=W; canvas.height=H;
+    const ctx=canvas.getContext('2d');
+    ctx.fillStyle='#0d1219'; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='rgba(122,200,232,0.12)';
+    ctx.font='11px JetBrains Mono,monospace'; ctx.textAlign='center';
+    ctx.fillText('carregando mapa...', W/2, H/2+4);
+  }
 
-  // Highlight dot
-  if(iso&&COUNTRY_CENTROIDS[iso]){
-    const[cx,cy]=COUNTRY_CENTROIDS[iso];
-    svg.appendChild(el('circle',{cx,cy,r:'8',fill:'none',stroke:C.hiBorder,'stroke-width':'0.7',opacity:'0.4'}));
-    svg.appendChild(el('circle',{cx,cy,r:'4',fill:C.hiBorder,opacity:'0.95'}));
-    if(label)label.textContent=countryName;
+  // Try CDN first, fallback to embedded paths
+  if (_topoState==='error') {
+    requestAnimationFrame(drawFallback);
   } else {
-    if(label)label.textContent=countryName||'';
+    _loadTopo(topo => requestAnimationFrame(()=>drawWithTopo(topo)));
+    // If loading takes >3s, show fallback
+    setTimeout(()=>{ if(_topoState!=='ready') requestAnimationFrame(drawFallback); }, 3000);
   }
 }
 
-// Robinson projection (pure JS, no CDN needed)
-function robProj(lon,lat,W,H){
-  const RX=[[0,1],[5,.9986],[10,.9954],[15,.99],[20,.9822],[25,.973],[30,.96],[35,.9427],[40,.9216],[45,.8962],[50,.8679],[55,.835],[60,.7986],[65,.7597],[70,.7186],[75,.6732],[80,.6213],[85,.5722],[90,.5322]];
-  const RY=[[0,0],[5,.062],[10,.124],[15,.186],[20,.248],[25,.31],[30,.372],[35,.434],[40,.4958],[45,.5571],[50,.6176],[55,.6769],[60,.7346],[65,.7903],[70,.8435],[75,.8936],[80,.9394],[85,.9761],[90,1]];
-  function interp(t,v){for(let i=0;i<t.length-1;i++){const[v0,r0]=t[i],[v1,r1]=t[i+1];if(v<=v1)return r0+(v-v0)/(v1-v0)*(r1-r0)}return t[t.length-1][1]}
-  const la=Math.abs(lat),sg=lat>=0?1:-1,lo=lon*Math.PI/180;
-  const R=W/(2*0.8487*Math.PI);
-  const x=0.8487*R*interp(RX,la)*lo+W/2;
-  const y=H/2-1.3523*R*interp(RY,la)*sg;
-  return[x,y];
+
+
+function _extractVideoId(url) {
+  if (!url) return null;
+  const m = url.match(/(?:youtube\.com\/(?:watch\?.*v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  return m ? m[1] : null;
 }
 
+// ─── Music player — YouTube IFrame API ───────────────────────────────────────
+// Player is created once at startup so it's ready before user clicks
+let _yt = null;           // YT.Player instance
+let _ytOk = false;        // player onReady fired
+let _ytWantId = null;     // videoId to play when player becomes ready
+let _musicPlaying = false;
+let _currentVideoId = '';
 
+function _bootYTPlayer() {
+  // Called once from boot() — loads the API and creates hidden player
+  if (document.getElementById('_yt_wrap')) return;
+  const wrap = document.createElement('div');
+  wrap.id = '_yt_wrap';
+  wrap.style.cssText = 'position:fixed;bottom:-9999px;left:-9999px;width:200px;height:113px;opacity:0;pointer-events:none;overflow:hidden';
+  const inner = document.createElement('div');
+  inner.id = '_yt_player';
+  wrap.appendChild(inner);
+  document.body.appendChild(wrap);
 
-
-// ─── CURRENCIES AUTOCOMPLETE ──────────────────────────────────────────────────
-const CURRENCIES=[
-  {code:'AED',name:'Dirham dos Emirados'},  {code:'ARS',name:'Peso Argentino'},
-  {code:'AUD',name:'Dólar Australiano'},    {code:'BOB',name:'Boliviano'},
-  {code:'BRL',name:'Real Brasileiro'},       {code:'CAD',name:'Dólar Canadense'},
-  {code:'CHF',name:'Franco Suíço'},          {code:'CLP',name:'Peso Chileno'},
-  {code:'CNY',name:'Yuan Chinês'},           {code:'COP',name:'Peso Colombiano'},
-  {code:'CRC',name:'Colón Costa-riquenho'}, {code:'CUP',name:'Peso Cubano'},
-  {code:'CZK',name:'Coroa Tcheca'},          {code:'DKK',name:'Coroa Dinamarquesa'},
-  {code:'DOP',name:'Peso Dominicano'},       {code:'EGP',name:'Libra Egípcia'},
-  {code:'EUR',name:'Euro'},                  {code:'GBP',name:'Libra Esterlina'},
-  {code:'GHS',name:'Cedi Ganês'},            {code:'GTQ',name:'Quetzal Guatemalteco'},
-  {code:'HKD',name:'Dólar de Hong Kong'},   {code:'HUF',name:'Florim Húngaro'},
-  {code:'IDR',name:'Rupia Indonésia'},       {code:'ILS',name:'Novo Shekel Israelense'},
-  {code:'INR',name:'Rupia Indiana'},         {code:'IQD',name:'Dinar Iraquiano'},
-  {code:'IRR',name:'Rial Iraniano'},         {code:'ISK',name:'Coroa Islandesa'},
-  {code:'JMD',name:'Dólar Jamaicano'},       {code:'JPY',name:'Iene Japonês'},
-  {code:'KES',name:'Xelim Queniano'},        {code:'KRW',name:'Won Sul-coreano'},
-  {code:'KWD',name:'Dinar Kuwaitiano'},      {code:'KZT',name:'Tenge Cazaque'},
-  {code:'LBP',name:'Libra Libanesa'},        {code:'LKR',name:'Rupia do Sri Lanka'},
-  {code:'MAD',name:'Dirham Marroquino'},     {code:'MXN',name:'Peso Mexicano'},
-  {code:'MYR',name:'Ringgit Malaio'},        {code:'NAD',name:'Dólar Namibiano'},
-  {code:'NGN',name:'Naira Nigeriana'},       {code:'NOK',name:'Coroa Norueguesa'},
-  {code:'NPR',name:'Rupia Nepalesa'},        {code:'NZD',name:'Dólar Neozelandês'},
-  {code:'OMR',name:'Rial Omanense'},         {code:'PAB',name:'Balboa Panamenho'},
-  {code:'PEN',name:'Sol Peruano'},           {code:'PHP',name:'Peso Filipino'},
-  {code:'PKR',name:'Rupia Paquistanesa'},    {code:'PLN',name:'Zloti Polonês'},
-  {code:'PYG',name:'Guarani Paraguaio'},     {code:'QAR',name:'Riyal Catarense'},
-  {code:'RON',name:'Leu Romeno'},            {code:'RUB',name:'Rublo Russo'},
-  {code:'SAR',name:'Riyal Saudita'},         {code:'SEK',name:'Coroa Sueca'},
-  {code:'SGD',name:'Dólar de Singapura'},    {code:'THB',name:'Baht Tailandês'},
-  {code:'TND',name:'Dinar Tunisiano'},        {code:'TRY',name:'Lira Turca'},
-  {code:'TWD',name:'Novo Dólar Taiwanês'},   {code:'TZS',name:'Xelim Tanzaniano'},
-  {code:'UAH',name:'Hryvnia Ucraniana'},     {code:'USD',name:'Dólar Americano'},
-  {code:'UYU',name:'Peso Uruguaio'},          {code:'UZS',name:'Som Uzbeque'},
-  {code:'VES',name:'Bolívar Venezuelano'},   {code:'VND',name:'Dong Vietnamita'},
-  {code:'XOF',name:'Franco CFA Oeste Africa'},{code:'ZAR',name:'Rand Sul-Africano'},
-  {code:'ZMW',name:'Kwacha Zambiano'},       {code:'ZWL',name:'Dólar Zimbabueano'},
-];
-
-let acCurrIdx=-1;
-function acCurrency(q){
-  const dd=document.getElementById('ac-currency');
-  if(!dd)return;
-  const list=q.length<1
-    ?CURRENCIES.slice(0,10)
-    :CURRENCIES.filter(c=>c.code.toUpperCase().startsWith(q.toUpperCase())||c.name.toLowerCase().includes(q.toLowerCase())||c.code.toLowerCase()===q.toLowerCase()).slice(0,12);
-  if(!list.length){dd.innerHTML='<div class="ac-empty">Moeda não encontrada</div>';dd.classList.add('open');return;}
-  dd.innerHTML=list.map((c,i)=>`<div class="ac-item" data-idx="${i}" onmousedown="acSelectCurrency('${c.code}')" onmouseover="acHighlightCurrency(${i})"><span class="ac-iata">${c.code}</span><span class="ac-name">${c.name}</span></div>`).join('');
-  dd.classList.add('open');acCurrIdx=-1;
-}
-function acSelectCurrency(code){
-  const el=document.getElementById('trip-currency');if(el)el.value=code;
-  const dd=document.getElementById('ac-currency');if(dd)dd.classList.remove('open');
-}
-function acHighlightCurrency(i){
-  const dd=document.getElementById('ac-currency');if(!dd)return;
-  dd.querySelectorAll('.ac-item').forEach((el,j)=>el.classList.toggle('selected',j===i));
-  acCurrIdx=i;
-}
-function acKeyCurrency(e){
-  const dd=document.getElementById('ac-currency');
-  const items=dd?.querySelectorAll('.ac-item')||[];
-  if(e.key==='ArrowDown'){e.preventDefault();const n=Math.min(acCurrIdx+1,items.length-1);acHighlightCurrency(n);}
-  else if(e.key==='ArrowUp'){e.preventDefault();const n=Math.max(acCurrIdx-1,0);acHighlightCurrency(n);}
-  else if(e.key==='Enter'&&acCurrIdx>=0){e.preventDefault();items[acCurrIdx].dispatchEvent(new MouseEvent('mousedown'));}
-  else if(e.key==='Escape'){dd?.classList.remove('open');}
-}
-
-// ─── TRIPS PAGE (mobile) ─────────────────────────────────────────────────────
-function renderTripsPage(){
-  const el=document.getElementById('trips-list-mobile');
-  if(!el)return;
-  if(!S.trips.length){
-    el.innerHTML='<div class="empty-state"><div class="ei"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.3"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><p>Nenhuma viagem criada ainda.<br>Toque em "+ Nova viagem".</p></div>';
-    return;
+  if (window.YT && window.YT.Player) {
+    _createYTPlayer();
+  } else {
+    window.onYouTubeIframeAPIReady = _createYTPlayer;
+    const s = document.createElement('script');
+    s.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(s);
   }
-  const M=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  el.innerHTML=S.trips.map(t=>{
-    const active=t.id===S.currentTripId;
-    const status=isPast(t.end_date)?'Concluída':(isActive(t)?'Em andamento':'Planejada');
-    const sd=t.start_date?t.start_date.split('-'):null;
-    const ed=t.end_date?t.end_date.split('-'):null;
-    const dateStr=sd&&ed?`${sd[2]} ${M[parseInt(sd[1])-1]} → ${ed[2]} ${M[parseInt(ed[1])-1]} ${ed[0]}`:'—';
-    return `<div class="trip-card-mobile ${active?'active':''}" onclick="switchTripMobile('${t.id}')">
-      <div style="width:10px;height:10px;border-radius:50%;background:${isPast(t.end_date)?'var(--dm)':(isActive(t)?'var(--gn)':'var(--ac2)')};flex-shrink:0;margin-top:4px"></div>
-      <div class="trip-card-info">
-        <div class="trip-card-name">${t.name}</div>
-        <div class="trip-card-meta"><span>${dateStr}</span><span>${t.currency||'BRL'}</span>${t.budget?`<span>R$ ${fmt(t.budget)}</span>`:''}</div>
-        <div style="margin-top:6px"><span class="badge ${isActive(t)?'active':''}" style="font-size:10px">● ${status}</span></div>
-      </div>
-      <div class="trip-card-actions">
-        <button class="action-btn primary" onclick="event.stopPropagation();openEditTrip('${t.id}')"><span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</span></button>
-      </div>
-    </div>`;
-  }).join('')+'<div style="margin-top:8px"><button class="btn btn-ghost" style="width:100%" onclick="openNewTrip()">+ Nova viagem</button></div>';
 }
 
-async function switchTripMobile(id){
-  await switchTrip(id);
-  showPage('overview');
-}
-
-function openNewTrip(){
-  editingTripId=null;
-  document.getElementById('modal-trip-title').textContent='Nova Viagem';
-  document.getElementById('btn-save-trip').textContent='Criar Viagem';
-  ['trip-name','trip-country','trip-currency','trip-start','trip-end','trip-budget'].forEach(id=>setVal(id,''));
-  openModal('newTrip');
-}
-
-// ─── ITINERARY ────────────────────────────────────────────────────────────────
-const ITIN_ICONS={
-  passeio:'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>',
-  restaurante:'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>',
-  ponto_turistico:'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
-  museu:'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
-  compras:'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>',
-  transporte:'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="16" rx="3"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m18 22-2-3"/></svg>',
-  hospedagem:'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>',
-  outro:'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>',
-}
-const ITIN_LABELS={passeio:'Passeio',restaurante:'Restaurante',ponto_turistico:'Ponto Turístico',museu:'Museu',compras:'Compras',transporte:'Transporte',hospedagem:'Hospedagem',outro:'Outro'};
-
-let editingItinId=null;
-
-function renderItinerary(){
-  const trip=curTrip();
-  document.getElementById('itin-badge').textContent=trip?trip.name:'—';
-  const el=document.getElementById('itinerary-list');if(!el)return;
-  if(!S.itinerary||!S.itinerary.length){
-    el.innerHTML='<div class="empty-state"><div class="ei"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.3"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><p>Nenhum evento no roteiro ainda.</p></div>';
-    return;
-  }
-  // Group by date
-  const groups={};
-  S.itinerary.forEach(e=>{
-    const d=e.event_date||'';
-    if(!groups[d])groups[d]=[];
-    groups[d].push(e);
+function _createYTPlayer() {
+  _yt = new YT.Player('_yt_player', {
+    width: '200', height: '113',
+    playerVars: { autoplay:0, controls:0, disablekb:1, fs:0,
+                  rel:0, iv_load_policy:3, modestbranding:1, playsinline:1 },
+    events: {
+      onReady() {
+        _ytOk = true;
+        if (_ytWantId) { _doPlay(_ytWantId); _ytWantId = null; }
+      },
+      onStateChange(e) {
+        const playing = e.data === YT.PlayerState.PLAYING;
+        const stopped = e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED;
+        if (playing && !_musicPlaying)  { _musicPlaying = true;  _syncMusicUI(); }
+        if (stopped && _musicPlaying)   { _musicPlaying = false; _syncMusicUI(); }
+      },
+      onError(e) {
+        if (e.data===101||e.data===150||e.data===153) {
+          // Embedding disabled by video owner — open in YouTube instead
+          showToast('Este vídeo não permite reprodução em sites externos. Abrindo no YouTube...', 'error');
+          setTimeout(() => {
+            if (_currentVideoId) window.open('https://www.youtube.com/watch?v=' + _currentVideoId, '_blank');
+          }, 1500);
+        } else {
+          showToast('Erro de áudio (' + e.data + '). Verifique o link do YouTube.', 'error');
+        }
+        _musicPlaying = false; _syncMusicUI();
+      }
+    }
   });
-  const M=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  const DAYS=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  el.innerHTML=Object.keys(groups).sort().map(date=>{
-    const parts=date.split('-');
-    const label=parts.length===3?`${parts[2]} ${M[parseInt(parts[1])-1]} ${parts[0]}`:'—';
-    const wd=date?DAYS[new Date(date+'T12:00:00').getDay()]:'';
-    const events=groups[date].sort((a,b)=>(a.event_time||'').localeCompare(b.event_time||''));
-    return `<div class="itin-day-group">
-      <div class="itin-day-header">
-        <div class="itin-day-label">${label}</div>
-        <div class="itin-day-weekday">${wd}</div>
-      </div>
-      ${events.map(ev=>`
-        <div class="itin-event ${ev.done?'done':''}" id="itin-ev-${ev.id}">
-          <div class="itin-left-col">
-            <div class="itin-check ${ev.done?'checked':''}" onclick="toggleItinDone('${ev.id}')">
-              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            </div>
-            <div class="itin-time">${ev.event_time?ev.event_time.slice(0,5):'—'}</div>
-            <div class="itin-body">
-              <div class="itin-name">${ev.name}</div>
-              ${ev.place?`<div class="itin-place"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>${ev.place}</div>`:''}
-              ${ev.notes?`<div class="itin-notes">${ev.notes}</div>`:''}
-            </div>
-          </div>
-          <div class="itin-actions-row">
-            <span class="itin-type-badge" style="display:inline-flex;align-items:center;gap:4px">${ITIN_ICONS[ev.type]||''} ${ITIN_LABELS[ev.type]||ev.type}</span>
-            <button class="action-btn primary" onclick="openEditItinEvent('${ev.id}')"><span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</span></button>
-              <button class="action-btn danger" onclick="delItinEvent('${ev.id}')"><span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> Excluir</span></button>
-          </div>
-        </div>`).join('')}
-    </div>`;
-  }).join('');
 }
 
-function openEditItinEvent(id){
-  const ev=S.itinerary.find(x=>x.id===id);if(!ev)return;
-  editingItinId=id;
-  document.getElementById('modal-itin-title').textContent='Editar Evento';
-  setVal('itin-date',ev.event_date||'');setVal('itin-time',ev.event_time||'');
-  document.getElementById('itin-type').value=ev.type||'passeio';
-  setVal('itin-name',ev.name||'');setVal('itin-place',ev.place||'');setVal('itin-notes',ev.notes||'');
-  openModal('addItinDay');
-}
-
-async function saveItinEvent(){
-  const trip=curTrip();if(!trip)return showToast('Selecione uma viagem','error');
-  if(!gv('itin-name'))return showToast('Nome é obrigatório','error');
-  setBusy('btn-save-itin',true,'Salvando...');
-  const payload={trip_id:trip.id,event_date:gv('itin-date')||null,event_time:gv('itin-time')||null,
-    type:gv('itin-type')||'outro',name:gv('itin-name'),place:gv('itin-place')||null,
-    notes:gv('itin-notes')||null,done:false};
-  let error;
-  if(editingItinId){
-    ({error}=await db.from('itinerary_events').update(payload).eq('id',editingItinId));
-  } else {
-    ({error}=await db.from('itinerary_events').insert(payload));
-  }
-  setBusy('btn-save-itin',false,'Salvar');
-  if(error)return showToast('Erro: '+error.message,'error');
-  showToast(editingItinId?'Evento atualizado!':'Evento adicionado!','success');
-  editingItinId=null;closeModal('addItinDay');
-  await loadItinerary();renderItinerary();
-}
-
-async function toggleItinDone(id){
-  const ev=S.itinerary.find(x=>x.id===id);if(!ev)return;
-  const nd=!ev.done;
-  await db.from('itinerary_events').update({done:nd}).eq('id',id);
-  ev.done=nd;renderItinerary();
-}
-
-async function delItinEvent(id){
-  if(!confirm('Excluir este evento?'))return;
-  await db.from('itinerary_events').delete().eq('id',id);
-  S.itinerary=S.itinerary.filter(x=>x.id!==id);renderItinerary();
-  showToast('Excluído','success');
-}
-
-async function loadItinerary(){
-  if(!S.currentTripId)return;
-  const{data}=await db.from('itinerary_events').select('*').eq('trip_id',S.currentTripId).order('event_date').order('event_time');
-  S.itinerary=data||[];
-}
-
-// ─── DOCUMENTS ────────────────────────────────────────────────────────────────
-const DOC_ICONS={
-  seguro:'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
-  passaporte:'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="18" x="5" y="3" rx="2"/><path d="M12 3v18"/><path d="M5 9h14"/><path d="M5 15h14"/></svg>',
-  visto:'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="12" x="3" y="6" rx="2"/><path d="M3 10h18"/><path d="M7 15h.01"/><path d="M11 15h2"/></svg>',
-  voucher_hotel:'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>',
-  voucher_tour:'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>',
-  passagem:'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 2c-2-2-4-2-5.5-.5L10 5 1.8 6.2c-.5.1-.9.5-.8 1.1l1.1 4a1 1 0 0 0 .7.7l4 1.1a1 1 0 0 1 .6.5l2.4 4.2c.3.5.9.7 1.4.4l2.9-1.7a1 1 0 0 0 .4-1.3Z"/></svg>',
-  vacina:'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 3 1 1"/><path d="m14 3-1 1"/><path d="m3 9 1 1"/><path d="m3 14 1-1"/><path d="m7 7 10 10"/><path d="m14.5 6.5 3 3"/><path d="M3 21 21 3"/><path d="m16 10 3 3"/></svg>',
-  outro:'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>',
-};
-const DOC_TYPES={seguro:'Seguro Viagem',passaporte:'Passaporte',visto:'Visto',
-  voucher_hotel:'Voucher Hotel',voucher_tour:'Voucher Passeio',passagem:'Passagem Aérea',
-  vacina:'Vacinação',outro:'Outro'};
-
-let editingDocId=null;
-
-function renderDocs(){
-  const trip=curTrip();
-  document.getElementById('docs-badge').textContent=trip?trip.name:'—';
-  const el=document.getElementById('docs-list');if(!el)return;
-  if(!S.docs||!S.docs.length){
-    el.innerHTML='<div class="empty-state"><div class="ei"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.3"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg></div><p>Nenhum documento adicionado ainda.</p></div>';
-    return;
-  }
-  const today=new Date();today.setHours(0,0,0,0);
-  el.innerHTML=S.docs.map(d=>{
-    let expiresHtml='';
-    if(d.expires_at){
-      const exp=new Date(d.expires_at);
-      const diff=Math.ceil((exp-today)/86400000);
-      const cls=diff<30?'doc-expires':'doc-expires-ok';
-      expiresHtml=`<span class="${cls}">Vence: ${fmtDate(d.expires_at)}${diff<30&&diff>=0?` (${diff}d)`:''}${diff<0?' (vencido)':''}</span>`;
-    }
-    return `<div class="doc-card">
-      <div class="doc-icon">${DOC_ICONS[d.type]||DOC_ICONS.outro}</div>
-      <div class="doc-body">
-        <div class="doc-name">${d.name}</div>
-        <div class="doc-meta">
-          <span class="doc-type-tag">${DOC_TYPES[d.type]||d.type}</span>
-          ${d.ref?`<span>Ref: ${d.ref}</span>`:''}
-          ${d.issued_at?`<span>Emissão: ${fmtDate(d.issued_at)}</span>`:''}
-          ${expiresHtml}
-        </div>
-        ${d.notes?`<div style="font-size:12px;color:var(--mu);margin-top:6px">${d.notes}</div>`:''}
-      </div>
-      <div class="doc-actions" style="flex-direction:column;gap:5px">
-        ${d.file_url?`<a class="doc-file-link" href="${d.file_url}" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Abrir</a>`:''}
-        <button class="action-btn primary" onclick="openEditDoc('${d.id}')"><span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</span></button>
-        <button class="action-btn danger" onclick="delDoc('${d.id}')"><span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> Excluir</span></button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function openEditDoc(id){
-  const d=S.docs.find(x=>x.id===id);if(!d)return;
-  editingDocId=id;
-  document.getElementById('modal-doc-title').textContent='Editar Documento';
-  document.getElementById('doc-type').value=d.type;
-  setVal('doc-name',d.name);setVal('doc-ref',d.ref||'');
-  setVal('doc-issued',d.issued_at||'');setVal('doc-expires',d.expires_at||'');
-  setVal('doc-notes',d.notes||'');
-  docClearFile();
-  if(d.file_name){
-    document.getElementById('doc-upload-area').style.display='none';
-    const prev=document.getElementById('doc-upload-preview');
-    prev.style.display='flex';
-    document.getElementById('doc-upload-filename').textContent=d.file_name;
-    document.getElementById('doc-upload-size').textContent=d.file_size?_fmtBytes(d.file_size):'';
-  }
-  openModal('addDoc');
-}
-
-async function saveDoc(){
-  const trip=curTrip();if(!trip)return showToast('Selecione uma viagem','error');
-  if(!gv('doc-name'))return showToast('Nome é obrigatório','error');
-  setBusy('btn-save-doc',true,'Salvando...');
-  const payload={trip_id:trip.id,type:gv('doc-type')||'outro',name:gv('doc-name'),
-    ref:gv('doc-ref')||null,issued_at:gv('doc-issued')||null,
-    expires_at:gv('doc-expires')||null,notes:gv('doc-notes')||null};
-  let error,savedId=editingDocId;
-  if(editingDocId){
-    ({error}=await db.from('trip_documents').update(payload).eq('id',editingDocId));
-  } else {
-    const{data,error:e}=await db.from('trip_documents').insert(payload).select().single();
-    error=e; if(data)savedId=data.id;
-  }
-  if(error){setBusy('btn-save-doc',false,'Salvar');return showToast('Erro: '+error.message,'error');}
-  // Upload file if selected
-  if(_docFile&&savedId){
-    setBusy('btn-save-doc',true,'Enviando arquivo...');
-    const fileInfo=await _uploadDocFile(trip.id,savedId);
-    if(fileInfo){
-      await db.from('trip_documents').update({
-        file_path:fileInfo.path,file_url:fileInfo.url,file_name:fileInfo.name,file_size:fileInfo.size
-      }).eq('id',savedId);
-    }
-    _docFile=null;
-  }
-  setBusy('btn-save-doc',false,'Salvar');
-  showToast(editingDocId?'Documento atualizado!':'Documento salvo!','success');
-  editingDocId=null;closeModal('addDoc');docClearFile();
-  await loadDocs();renderDocs();
-}
-
-async function delDoc(id){
-  if(!confirm('Excluir este documento?'))return;
-  const doc=S.docs.find(d=>d.id===id);
-  if(doc&&doc.file_path)await _deleteDocFile(doc.file_path);
-  await db.from('trip_documents').delete().eq('id',id);
-  S.docs=S.docs.filter(d=>d.id!==id);renderDocs();
-  showToast('Excluído','success');
-}
-
-async function loadDocs(){
-  if(!S.currentTripId)return;
-  const{data}=await db.from('trip_documents').select('*').eq('trip_id',S.currentTripId).order('type');
-  S.docs=data||[];
-}
-
-
-
-// ─── DOCUMENT UPLOAD ─────────────────────────────────────────────────────────
-let _docFile = null;
-const DOC_BUCKET = 'trip-documents';
-
-function docFileSelected(e) {
-  const file = e.target.files[0];
-  if (file) _setDocFile(file);
-}
-function docDragOver(e) { e.preventDefault(); document.getElementById('doc-upload-area').classList.add('drag'); }
-function docDragLeave(e) { document.getElementById('doc-upload-area').classList.remove('drag'); }
-function docDrop(e) {
-  e.preventDefault();
-  document.getElementById('doc-upload-area').classList.remove('drag');
-  const file = e.dataTransfer.files[0];
-  if (file) _setDocFile(file);
-}
-function _setDocFile(file) {
-  const maxMB = 10;
-  if (file.size > maxMB * 1024 * 1024) { showToast(`Arquivo muito grande (máx ${maxMB}MB)`, 'error'); return; }
-  _docFile = file;
-  document.getElementById('doc-upload-area').style.display = 'none';
-  const prev = document.getElementById('doc-upload-preview');
-  prev.style.display = 'flex';
-  document.getElementById('doc-upload-filename').textContent = file.name;
-  document.getElementById('doc-upload-size').textContent = _fmtBytes(file.size);
-}
-function docClearFile() {
-  _docFile = null;
-  document.getElementById('doc-file-input').value = '';
-  document.getElementById('doc-upload-area').style.display = '';
-  document.getElementById('doc-upload-preview').style.display = 'none';
-  document.getElementById('doc-upload-hint').textContent = 'Clique ou arraste um arquivo (PDF, JPG, PNG)';
-}
-function _fmtBytes(b) {
-  if (b < 1024) return b + ' B';
-  if (b < 1024 * 1024) return (b / 1024).toFixed(0) + ' KB';
-  return (b / 1024 / 1024).toFixed(1) + ' MB';
-}
-function _showUploadProgress(pct) {
-  const bar = document.getElementById('doc-upload-progress');
-  const fill = document.getElementById('doc-upload-bar');
-  if (!bar || !fill) return;
-  bar.style.display = pct > 0 && pct < 100 ? 'block' : 'none';
-  fill.style.width = pct + '%';
-}
-
-async function _uploadDocFile(tripId, docId) {
-  if (!_docFile) return null;
+function _doPlay(videoId) {
+  if (!_yt) return;
   try {
-    _showUploadProgress(10);
-    const ext = _docFile.name.split('.').pop();
-    const path = `${tripId}/${docId}/${Date.now()}.${ext}`;
-    _showUploadProgress(40);
-    const { data, error } = await db.storage.from(DOC_BUCKET).upload(path, _docFile, {
-      cacheControl: '3600', upsert: true, contentType: _docFile.type
-    });
-    _showUploadProgress(80);
-    if (error) { console.warn('Upload error:', error.message); _showUploadProgress(0); return null; }
-    const { data: urlData } = db.storage.from(DOC_BUCKET).getPublicUrl(path);
-    _showUploadProgress(100);
-    setTimeout(() => _showUploadProgress(0), 600);
-    return { path, url: urlData.publicUrl, name: _docFile.name, size: _docFile.size };
-  } catch (e) { console.warn('Upload failed:', e); _showUploadProgress(0); return null; }
+    _yt.loadVideoById({ videoId, startSeconds: 0 });
+    _yt.playVideo();
+  } catch(e) { console.warn('YT play error', e); }
 }
 
-async function _deleteDocFile(filePath) {
-  if (!filePath) return;
-  try { await db.storage.from(DOC_BUCKET).remove([filePath]); } catch (e) { console.warn('Delete file error:', e); }
+function _playVideoId(videoId) {
+  _currentVideoId = videoId;
+  if (_ytOk) {
+    _doPlay(videoId);
+  } else {
+    _ytWantId = videoId;   // will play once onReady fires
+  }
 }
+
+function renderMusicPlayer(trip, autoplay) {
+  const el = document.getElementById('ov-music-player');
+  if (!el) return;
+  const song = trip && trip.theme_song ? trip.theme_song.trim() : '';
+  const vidId = _extractVideoId(song);
+  if (!vidId) { el.style.display = 'none'; _stopMusic(); return; }
+
+  el.style.display = 'block';
+
+  // KEY FIX: if iframe already exists for this video, never rebuild it —
+  // rebuilding destroys the playing audio. Just ensure it's visible.
+  const existingIframe = document.getElementById('yt-iframe');
+  if (existingIframe && _currentVideoId === vidId) {
+    return; // already playing — leave it alone
+  }
+
+  // First time or different video: create iframe with autoplay=1
+  _currentVideoId = vidId;
+  const src = `https://www.youtube-nocookie.com/embed/${vidId}` +
+    `?autoplay=1&controls=1&rel=0&modestbranding=1&iv_load_policy=3&playsinline=1`;
+
+  el.innerHTML = `
+    <div class="yt-embed-header">
+      <span class="yt-embed-label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        Música da Viagem
+      </span>
+      <span class="yt-embed-close" onclick="_stopMusic()" title="Fechar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </span>
+    </div>
+    <div class="yt-embed-wrap">
+      <iframe
+        id="yt-iframe"
+        src="${src}"
+        allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen>
+      </iframe>
+    </div>`;
+}
+
+
+function _toggleMusic() {
+  // Player is now a visible iframe — user controls playback directly
+  // Legacy: still allow external call without errors
+}
+
+function _stopMusic(keepId) {
+  if (!keepId) _currentVideoId = '';
+  if (_yt && _ytOk) { try { _yt.stopVideo(); } catch(e) {} }
+  _musicPlaying = false;
+  // Stop iframe by clearing src
+  const fr = document.getElementById('yt-iframe');
+  if (fr) { fr.src = ''; }
+  const el = document.getElementById('ov-music-player');
+  if (el) el.style.display = 'none';
+  _syncMusicUI();
+}
+
+function _syncMusicUI() {
+  const bar = document.getElementById('music-bar-inner');
+  const btn = document.getElementById('music-btn');
+  if (bar) bar.classList.toggle('playing', _musicPlaying);
+  if (btn) btn.classList.toggle('playing', _musicPlaying);
+}
+
+function _updateMusicUI() {} // kept for compatibility
+
 
 // Init Lucide icons
 if(typeof lucide!=="undefined")lucide.createIcons();
