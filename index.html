@@ -446,7 +446,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .itin-event-time{font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--ac);flex-shrink:0}
 .itin-event-name{font-size:14px;font-weight:600;color:var(--tx);margin-bottom:2px}
 .itin-event-place{font-size:12px;color:var(--mu);margin-bottom:2px}
-.itin-event-notes{font-size:12px;color:var(--dm);font-style:italic;margin-bottom:4px}
+.itin-event-price{font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--gn);font-weight:600}.itin-event-notes{font-size:12px;color:var(--dm);font-style:italic;margin-bottom:4px}
 .itin-event-actions{display:flex;gap:6px;margin-top:6px}
 
 /* ─── DRIVE EMBED ───────────────────────────────────── */
@@ -488,7 +488,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="nav-item active" data-page="overview" onclick="showPage('overview')"><span class="ic"><i data-lucide="map"></i></span> Visão Geral</div>
     <div class="nav-item" data-page="transport" onclick="showPage('transport')"><span class="ic"><i data-lucide="plane"></i></span> Passagens</div>
     <div class="nav-item" data-page="accommodation" onclick="showPage('accommodation')"><span class="ic"><i data-lucide="bed-double"></i></span> Hospedagem</div>
-    <div class="nav-item" data-page="itinerary" onclick="showPage('itinerary')"><span class="ic"><i data-lucide="calendar-days"></i></span> Roteiro</div>
+    <div class="nav-item" data-page="itinerary" onclick="showPage('itinerary')"><span class="ic"><i data-lucide="calendar-days"></i></span> Passeios</div>
     <div class="nav-item" data-page="docs" onclick="showPage('docs')"><span class="ic"><i data-lucide="file-text"></i></span> Documentos</div>
     <div class="nav-item" data-page="expenses" onclick="showPage('expenses')"><span class="ic"><i data-lucide="wallet"></i></span> Gastos</div>
   </nav>
@@ -579,8 +579,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <!-- ITINERARY (roteiro diário) -->
   <div id="page-itinerary" class="page">
     <div class="topbar">
-      <div class="trip-header"><h1>Roteiro <em>Diário</em></h1><div class="trip-meta"><span class="badge" id="itin-badge">—</span></div></div>
-      <div class="topbar-actions"><button class="btn btn-primary" onclick="openAddItinEvent()">+ Adicionar evento</button></div>
+      <div class="trip-header"><h1><em>Passeios</em></h1><div class="trip-meta"><span class="badge" id="itin-badge">—</span></div></div>
+      <div class="topbar-actions"><button class="btn btn-ghost eye-toggle-btn" onclick="toggleValues()" title="Ocultar/mostrar valores" style="padding:6px 10px;display:flex;align-items:center"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="btn btn-primary" onclick="openAddItinEvent()">+ Adicionar evento</button></div>
     </div>
     <div id="itinerary-list"></div>
   </div>
@@ -660,7 +660,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <button class="bn-item active" data-page="overview" onclick="showPage('overview')"><span class="ic"><i data-lucide="map"></i></span>Início</button>
     <button class="bn-item" data-page="transport" onclick="showPage('transport')"><span class="ic"><i data-lucide="plane"></i></span>Passagens</button>
     <button class="bn-item" data-page="accommodation" onclick="showPage('accommodation')"><span class="ic"><i data-lucide="bed-double"></i></span>Hotel</button>
-    <button class="bn-item" data-page="itinerary" onclick="showPage('itinerary')"><span class="ic"><i data-lucide="calendar-days"></i></span>Roteiro</button>
+    <button class="bn-item" data-page="itinerary" onclick="showPage('itinerary')"><span class="ic"><i data-lucide="calendar-days"></i></span>Passeios</button>
     <button class="bn-item" data-page="docs" onclick="showPage('docs')"><span class="ic"><i data-lucide="file-text"></i></span>Docs</button>
     <button class="bn-item" data-page="expenses" onclick="showPage('expenses')"><span class="ic"><i data-lucide="wallet"></i></span>Gastos</button>
 
@@ -699,7 +699,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div class="form-group"><label class="form-lbl">Nome / Descrição <span style="color:var(--rd)">*</span></label><input class="form-input" id="itin-name" placeholder="Ex: Templo Senso-ji"/></div>
     <div class="form-group"><label class="form-lbl">Endereço / Local</label><input class="form-input" id="itin-place" placeholder="Ex: Asakusa, 2-3-1"/></div>
-    <div class="form-group"><label class="form-lbl">Observações</label><input class="form-input" id="itin-notes" placeholder="Ex: reservar com antecedência..."/></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-lbl">Valor</label><input class="form-input" id="itin-price" type="number" min="0" step="0.01" placeholder="0,00"/></div>
+      <div class="form-group"><label class="form-lbl">Observações</label><input class="form-input" id="itin-notes" placeholder="Ex: reservar com antecedência..."/></div>
+    </div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('addItinDay')">Cancelar</button>
       <button class="btn btn-primary" id="btn-save-itin" onclick="saveItinEvent()">Salvar</button>
@@ -1106,7 +1109,7 @@ async function reloadTrip(){
     db.from('transport_legs').select('*').eq('trip_id',S.currentTripId).order('departure_at'),
     db.from('accommodations').select('*').eq('trip_id',S.currentTripId).order('check_in'),
     db.from('daily_expenses').select('*').eq('trip_id',S.currentTripId).order('expense_date'),
-    db.from('itinerary_events').select('*').eq('trip_id',S.currentTripId).order('event_date').order('event_time'),
+    db.from('itinerary_events').select('id,trip_id,city,event_date,event_time,type,name,place,notes,price').eq('trip_id',S.currentTripId).order('event_date').order('event_time'),
     db.from('trip_documents').select('*').eq('trip_id',S.currentTripId).order('type'),
   ]);
   S.transports=t.data||[];S.accommodations=a.data||[];S.expenses=e.data||[];S.itinerary=it.data||[];S.docs=dc.data||[];
@@ -1156,13 +1159,16 @@ async function loadAllTripData() {
     db.from('transport_legs').select('trip_id,price,parent_leg_id,origin,destination').is('parent_leg_id', null),
     db.from('accommodations').select('trip_id,check_in,check_out,price_per_night'),
     db.from('daily_expenses').select('trip_id,food,transport,activities,shopping,health,other'),
+    db.from('itinerary_events').select('trip_id,price').not('price','is',null),
   ]);
+  const itRes = arguments[arguments.length-1] || {data:[]};
   _ovCache = {};
-  S.trips.forEach(t => { _ovCache[t.id] = {totTr:0, totAc:0, totEx:0}; });
+  S.trips.forEach(t => { _ovCache[t.id] = {totTr:0, totAc:0, totEx:0, totIt:0}; });
   _ovAllTransports = trRes.data||[];
   _ovAllTransports.forEach(r => { if(_ovCache[r.trip_id]) _ovCache[r.trip_id].totTr += (r.price||0); });
   (acRes.data||[]).forEach(r => { if(_ovCache[r.trip_id]) _ovCache[r.trip_id].totAc += calcNights(r.check_in,r.check_out)*(r.price_per_night||0); });
   (exRes.data||[]).forEach(r => { if(_ovCache[r.trip_id]) _ovCache[r.trip_id].totEx += daySum(r); });
+  (itRes?.data||[]).forEach(r => { if(_ovCache[r.trip_id]) _ovCache[r.trip_id].totIt += (r.price||0); });
   Object.keys(_ovCache).forEach(id => { _ovCache[id].total = _ovCache[id].totTr + _ovCache[id].totAc + _ovCache[id].totEx; });
 }
 
@@ -1414,12 +1420,13 @@ function renderOverview() {
   const trip = ovFilterTripId ? S.trips.find(t => t.id === ovFilterTripId) : null;
 
   // ── Stats ─────────────────────────────────────────────────────────────────
-  let totalTr = 0, totalAc = 0, totalEx = 0;
+  let totalTr = 0, totalAc = 0, totalEx = 0, totalIt = 0;
   if (ovFilterTripId) {
     // Live data for selected trip
     totalTr = S.transports.filter(x=>!x.parent_leg_id).reduce((s,x)=>s+(x.price||0),0);
     totalAc = S.accommodations.reduce((s,a)=>s+calcNights(a.check_in,a.check_out)*(a.price_per_night||0),0);
     totalEx = S.expenses.reduce((s,e)=>s+daySum(e),0);
+    totalIt = S.itinerary.reduce((s,e)=>s+(e.price||0),0);
   } else {
     // Aggregated cache across all trips
     S.trips.forEach(t => {
@@ -1427,14 +1434,16 @@ function renderOverview() {
       totalTr += c.totTr||0;
       totalAc += c.totAc||0;
       totalEx += c.totEx||0;
+      totalIt += c.totIt||0;
     });
   }
-  const grandTotal = totalTr + totalAc + totalEx;
+  const grandTotal = totalTr + totalAc + totalEx + totalIt;
 
   let statsHtml = `
     <div class="stat-card"><div class="stat-lbl">Total Gasto</div><div class="stat-val" style="color:var(--ac)">${moneySpan(grandTotal, "R$ "+fmt(grandTotal))}</div><div class="stat-sub">${ovFilterTripId ? 'nesta viagem' : `${S.trips.length} viagem(ns)`}</div></div>
     <div class="stat-card"><div class="stat-lbl">Passagens</div><div class="stat-val" style="color:var(--ac2)">${moneySpan(totalTr, "R$ "+fmt(totalTr))}</div><div class="stat-sub">${ovFilterTripId ? `${S.transports.filter(x=>!x.parent_leg_id).length} trecho(s)` : 'total'}</div></div>
-    <div class="stat-card"><div class="stat-lbl">Hospedagem</div><div class="stat-val" style="color:var(--ac3)">${moneySpan(totalAc, "R$ "+fmt(totalAc))}</div><div class="stat-sub">${ovFilterTripId ? `${S.accommodations.length} local(is)` : 'total'}</div></div>`;
+    <div class="stat-card"><div class="stat-lbl">Hospedagem</div><div class="stat-val" style="color:var(--ac3)">${moneySpan(totalAc, "R$ "+fmt(totalAc))}</div><div class="stat-sub">${ovFilterTripId ? `${S.accommodations.length} local(is)` : 'total'}</div></div>
+    <div class="stat-card"><div class="stat-lbl">Passeios</div><div class="stat-val" style="color:var(--gn)">${moneySpan(totalIt, "R$ "+fmt(totalIt))}</div><div class="stat-sub">${ovFilterTripId ? `${S.itinerary.filter(e=>e.price).length} evento(s)` : 'total'}</div></div>`;
 
   if (ovFilterTripId && trip) {
     const isPst = isPast(trip.end_date), days = tripDays(trip), rem = Math.max(0, daysLeft(trip.end_date));
@@ -1554,6 +1563,7 @@ function renderOverview() {
       <div class="sec-title" style="margin-bottom:14px">Total Geral</div>
       <div class="info-row"><span class="info-key">Passagens</span><span class="info-val" style="color:var(--ac2)">${moneySpan(totalTr, "R$ "+fmt(totalTr))}</span></div>
       <div class="info-row"><span class="info-key">Hospedagem</span><span class="info-val" style="color:var(--ac3)">${moneySpan(totalAc, "R$ "+fmt(totalAc))}</span></div>
+      <div class="info-row"><span class="info-key">Passeios</span><span class="info-val" style="color:var(--gn)">${moneySpan(totalIt, "R$ "+fmt(totalIt))}</span></div>
       <div class="info-row"><span class="info-key">Gastos diários</span><span class="info-val" style="color:var(--mu)">${moneySpan(totalEx, "R$ "+fmt(totalEx))}</span></div>
       <div class="info-row" style="border-top:1px solid var(--bd);margin-top:4px;padding-top:12px"><span class="info-key" style="font-weight:600;color:var(--tx)">Total</span><span class="info-val" style="color:var(--ac)">${moneySpan(grandTotal, "R$ "+fmt(grandTotal))}</span></div>`;
   }
@@ -1967,6 +1977,7 @@ function openEditItinEvent(id){
   setVal('itin-name',ev.name||'');
   setVal('itin-place',ev.place||'');
   setVal('itin-notes',ev.notes||'');
+  setVal('itin-price',ev.price!=null?ev.price:'');
   document.getElementById('itin-type').value=ev.type||'passeio';
 }
 
@@ -1980,7 +1991,8 @@ async function saveItinEvent(){
   const payload={
     trip_id:trip.id,city:city.trim(),event_date:date,
     event_time:gv('itin-time')||null,type:gv('itin-type')||'passeio',
-    name:name.trim(),place:gv('itin-place')||null,notes:gv('itin-notes')||null
+    name:name.trim(),place:gv('itin-place')||null,notes:gv('itin-notes')||null,
+    price:num('itin-price')||null
   };
   let error;
   if(_editingItinId){({error}=await db.from('itinerary_events').update(payload).eq('id',_editingItinId));}
@@ -2035,7 +2047,10 @@ function renderItinerary(){
           <div class="itin-event-body">
             <div class="itin-event-header">
               <span class="itin-event-type">${ITIN_ICON[ev.type]||'📌'} ${ITIN_LABEL[ev.type]||ev.type}</span>
-              ${ev.event_time?`<span class="itin-event-time">${ev.event_time.slice(0,5)}</span>`:''}
+              <span style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+                ${ev.event_time?`<span class="itin-event-time">${ev.event_time.slice(0,5)}</span>`:''}
+                ${ev.price?`<span class="money-val itin-event-price" data-val="${fmt(ev.price)}">${_valuesHidden?'••••••':fmt(ev.price)}</span>`:''}
+              </span>
             </div>
             <div class="itin-event-name">${ev.name}</div>
             ${ev.place?`<div class="itin-event-place">📍 ${ev.place}</div>`:''}
@@ -2267,7 +2282,7 @@ function showPage(id){
   if(id==='accommodation'){renderAccomm();syncEyeButtons();}
   if(id==='addExpense'){_editingExpenseId=null;document.getElementById('modal-expense-title')&&(document.getElementById('modal-expense-title').textContent='Adicionar Gastos');document.getElementById('btn-save-expense')&&(document.getElementById('btn-save-expense').textContent='Salvar');}
   if(id==='expenses'){renderExpenses();syncEyeButtons();}
-  if(id==='itinerary')renderItinerary();
+  if(id==='itinerary'){renderItinerary();syncEyeButtons();}
   if(id==='docs')renderDocs();
   if(id==='trips')renderTripsPage();
   currentPage=id;
