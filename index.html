@@ -452,6 +452,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 /* ─── DRIVE EMBED ───────────────────────────────────── */
 #drive-iframe{transition:opacity .2s}
 #drive-embed-panel .panel-card{border-radius:10px}
+
+/* ─── ROUND TRIP TOGGLE & BADGE ───────────────────────── */
+.round-trip-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:.04em;background:rgba(110,231,183,.15);color:var(--gn);border:1px solid rgba(110,231,183,.3);margin-left:4px}
+
+/* ─── RETURN LEG ──────────────────────────────────── */
+.transport-card.return-leg{background:rgba(122,200,232,.04);border-top:2px solid rgba(122,200,232,.35)}
+.return-leg-divider{display:flex;align-items:center;gap:10px;padding:6px 20px;background:rgba(122,200,232,.06);border-left:1px solid var(--bd);border-right:1px solid var(--bd)}
+.return-leg-divider-line{flex:1;height:1px;background:rgba(122,200,232,.2)}
+.return-leg-divider-label{font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--ac2);display:flex;align-items:center;gap:5px}
+.return-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:.04em;background:rgba(122,200,232,.15);color:var(--ac2);border:1px solid rgba(122,200,232,.3)}
 </style>
 </head>
 <body>
@@ -787,6 +797,40 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div id="conn-list"></div>
       <button class="action-btn info" onclick="addConnectionForm()" style="width:100%;text-align:center;padding:8px">+ Adicionar conexão</button>
     </div>
+    <!-- TRECHO DE VOLTA -->
+    <div style="margin-top:4px">
+      <button type="button" id="btn-toggle-return" onclick="_toggleReturnSection()"
+        style="width:100%;text-align:center;padding:10px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:8px;font-size:12px;cursor:pointer;border:1px solid var(--bd);background:transparent;color:var(--mu);font-family:inherit;transition:all .15s">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        + Adicionar trecho de volta
+      </button>
+    </div>
+    <div id="return-section" style="display:none;margin-top:8px;padding:16px;background:rgba(122,200,232,.06);border:1px solid rgba(122,200,232,.25);border-radius:10px">
+      <div class="form-section-title" style="color:var(--ac2);margin-bottom:12px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        Trecho de Volta
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-lbl" id="lbl-rt-origin">Origem</label><div class="ac-wrap"><input class="ac-input" id="rt-origin" placeholder="Ex: NRT — Narita" autocomplete="off" oninput="acSearch('rt-origin',this.value)" onfocus="acSearch('rt-origin',this.value)" onkeydown="acKey(event,'rt-origin')"/><div class="ac-dropdown" id="ac-rt-origin"></div></div></div>
+        <div class="form-group"><label class="form-lbl" id="lbl-rt-dest">Destino</label><div class="ac-wrap"><input class="ac-input" id="rt-dest" placeholder="Ex: GRU — Guarulhos" autocomplete="off" oninput="acSearch('rt-dest',this.value)" onfocus="acSearch('rt-dest',this.value)" onkeydown="acKey(event,'rt-dest')"/><div class="ac-dropdown" id="ac-rt-dest"></div></div></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-lbl">Partida</label><input class="form-input" id="rt-departure" type="datetime-local"/></div>
+        <div class="form-group"><label class="form-lbl">Chegada</label><input class="form-input" id="rt-arrival" type="datetime-local"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-lbl">Companhia</label><input class="form-input" id="rt-carrier" placeholder="Ex: LATAM, Azul..."/></div>
+        <div class="form-group"><label class="form-lbl">Código de Reserva</label><input class="form-input" id="rt-ref" placeholder="Ex: XK4921"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-lbl">Preço Volta (BRL)</label><input class="form-input" id="rt-price" type="number" placeholder="0" min="0"/></div>
+      </div>
+      <div id="rt-conn-list"></div>
+      <button type="button" class="action-btn info" onclick="addRtConnectionForm()" style="width:100%;text-align:center;padding:7px;margin-top:8px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        + Adicionar conexão da volta
+      </button>
+    </div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('addTransport')">Cancelar</button>
       <button class="btn btn-primary" id="btn-save-transport" onclick="saveTransport()">Salvar Trecho</button>
@@ -971,12 +1015,12 @@ function searchAirlines(q){
   return [...exact,...start,...contains];
 }
 
-function acSelect(field,val){document.getElementById('t-'+field).value=val;acClose(field)}
+function acSelect(field,val){const el=document.getElementById(field.startsWith('rt-')?field:'t-'+field);if(el)el.value=val;acClose(field)}
 function acSelectAirline(name){document.getElementById('t-carrier').value=name;acClose('airline')}
 function acHighlight(field,idx){const dd=document.getElementById('ac-'+field);if(dd){dd.querySelectorAll('.ac-item').forEach((el,i)=>el.classList.toggle('selected',i===idx));acState[field].idx=idx;}}
 function acClose(field){
   if(field){const el=document.getElementById('ac-'+field);if(el)el.classList.remove('open')}
-  else{['origin','dest','airline'].forEach(f=>{const el=document.getElementById('ac-'+f);if(el)el.classList.remove('open')})}
+  else{['origin','dest','airline','rt-origin','rt-dest'].forEach(f=>{const el=document.getElementById('ac-'+f);if(el)el.classList.remove('open')})}
 }
 function acKey(e,field){
   const dd=document.getElementById('ac-'+field);
@@ -1016,6 +1060,26 @@ function onTypeChange(){
   }
   updateCarrierRefVisibility();
   acClose();
+  // Sync return section labels and connection visibility
+  const retSec = document.getElementById('return-section');
+  if (retSec && retSec.style.display !== 'none') {
+    // Update return section field labels to match type
+    const rtOLbl = document.getElementById('lbl-rt-origin');
+    const rtDLbl = document.getElementById('lbl-rt-dest');
+    const rtO = document.getElementById('rt-origin');
+    const rtD = document.getElementById('rt-dest');
+    if (isVoo) {
+      if (rtOLbl) rtOLbl.textContent = 'Aeroporto de Origem (volta)';
+      if (rtDLbl) rtDLbl.textContent = 'Aeroporto de Destino (volta)';
+      if (rtO) rtO.placeholder = 'Ex: NRT — Narita';
+      if (rtD) rtD.placeholder = 'Ex: GRU — Guarulhos';
+    } else {
+      if (rtOLbl) rtOLbl.textContent = 'Origem (volta)';
+      if (rtDLbl) rtDLbl.textContent = 'Destino (volta)';
+      if (rtO) rtO.placeholder = 'Ex: Rio de Janeiro';
+      if (rtD) rtD.placeholder = 'Ex: São Paulo';
+    }
+  }
 }
 
 function updateCarrierRefVisibility(){
@@ -1048,7 +1112,7 @@ function addConnectionForm(data=null){
       <div><div class="form-lbl">Companhia Aérea</div><div class="ac-wrap"><input class="ac-input" id="conn-carrier-${idx}" placeholder="Ex: American Airlines" autocomplete="off" oninput="acSearchConnAirline(${idx},this.value)" onfocus="acSearchConnAirline(${idx},this.value)" onkeydown="acKeyConn(event,'airline',${idx})" value="${data?data.carrier:''}"/><div class="ac-dropdown" id="ac-conn-airline-${idx}"></div></div></div>
       <div><div class="form-lbl">Número do Voo</div><input class="form-input" id="conn-ref-${idx}" placeholder="Ex: LA8090" value="${data?data.flight_number:''}"/></div>
     </div>
-    <div class="form-group"><div class="form-lbl">Código da Reserva</div><input class="form-input" id="conn-bookref-${idx}" placeholder="Ex: XK4921" value="${data?data.booking_ref:''}"/></div>`;
+`;
   cl.appendChild(div);
   renumberConns();
   updateCarrierRefVisibility();
@@ -1579,7 +1643,18 @@ function renderTransport(filter){
   const trip=curTrip();
   document.getElementById('tr-badge').textContent=trip?`${trip.name} · ${S.transports.filter(t=>!t.parent_leg_id).length} trechos`:'—';
   const roots=S.transports.filter(t=>!t.parent_leg_id);
-  const filtered=trFilter==='all'?roots:roots.filter(t=>t.type===trFilter);
+  // Exclude return legs that will appear nested under their ida counterpart
+  const returnLegIds=new Set(roots.filter(r=>r.round_trip&&r.booking_ref).reduce((acc,r)=>{
+    if(acc.includes(r.id)) return acc;
+    const partner=roots.find(p=>p.id!==r.id&&p.booking_ref===r.booking_ref&&p.round_trip);
+    if(partner){
+      // The one with the later departure is the return leg
+      const returnOne = (r.departure_at||'') > (partner.departure_at||'') ? r.id : partner.id;
+      if(!acc.includes(returnOne)) acc.push(returnOne);
+    }
+    return acc;
+  },[]));
+  const filtered=trFilter==='all'?roots.filter(t=>!returnLegIds.has(t.id)):roots.filter(t=>t.type===trFilter&&!returnLegIds.has(t.id));
   document.getElementById('transport-list').innerHTML=!filtered.length
     ?`<div class="empty-state"><div class="ei"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.3"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 2c-2-2-4-2-5.5-.5L10 5 1.8 6.2c-.5.1-.9.5-.8 1.1l1.1 4a1 1 0 0 0 .7.7l4 1.1a1 1 0 0 1 .6.5l2.4 4.2c.3.5.9.7 1.4.4l2.9-1.7a1 1 0 0 0 .4-1.3Z"/></svg></div><p>Nenhum trecho encontrado.</p></div>`
     :filtered.map(t=>{
@@ -1589,7 +1664,7 @@ function renderTransport(filter){
         <div class="transport-card ${t.done?'done':''}">
           <div class="transport-row">
             <div style="flex:1">
-              <div class="transport-route"><span style="display:inline-flex;align-items:center;margin-right:6px">${EMOJI[t.type]||''}</span><span class="route-city">${t.origin}</span><span class="route-arrow"> → </span><span class="route-city">${t.destination}</span>${hasConn?`<span class="conn-badge">+${conns.length} conexão</span>`:''}</div>
+              <div class="transport-route"><span style="display:inline-flex;align-items:center;margin-right:6px">${EMOJI[t.type]||''}</span><span class="route-city">${t.origin}</span><span class="route-arrow"> → </span><span class="route-city">${t.destination}</span>${hasConn?`<span class="conn-badge">+${conns.length} conexão</span>`:''} ${t.round_trip?`<span class="round-trip-badge">↔ Ida e Volta</span>`:''}</div>
               <div class="transport-detail"><span>${fmtDT(t.departure_at)}</span>${t.carrier?`<span>${t.carrier}</span>`:''} ${t.flight_number?`<span>Voo ${t.flight_number}</span>`:''} ${t.booking_ref?`<span>Ref: ${t.booking_ref}</span>`:''} ${t.notes?`<span style="display:inline-flex;align-items:center;gap:3px"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg> ${t.notes}</span>`:''}</div>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
@@ -1616,6 +1691,60 @@ function renderTransport(filter){
               </div>
             </div>
           </div>`).join('')}
+      ${(()=>{
+        const ret = (t.round_trip && t.booking_ref) ? S.transports.filter(r =>
+          r.id !== t.id &&
+          r.booking_ref === t.booking_ref &&
+          r.round_trip === true &&
+          !r.parent_leg_id &&
+          returnLegIds.has(r.id)
+        ) : [];
+        if(!ret.length) return '';
+        return ret.map(r => {
+          const retConns = S.transports.filter(c=>c.parent_leg_id===r.id).sort((a,b)=>a.connection_order-b.connection_order);
+          const retConnHtml = retConns.map(c=>`
+            <div class="transport-card connection ${c.done?'done':''}">
+              <div class="transport-row">
+                <div style="flex:1">
+                  <div class="transport-route"><span style="display:inline-flex;align-items:center;margin-right:4px"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><span class="route-city" style="font-size:13px">${c.origin}</span><span class="route-arrow"> → </span><span class="route-city" style="font-size:13px">${c.destination}</span></div>
+                  <div class="transport-detail"><span>${fmtDT(c.departure_at)}</span>${c.carrier?`<span>${c.carrier}</span>`:''} ${c.flight_number?`<span>Voo ${c.flight_number}</span>`:''}</div>
+                </div>
+                <span class="conn-badge">conexão</span>
+              </div>
+            </div>`).join('');
+          return `
+            <div class="return-leg-divider">
+              <div class="return-leg-divider-line"></div>
+              <div class="return-leg-divider-label">
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                Trecho de Volta
+              </div>
+              <div class="return-leg-divider-line"></div>
+            </div>
+            <div class="transport-card return-leg ${r.done?'done':''}">
+              <div class="transport-row">
+                <div style="flex:1">
+                  <div class="transport-route">
+                    <span style="display:inline-flex;align-items:center;margin-right:6px">${EMOJI[r.type]||''}</span>
+                    <span class="route-city">${r.origin}</span><span class="route-arrow"> → </span><span class="route-city">${r.destination}</span>
+                    ${retConns.length?`<span class="conn-badge">+${retConns.length} conexão</span>`:''}
+                  </div>
+                  <div class="transport-detail"><span>${fmtDT(r.departure_at)}</span>${r.carrier?`<span>${r.carrier}</span>`:''} ${r.flight_number?`<span>Voo ${r.flight_number}</span>`:''} ${r.booking_ref?`<span>Ref: ${r.booking_ref}</span>`:''}</div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+                  <div class="transport-price">${moneySpan(r.price,"R$ "+fmt(r.price))}</div>
+                  <span class="return-badge">↩ Volta</span>
+                  <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">
+                    <button class="action-btn" onclick="toggleDone('${r.id}')">${r.done?'<span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> Reabrir</span>':'<span style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Feito</span>'}</button>
+                    <button class="action-btn primary" onclick="openEditTransport('${r.id}')"><span style="display:inline-flex;align-items:center;gap:3px"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</span></button>
+                    <button class="action-btn danger" onclick="delTransport('${r.id}')"><span style="display:inline-flex;align-items:center;gap:3px"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg> Excluir</span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            ${retConnHtml}`;
+        }).join('');
+      })()}
       </div>`;
     }).join('');
 }
@@ -1633,6 +1762,10 @@ function openAddTransport(){
   ['t-origin','t-dest','t-carrier','t-flightnum','t-ref','t-price','t-notes'].forEach(id=>setVal(id,''));
   setVal('t-departure','');setVal('t-arrival','');
   document.getElementById('t-type').value='voo';
+  ['rt-origin','rt-dest','rt-departure','rt-arrival','rt-carrier','rt-ref','rt-price'].forEach(id=>setVal(id,''));
+  document.getElementById('rt-conn-list').innerHTML='';
+  rtConnCount=0;acRtConnState={};
+  _setRoundTrip(false);
   document.getElementById('conn-list').innerHTML='';
   connCount=0;
   onTypeChange();
@@ -1649,7 +1782,7 @@ function openEditTransport(id){
   setVal('t-origin',t.origin||'');setVal('t-dest',t.destination||'');
   setVal('t-carrier',t.carrier||'');setVal('t-flightnum',t.flight_number||'');
   setVal('t-ref',t.booking_ref||'');setVal('t-price',t.price||'');
-  setVal('t-notes',t.notes||'');setVal('t-departure',localDT(t.departure_at));setVal('t-arrival',localDT(t.arrival_at));
+  setVal('t-notes',t.notes||'');_setRoundTrip(t.round_trip||false);setVal('t-departure',localDT(t.departure_at));setVal('t-arrival',localDT(t.arrival_at));
   document.getElementById('conn-list').innerHTML='';connCount=0;
   const conns=S.transports.filter(c=>c.parent_leg_id===id).sort((a,b)=>a.connection_order-b.connection_order);
   conns.forEach(c=>addConnectionForm(c));
@@ -1665,7 +1798,7 @@ async function saveTransport(){
     departure_at:gv('t-departure')||null,arrival_at:gv('t-arrival')||null,
     carrier:gv('t-carrier')||null,booking_ref:gv('t-ref')||null,
     flight_number:gv('t-flightnum')||null,
-    price:num('t-price'),notes:gv('t-notes')||null,parent_leg_id:null,connection_order:0};
+    price:num('t-price'),notes:gv('t-notes')||null,round_trip:window._roundTrip||false,parent_leg_id:null,connection_order:0};
   let parentId;
   if(editingTransportId){
     const{error}=await db.from('transport_legs').update(payload).eq('id',editingTransportId);
@@ -1689,12 +1822,50 @@ async function saveTransport(){
       arrival_at:document.getElementById(`conn-arr-${idx}`)?.value||null,
       carrier:document.getElementById(`conn-carrier-${idx}`)?.value.trim()||null,
       flight_number:document.getElementById(`conn-ref-${idx}`)?.value.trim()||null,
-      booking_ref:document.getElementById(`conn-bookref-${idx}`)?.value.trim()||null,
+      booking_ref:gv('t-ref')||null,
       price:0,notes:null,done:false
     });
   }
   setBusy('btn-save-transport',false,'Salvar');
   showToast(editingTransportId?'Trecho atualizado!':'Trecho salvo!','success');
+  // Save return leg if round trip is active
+  if (window._roundTrip && !editingTransportId) {
+    const rtO = gv('rt-origin'), rtD = gv('rt-dest');
+    if (rtO && rtD) {
+      // Save the return main leg
+      const {data:rtLeg, error:rtErr} = await db.from('transport_legs').insert({
+        trip_id:trip.id, type:gv('t-type'),
+        origin:rtO, destination:rtD,
+        departure_at:gv('rt-departure')||null, arrival_at:gv('rt-arrival')||null,
+        carrier:gv('rt-carrier')||null,
+        flight_number:null,
+        booking_ref:gv('rt-ref')||gv('t-ref')||null,
+        price:num('rt-price'),
+        notes:gv('t-notes')||null,
+        round_trip:true, parent_leg_id:null, connection_order:0
+      }).select().single();
+      if (!rtErr && rtLeg) {
+        // Save return trip connections
+        const rtIds = getRtConnIds();
+        for (let i=0; i<rtIds.length; i++) {
+          const ci = rtIds[i];
+          const co = document.getElementById(`rt-conn-origin-${ci}`)?.value.trim();
+          const cd = document.getElementById(`rt-conn-dest-${ci}`)?.value.trim();
+          if (!co || !cd) continue;
+          await db.from('transport_legs').insert({
+            trip_id:trip.id, parent_leg_id:rtLeg.id, connection_order:i+1,
+            type:gv('t-type'), origin:co, destination:cd,
+            departure_at:document.getElementById(`rt-conn-dep-${ci}`)?.value||null,
+            arrival_at:document.getElementById(`rt-conn-arr-${ci}`)?.value||null,
+            carrier:document.getElementById(`rt-conn-carrier-${ci}`)?.value.trim()||null,
+            flight_number:document.getElementById(`rt-conn-flightnum-${ci}`)?.value.trim()||null,
+            booking_ref:gv('t-ref')||null,
+            round_trip:true
+          });
+        }
+      }
+    }
+  }
   closeModal('addTransport');
   await reloadTrip();renderTransport();renderOverview();
 }
@@ -2227,6 +2398,184 @@ async function delDoc(id) {
   S.docs = S.docs.filter(d=>d.id!==id);
   renderDocs();
   showToast('Excluído','success');
+}
+
+
+// ─── ROUND TRIP SECTION ──────────────────────────────────────────────────────
+window._roundTrip = false;
+
+function _toggleReturnSection() {
+  window._roundTrip = !window._roundTrip;
+  const sec = document.getElementById('return-section');
+  const btn = document.getElementById('btn-toggle-return');
+  if (!sec || !btn) return;
+  if (window._roundTrip) {
+    sec.style.display = 'block';
+    // Switch rt-origin/rt-dest input style based on type
+    const isV2 = document.getElementById('t-type')?.value === 'voo';
+    ['rt-origin','rt-dest'].forEach(fid => {
+      const el = document.getElementById(fid);
+      if (!el) return;
+      if (isV2) {
+        el.className = 'ac-input';
+        el.parentElement.className = 'ac-wrap';
+      } else {
+        el.className = 'form-input';
+        el.parentElement.className = '';
+      }
+    });
+    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg> ↔ Ida e Volta — clique para remover';
+    btn.style.background = 'rgba(122,200,232,.12)';
+    btn.style.borderColor = 'var(--ac2)';
+    btn.style.color = 'var(--ac2)';
+    // Pre-fill return: swap origin/destination, copy carrier & booking ref
+    const oVal = document.getElementById('t-origin')?.value||'';
+    const dVal = document.getElementById('t-dest')?.value||'';
+    const cVal = document.getElementById('t-carrier')?.value||'';
+    const refVal = document.getElementById('t-ref')?.value||'';
+    if (oVal) setVal('rt-dest',   oVal);
+    if (dVal) setVal('rt-origin', dVal);
+    if (cVal) setVal('rt-carrier', cVal);
+    if (refVal) setVal('rt-ref', refVal);
+    // Update labels + placeholders to match transport type
+    const isV = document.getElementById('t-type')?.value === 'voo';
+    const rtOLbl = document.getElementById('lbl-rt-origin');
+    const rtDLbl = document.getElementById('lbl-rt-dest');
+    const rtO = document.getElementById('rt-origin');
+    const rtD = document.getElementById('rt-dest');
+    if (isV) {
+      if (rtOLbl) rtOLbl.textContent = 'Aeroporto de Origem (volta)';
+      if (rtDLbl) rtDLbl.textContent = 'Aeroporto de Destino (volta)';
+      if (rtO) rtO.placeholder = 'Ex: NRT — Narita';
+      if (rtD) rtD.placeholder = 'Ex: GRU — Guarulhos';
+    } else {
+      if (rtOLbl) rtOLbl.textContent = 'Origem (volta)';
+      if (rtDLbl) rtDLbl.textContent = 'Destino (volta)';
+      if (rtO) rtO.placeholder = 'Ex: Rio de Janeiro';
+      if (rtD) rtD.placeholder = 'Ex: São Paulo';
+    }
+  } else {
+    sec.style.display = 'none';
+    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg> + Adicionar trecho de volta';
+    btn.style.background = '';
+    btn.style.borderColor = '';
+    btn.style.color = '';
+  }
+}
+
+function _syncRtLabels() {
+  // Mirror the main leg labels into the return section
+  const oLbl = document.getElementById('lbl-origin')?.textContent||'Origem';
+  const dLbl = document.getElementById('lbl-dest')?.textContent||'Destino';
+  const fnLbl = document.getElementById('lbl-flightnum')?.textContent||'Número do Voo';
+  const rtO = document.getElementById('lbl-rt-origin');
+  const rtD = document.getElementById('lbl-rt-dest');
+  // Return is opposite: origin of return = destination of forward
+  if (rtO) rtO.textContent = oLbl.replace('Origem','Origem (volta)').replace('Partida','Partida (volta)');
+  if (rtD) rtD.textContent = dLbl.replace('Destino','Destino (volta)').replace('Chegada','Chegada (volta)');
+}
+
+function _setRoundTrip(val) {
+  if (!!val !== window._roundTrip) _toggleReturnSection();
+}
+
+
+// ─── RETURN TRIP CONNECTIONS ──────────────────────────────────────────────────
+let rtConnCount = 0;
+
+function addRtConnectionForm(data=null) {
+  rtConnCount++;
+  const idx = rtConnCount;
+  const cl = document.getElementById('rt-conn-list');
+  const div = document.createElement('div');
+  div.className = 'conn-item'; div.id = 'rt-conn-' + idx;
+  div.innerHTML = `
+    <div class="conn-item-header">
+      <div class="conn-item-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        Conexão ${cl.children.length + 1}
+      </div>
+      <button class="action-btn danger" onclick="removeRtConn(${idx})">Remover</button>
+    </div>
+    <div class="form-row" style="margin-bottom:10px">
+      <div><div class="form-lbl">Origem</div><div class="ac-wrap"><input class="ac-input" id="rt-conn-origin-${idx}" placeholder="Ex: MIA — Miami" autocomplete="off" oninput="acSearchRtConn('origin',${idx},this.value)" onfocus="acSearchRtConn('origin',${idx},this.value)" onkeydown="acKeyRtConn(event,'origin',${idx})" value="${data?data.origin:''}"/><div class="ac-dropdown" id="ac-rt-conn-origin-${idx}"></div></div></div>
+      <div><div class="form-lbl">Destino</div><div class="ac-wrap"><input class="ac-input" id="rt-conn-dest-${idx}" placeholder="Ex: GRU — Guarulhos" autocomplete="off" oninput="acSearchRtConn('dest',${idx},this.value)" onfocus="acSearchRtConn('dest',${idx},this.value)" onkeydown="acKeyRtConn(event,'dest',${idx})" value="${data?data.destination:''}"/><div class="ac-dropdown" id="ac-rt-conn-dest-${idx}"></div></div></div>
+    </div>
+    <div class="form-row" style="margin-bottom:10px">
+      <div><div class="form-lbl">Partida</div><input class="form-input" id="rt-conn-dep-${idx}" type="datetime-local" value="${data?localDT(data.departure_at):''}"/></div>
+      <div><div class="form-lbl">Chegada</div><input class="form-input" id="rt-conn-arr-${idx}" type="datetime-local" value="${data?localDT(data.arrival_at):''}"/></div>
+    </div>
+    <div class="form-row" style="margin-bottom:10px">
+      <div><div class="form-lbl">Companhia</div><input class="form-input" id="rt-conn-carrier-${idx}" placeholder="Ex: LATAM" value="${data?data.carrier:''}"/></div>
+      <div><div class="form-lbl">Número do Voo</div><input class="form-input" id="rt-conn-flightnum-${idx}" placeholder="Ex: LA8073" value="${data?data.flight_number:''}"/></div>
+    </div>`;
+  cl.appendChild(div);
+  renumberRtConns();
+}
+
+function removeRtConn(idx) {
+  const el = document.getElementById('rt-conn-' + idx);
+  if (el) el.remove();
+  renumberRtConns();
+}
+
+function renumberRtConns() {
+  const items = document.querySelectorAll('#rt-conn-list .conn-item');
+  items.forEach((el, i) => {
+    const title = el.querySelector('.conn-item-title');
+    if (title) title.lastChild.textContent = ' Conexão ' + (i + 1);
+  });
+}
+
+function getRtConnIds() {
+  return Array.from(document.querySelectorAll('#rt-conn-list .conn-item'))
+    .map(el => parseInt(el.id.replace('rt-conn-', '')));
+}
+
+// Autocomplete for RT connections (reuses searchAirports)
+let acRtConnState = {};
+function acSearchRtConn(field, idx, q) {
+  if (!isVoo) return; // free text for non-voo types
+  const key = `${field}-${idx}`;
+  if (!acRtConnState[key]) acRtConnState[key] = {idx: -1};
+  const dd = document.getElementById(`ac-rt-conn-${field}-${idx}`);
+  if (!dd) return;
+  const results = searchAirports(q);
+  if (!results.length) { dd.innerHTML = '<div class="ac-empty">Nenhum aeroporto</div>'; dd.classList.add('open'); return; }
+  dd.innerHTML = results.slice(0, 10).map((a, i) =>
+    `<div class="ac-item" data-idx="${i}"
+      onmousedown="acSelectRtConn('${field}',${idx},'${a.iata} \u2014 ${a.city} (${a.name})')"
+      onmouseover="acHighlightRtConn('${field}',${idx},${i})">
+      <span class="ac-iata">${a.iata}</span>
+      <span class="ac-name">${a.city} \u2014 ${a.name}</span>
+      <span class="ac-country">${a.country}</span>
+    </div>`).join('');
+  dd.classList.add('open');
+}
+
+function acSelectRtConn(field, idx, val) {
+  const el = document.getElementById(`rt-conn-${field}-${idx}`);
+  if (el) el.value = val;
+  const dd = document.getElementById(`ac-rt-conn-${field}-${idx}`);
+  if (dd) dd.classList.remove('open');
+}
+
+function acHighlightRtConn(field, idx, i) {
+  const dd = document.getElementById(`ac-rt-conn-${field}-${idx}`);
+  if (dd) dd.querySelectorAll('.ac-item').forEach((el, j) => el.classList.toggle('selected', j === i));
+}
+
+function acKeyRtConn(e, field, idx) {
+  const dd = document.getElementById(`ac-rt-conn-${field}-${idx}`);
+  if (!dd) return;
+  const items = dd.querySelectorAll('.ac-item');
+  const key = `${field}-${idx}`;
+  if (!acRtConnState[key]) acRtConnState[key] = {idx: -1};
+  if (e.key === 'ArrowDown') { e.preventDefault(); acRtConnState[key].idx = Math.min(acRtConnState[key].idx + 1, items.length - 1); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); acRtConnState[key].idx = Math.max(acRtConnState[key].idx - 1, -1); }
+  else if (e.key === 'Enter' && acRtConnState[key].idx >= 0) { e.preventDefault(); items[acRtConnState[key].idx]?.dispatchEvent(new MouseEvent('mousedown')); return; }
+  else if (e.key === 'Escape') { dd.classList.remove('open'); return; }
+  items.forEach((el, i) => el.classList.toggle('selected', i === acRtConnState[key].idx));
 }
 
 
