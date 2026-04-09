@@ -612,7 +612,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           Drive
         </button>
-        <button class="btn btn-primary" onclick="openModal('addDoc')">+ Adicionar</button>
+        <button class="btn btn-primary" onclick="openNewDoc()">+ Adicionar</button>
       </div>
     </div>
     <!-- Google Drive embed panel -->
@@ -2326,6 +2326,7 @@ function moneySpan(val, formatted) {
 // ─── DOCS + GOOGLE DRIVE ──────────────────────────────────────────────────────
 let _driveView = 'grid'; // 'list' or 'grid' — default: grid
 let _driveFolderUrl = '';
+let _editingDocId = null;
 
 function _extractDriveFolderId(url) {
   if (!url) return null;
@@ -2395,40 +2396,87 @@ function renderDocs() {
   }
   const TYPE_LABEL = {
     seguro:'Seguro Viagem', passaporte:'Passaporte', visto:'Visto',
-    voucher_hotel:'Voucher Hotel', passagem:'Passagem', outro:'Outro'
+    voucher_hotel:'Voucher Hotel', voucher_tour:'Voucher Passeio', passagem:'Passagem', vacina:'Vacinação', outro:'Outro'
   };
   list.innerHTML = `<div class="sec-hdr" style="margin-top:16px"><div class="sec-title">Documentos cadastrados</div></div>` +
     S.docs.map(d => `
     <div class="panel-card" style="margin-bottom:10px;display:flex;align-items:center;gap:14px">
       <div style="flex:1">
-        <div style="font-size:14px;font-weight:600;color:var(--tx)">${d.title||'—'}</div>
-        <div style="font-size:12px;color:var(--mu);margin-top:2px">${TYPE_LABEL[d.type]||d.type}${d.notes ? ' · '+d.notes : ''}</div>
-        ${d.expiry_date ? `<div style="font-size:11px;color:var(--rd);margin-top:2px">Vence: ${fmtDate(d.expiry_date)}</div>` : ''}
+        <div style="font-size:14px;font-weight:600;color:var(--tx)">${d.name||d.title||'—'}</div>
+        <div style="font-size:12px;color:var(--mu);margin-top:2px">${TYPE_LABEL[d.type]||d.type}${d.ref ? ' · Ref: '+d.ref : ''}${d.notes ? ' · '+d.notes : ''}</div>
+        ${(d.issued_at||d.expiry_date||d.expires_at) ? `<div style="font-size:11px;color:var(--mu);margin-top:1px">${d.issued_at?'Emissão: '+fmtDate(d.issued_at):''}${d.issued_at&&(d.expiry_date||d.expires_at)?' · ':''}</div>` : ''}
+        ${(d.expiry_date||d.expires_at) ? `<div style="font-size:11px;color:var(--rd);margin-top:1px">Vence: ${fmtDate(d.expiry_date||d.expires_at)}</div>` : ''}
       </div>
       ${d.file_url ? `<a href="${d.file_url}" target="_blank" class="btn btn-ghost" style="font-size:11px;padding:4px 10px;white-space:nowrap">Abrir</a>` : ''}
+      <button class="action-btn primary" onclick="openEditDoc('${d.id}')"><span style="display:inline-flex;align-items:center;gap:3px"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</span></button>
       <button class="action-btn danger" onclick="delDoc('${d.id}')"><span style="display:inline-flex;align-items:center;gap:3px"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg> Excluir</span></button>
     </div>`).join('');
 }
 
+function openEditDoc(id) {
+  const d = S.docs.find(x => x.id === id);
+  if (!d) return;
+  _editingDocId = id;
+  document.getElementById('modal-doc-title').textContent = 'Editar Documento';
+  document.getElementById('btn-save-doc').textContent = 'Salvar Alterações';
+  document.getElementById('doc-type').value = d.type || 'outro';
+  setVal('doc-name', d.name || d.title || '');
+  setVal('doc-ref', d.ref || '');
+  setVal('doc-issued', d.issued_at || '');
+  setVal('doc-expires', d.expires_at || '');
+  setVal('doc-notes', d.notes || '');
+  setVal('doc-url', d.file_url || '');
+  // Reset upload area hint
+  const hint = document.getElementById('doc-upload-hint');
+  if (hint) hint.textContent = d.file_url ? 'Arquivo já enviado — clique ou arraste para substituir' : 'Arraste ou clique para enviar PDF, JPG ou PNG';
+  openModal('addDoc');
+}
+
+function openNewDoc() {
+  _editingDocId = null;
+  document.getElementById('modal-doc-title').textContent = 'Novo Documento';
+  document.getElementById('btn-save-doc').textContent = 'Salvar';
+  document.getElementById('doc-type').value = 'outro';
+  ['doc-name','doc-ref','doc-issued','doc-expires','doc-notes','doc-url'].forEach(id => setVal(id,''));
+  const hint = document.getElementById('doc-upload-hint');
+  if (hint) hint.textContent = 'Arraste ou clique para enviar PDF, JPG ou PNG';
+  openModal('addDoc');
+}
+
+
 async function saveDoc() {
   const trip = curTrip(); if (!trip) return showToast('Selecione uma viagem','error');
-  const title = gv('doc-title');
-  if (!title) return showToast('Título é obrigatório','error');
-  setBusy('btn-save-doc', true, 'Salvando...');
+  const name = gv('doc-name');
+  if (!name) return showToast('Nome é obrigatório','error');
+  setBusy('btn-save-doc', true, _editingDocId ? 'Salvando...' : 'Salvando...');
   const payload = {
-    trip_id: trip.id,
     type: gv('doc-type')||'outro',
-    title: title.trim(),
+    name: name.trim(),
+    title: name.trim(),
+    ref: gv('doc-ref')||null,
+    issued_at: gv('doc-issued')||null,
+    expires_at: gv('doc-expires')||null,
     notes: gv('doc-notes')||null,
-    expiry_date: gv('doc-expiry')||null,
     file_url: gv('doc-url')||null,
   };
-  const {error} = await db.from('trip_documents').insert(payload);
-  setBusy('btn-save-doc', false, 'Salvar');
-  if (error) return showToast('Erro: '+error.message,'error');
-  showToast('Documento adicionado!','success');
+  let error;
+  if (_editingDocId) {
+    ({error} = await db.from('trip_documents').update(payload).eq('id', _editingDocId));
+    setBusy('btn-save-doc', false, 'Salvar Alterações');
+    if (error) return showToast('Erro: '+error.message,'error');
+    const idx = S.docs.findIndex(d => d.id === _editingDocId);
+    if (idx >= 0) S.docs[idx] = {...S.docs[idx], ...payload};
+    showToast('Documento atualizado!','success');
+    _editingDocId = null;
+  } else {
+    ({error} = await db.from('trip_documents').insert({trip_id: trip.id, ...payload}));
+    setBusy('btn-save-doc', false, 'Salvar');
+    if (error) return showToast('Erro: '+error.message,'error');
+    showToast('Documento adicionado!','success');
+  }
   closeModal('addDoc');
-  ['doc-title','doc-notes','doc-expiry','doc-url'].forEach(id=>setVal(id,''));
+  _editingDocId = null;
+  ['doc-name','doc-ref','doc-issued','doc-expires','doc-notes','doc-url'].forEach(id=>setVal(id,''));
   const {data} = await db.from('trip_documents').select('*').eq('trip_id',trip.id).order('type');
   S.docs = data||[];
   renderDocs();
@@ -2700,6 +2748,7 @@ function openModal(id){
 function closeModal(id){
   document.getElementById('modal-'+id).classList.remove('open');
   if(id==='addTransport')editingTransportId=null;
+  if(id==='addDoc'){_editingDocId=null;}
   if(id==='addAccomm'){editingAccommId=null;['a-name','a-address','a-checkin','a-checkout','a-price','a-ref','a-notes'].forEach(id=>setVal(id,''));}
   if(id==='newTrip')editingTripId=null;
 }
