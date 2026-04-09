@@ -76,7 +76,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .transport-route{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .route-city{font-family:'Inter',sans-serif;font-weight:600;font-size:15px}
 .route-arrow{font-family:'JetBrains Mono',monospace;color:var(--dm);font-size:13px}
-.transport-detail{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mu);margin-top:6px;display:flex;gap:14px;flex-wrap:wrap}
+.transport-detail{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mu);margin-top:6px;display:flex;flex-direction:column;gap:2px}
 .transport-price{font-family:'Playfair Display',serif;font-size:17px;color:var(--ac)}
 .type-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;background:var(--sf2);border:1px solid var(--bd);color:var(--mu);text-transform:uppercase;letter-spacing:1px}
 .conn-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;background:rgba(122,200,232,.1);border:1px solid rgba(122,200,232,.2);color:var(--ac2);text-transform:uppercase;letter-spacing:1px}
@@ -372,7 +372,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 }
 
 /* ─── OVERVIEW TRIP CARDS ───────────────────────────── */
-.ov-trip-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px 20px;margin-bottom:10px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:16px;border-left:3px solid transparent}
+.ov-trip-card{cursor:pointer;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px 20px;margin-bottom:10px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:16px;border-left:3px solid transparent}
 .ov-trip-card:hover{background:var(--sf2)}
 .ov-trip-card.selected{border-left-color:var(--ac);background:rgba(232,200,122,.05)}
 .ov-trip-card.status-active{border-left-color:var(--gn)}
@@ -386,7 +386,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .ov-trip-total{font-family:'Playfair Display',serif;font-size:16px;color:var(--ac)}
 .ov-trip-days{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mu);margin-top:2px}
 @media(max-width:640px){
-  .ov-trip-card{padding:12px 14px;gap:12px}
+  .ov-trip-card{cursor:pointer;padding:12px 14px;gap:12px}
   .ov-trip-total{font-size:14px}
 }
 
@@ -462,6 +462,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .return-leg-divider-line{flex:1;height:1px;background:rgba(122,200,232,.2)}
 .return-leg-divider-label{font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--ac2);display:flex;align-items:center;gap:5px}
 .return-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:.04em;background:rgba(122,200,232,.15);color:var(--ac2);border:1px solid rgba(122,200,232,.3)}
+
+/* ─── PARTIDA / CHEGADA labels ───────────────────────── */
+.dt-label{font-size:10px;font-weight:600;letter-spacing:.06em;color:var(--mu);text-transform:uppercase;margin-right:4px}
+.dt-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;line-height:1.6}
 </style>
 </head>
 <body>
@@ -515,7 +519,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="topbar-actions">
         <button class="btn btn-ghost" onclick="ovClearFilter()" id="ov-clear-btn" style="display:none">✕ Limpar filtro</button>
         <button class="btn btn-ghost eye-toggle-btn" onclick="toggleValues()" title="Ocultar/mostrar valores" style="padding:6px 10px;display:flex;align-items:center"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-        <button class="btn btn-primary" onclick="openModal('newTrip')">+ Nova viagem</button>
+        <button class="btn btn-primary" onclick="openNewTrip()">+ Nova viagem</button>
       </div>
     </div>
     <div class="stats-row" id="ov-stats"></div>
@@ -772,7 +776,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <!-- MODAL: TRANSPORT -->
 <div id="modal-addTransport" class="modal-overlay" onclick="closeBg(event,'addTransport')">
   <div class="modal wide">
-    <div class="modal-title"><span id="modal-transport-title">Novo Trecho</span><span class="modal-close" onclick="closeModal('addTransport')">×</span></div>
+    <div class="modal-title"><span id="modal-transport-title">Novo Trecho</span><span id="modal-transport-trip" style="font-size:12px;color:var(--mu);font-weight:400;margin-left:8px"></span><span class="modal-close" onclick="closeModal('addTransport')">×</span></div>
     <div class="form-group"><label class="form-lbl">Tipo</label><select class="form-select" id="t-type" onchange="onTypeChange()"><option value="voo">Voo</option><option value="trem"><span class="ic"><i data-lucide="train-front"></i></span> Trem</option><option value="onibus"><span class="ic"><i data-lucide="bus"></i></span> Ônibus</option><option value="metro"><span class="ic"><i data-lucide="cable-car"></i></span> Metrô</option><option value="barco">Barco</option><option value="outro">Outro</option></select></div>
     <div class="form-section-title"><span class="ic"><i data-lucide="plane"></i></span> Trecho principal</div>
     <div class="form-row">
@@ -849,7 +853,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="form-group"><label class="form-lbl">Check-out</label><input class="form-input" id="a-checkout" type="date"/></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-lbl">Preço / Noite (BRL)</label><input class="form-input" id="a-price" type="number" placeholder="0" min="0"/></div>
+      <div class="form-group"><label class="form-lbl" id="lbl-accomm-price">Preço / Noite (<span id="accomm-currency-lbl">BRL</span>)</label><input class="form-input" id="a-price" type="number" placeholder="0" min="0"/></div>
       <div class="form-group"><label class="form-lbl">Código de Reserva</label><input class="form-input" id="a-ref" placeholder="Ex: BK-998721"/></div>
     </div>
     <div class="form-group"><label class="form-lbl">Observações</label><input class="form-input" id="a-notes" placeholder="Ex: café incluso..."/></div>
@@ -866,19 +870,23 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="modal-title"><span id="modal-expense-title">Gastos do Dia</span><span class="modal-close" onclick="closeModal('addExpense')">×</span></div>
     <div class="form-group"><label class="form-lbl">Data</label><input class="form-input" id="e-date" type="date"/></div>
     <div class="form-row">
-      <div class="form-group"><label class="form-lbl">Alimentação (BRL)</label><input class="form-input" id="e-food" type="number" placeholder="0" min="0"/></div>
-      <div class="form-group"><label class="form-lbl">Transporte local (BRL)</label><input class="form-input" id="e-transport" type="number" placeholder="0" min="0"/></div>
+      <div class="form-group"><label class="form-lbl">Alimentação (BRL)</label><input class="form-input" id="e-food" type="number" oninput="updateExpenseTotal()" placeholder="0" min="0"/></div>
+      <div class="form-group"><label class="form-lbl">Transporte local (BRL)</label><input class="form-input" id="e-transport" type="number" oninput="updateExpenseTotal()" placeholder="0" min="0"/></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-lbl">Passeios (BRL)</label><input class="form-input" id="e-activities" type="number" placeholder="0" min="0"/></div>
-      <div class="form-group"><label class="form-lbl">Compras (BRL)</label><input class="form-input" id="e-shopping" type="number" placeholder="0" min="0"/></div>
+      <div class="form-group"><label class="form-lbl">Passeios (BRL)</label><input class="form-input" id="e-activities" type="number" oninput="updateExpenseTotal()" placeholder="0" min="0"/></div>
+      <div class="form-group"><label class="form-lbl">Compras (BRL)</label><input class="form-input" id="e-shopping" type="number" oninput="updateExpenseTotal()" placeholder="0" min="0"/></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-lbl">Saúde (BRL)</label><input class="form-input" id="e-health" type="number" placeholder="0" min="0"/></div>
-      <div class="form-group"><label class="form-lbl">Outros (BRL)</label><input class="form-input" id="e-other" type="number" placeholder="0" min="0"/></div>
+      <div class="form-group"><label class="form-lbl">Saúde (BRL)</label><input class="form-input" id="e-health" type="number" oninput="updateExpenseTotal()" placeholder="0" min="0"/></div>
+      <div class="form-group"><label class="form-lbl">Outros (BRL)</label><input class="form-input" id="e-other" type="number" oninput="updateExpenseTotal()" placeholder="0" min="0"/></div>
     </div>
     <div class="form-group"><label class="form-lbl">Nota do dia</label><input class="form-input" id="e-note" placeholder="Ex: dia no Fuji..."/></div>
-    <div class="modal-actions">
+    <div style="padding:8px 0;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+        <span style="font-size:12px;color:var(--mu)">Total do dia</span>
+        <span id="expense-total-preview" style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--ac);font-size:16px">R$ 0,00</span>
+      </div>
+      <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('addExpense')">Cancelar</button>
       <button class="btn btn-primary" id="btn-save-expense" onclick="saveExpense()">Salvar</button>
     </div>
@@ -1665,7 +1673,7 @@ function renderTransport(filter){
           <div class="transport-row">
             <div style="flex:1">
               <div class="transport-route"><span style="display:inline-flex;align-items:center;margin-right:6px">${EMOJI[t.type]||''}</span><span class="route-city">${t.origin}</span><span class="route-arrow"> → </span><span class="route-city">${t.destination}</span>${hasConn?`<span class="conn-badge">+${conns.length} conexão</span>`:''} ${t.round_trip?`<span class="round-trip-badge">↔ Ida e Volta</span>`:''}</div>
-              <div class="transport-detail"><span>${fmtDT(t.departure_at)}</span>${t.carrier?`<span>${t.carrier}</span>`:''} ${t.flight_number?`<span>Voo ${t.flight_number}</span>`:''} ${t.booking_ref?`<span>Ref: ${t.booking_ref}</span>`:''} ${t.notes?`<span style="display:inline-flex;align-items:center;gap:3px"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg> ${t.notes}</span>`:''}</div>
+              <div class="transport-detail"><div class="dt-row"><span class="dt-label">Partida:</span><span>${fmtDT(t.departure_at)}</span> ${t.carrier?`<span>${t.carrier}</span>`:''} ${t.flight_number?`<span>${t.flight_number}</span>`:''} ${t.booking_ref?`<span>Ref: ${t.booking_ref}</span>`:''}</div>${t.arrival_at?`<div class="dt-row"><span class="dt-label">Chegada:</span><span>${fmtDT(t.arrival_at)}</span></div>`:''} ${t.notes?`<span style="display:inline-flex;align-items:center;gap:3px"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg> ${t.notes}</span>`:''}</div>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
               <div class="transport-price">${moneySpan(t.price,"R$ "+fmt(t.price))}</div>
@@ -1683,7 +1691,7 @@ function renderTransport(filter){
             <div class="transport-row">
               <div style="flex:1">
                 <div class="transport-route"><span style="display:inline-flex;align-items:center;margin-right:4px"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><span class="route-city" style="font-size:13px">${c.origin}</span><span class="route-arrow"> → </span><span class="route-city" style="font-size:13px">${c.destination}</span></div>
-                <div class="transport-detail"><span>${fmtDT(c.departure_at)}</span>${c.carrier?`<span>${c.carrier}</span>`:''} ${c.flight_number?`<span>Voo ${c.flight_number}</span>`:''} ${c.booking_ref?`<span>Ref: ${c.booking_ref}</span>`:''}</div>
+                <div class="transport-detail"><div class="dt-row"><span class="dt-label">Partida:</span><span>${fmtDT(c.departure_at)}</span> ${c.carrier?`<span>${c.carrier}</span>`:''} ${c.flight_number?`<span>${c.flight_number}</span>`:''}</div>${c.arrival_at?`<div class="dt-row"><span class="dt-label">Chegada:</span><span>${fmtDT(c.arrival_at)}</span></div>`:''} </div>
               </div>
               <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
                 <span class="conn-badge">conexão</span>
@@ -1707,7 +1715,7 @@ function renderTransport(filter){
               <div class="transport-row">
                 <div style="flex:1">
                   <div class="transport-route"><span style="display:inline-flex;align-items:center;margin-right:4px"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><span class="route-city" style="font-size:13px">${c.origin}</span><span class="route-arrow"> → </span><span class="route-city" style="font-size:13px">${c.destination}</span></div>
-                  <div class="transport-detail"><span>${fmtDT(c.departure_at)}</span>${c.carrier?`<span>${c.carrier}</span>`:''} ${c.flight_number?`<span>Voo ${c.flight_number}</span>`:''}</div>
+                  <div class="transport-detail"><div class="dt-row"><span class="dt-label">Partida:</span><span>${fmtDT(c.departure_at)}</span> ${c.carrier?`<span>${c.carrier}</span>`:''} ${c.flight_number?`<span>${c.flight_number}</span>`:''}</div>${c.arrival_at?`<div class="dt-row"><span class="dt-label">Chegada:</span><span>${fmtDT(c.arrival_at)}</span></div>`:''}</div>
                 </div>
                 <span class="conn-badge">conexão</span>
               </div>
@@ -1729,7 +1737,7 @@ function renderTransport(filter){
                     <span class="route-city">${r.origin}</span><span class="route-arrow"> → </span><span class="route-city">${r.destination}</span>
                     ${retConns.length?`<span class="conn-badge">+${retConns.length} conexão</span>`:''}
                   </div>
-                  <div class="transport-detail"><span>${fmtDT(r.departure_at)}</span>${r.carrier?`<span>${r.carrier}</span>`:''} ${r.flight_number?`<span>Voo ${r.flight_number}</span>`:''} ${r.booking_ref?`<span>Ref: ${r.booking_ref}</span>`:''}</div>
+                  <div class="transport-detail"><div class="dt-row"><span class="dt-label">Partida:</span><span>${fmtDT(r.departure_at)}</span> ${r.carrier?`<span>${r.carrier}</span>`:''} ${r.flight_number?`<span>${r.flight_number}</span>`:''} ${r.booking_ref?`<span>Ref: ${r.booking_ref}</span>`:''}</div>${r.arrival_at?`<div class="dt-row"><span class="dt-label">Chegada:</span><span>${fmtDT(r.arrival_at)}</span></div>`:''}</div>
                 </div>
                 <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
                   <div class="transport-price">${moneySpan(r.price,"R$ "+fmt(r.price))}</div>
@@ -1757,7 +1765,7 @@ function filterTr(type,el){
 
 function openAddTransport(){
   editingTransportId=null;
-  document.getElementById('modal-transport-title').textContent='Novo Trecho';
+  document.getElementById('modal-transport-title').textContent='Novo Trecho';const _tt=document.getElementById('modal-transport-trip');if(_tt)_tt.textContent=curTrip()?.name?('— '+curTrip().name):'';
   document.getElementById('btn-save-transport').textContent='Salvar Trecho';
   ['t-origin','t-dest','t-carrier','t-flightnum','t-ref','t-price','t-notes'].forEach(id=>setVal(id,''));
   setVal('t-departure','');setVal('t-arrival','');
@@ -1775,7 +1783,7 @@ function openAddTransport(){
 function openEditTransport(id){
   const t=S.transports.find(x=>x.id===id);if(!t)return;
   editingTransportId=id;
-  document.getElementById('modal-transport-title').textContent='Editar Trecho';
+  document.getElementById('modal-transport-title').textContent='Editar Trecho';const _tt2=document.getElementById('modal-transport-trip');if(_tt2)_tt2.textContent=curTrip()?.name?('— '+curTrip().name):'';
   document.getElementById('btn-save-transport').textContent='Salvar Alterações';
   document.getElementById('t-type').value=t.type;
   onTypeChange();
@@ -1786,13 +1794,28 @@ function openEditTransport(id){
   document.getElementById('conn-list').innerHTML='';connCount=0;
   const conns=S.transports.filter(c=>c.parent_leg_id===id).sort((a,b)=>a.connection_order-b.connection_order);
   conns.forEach(c=>addConnectionForm(c));
-  openModal('addTransport');
+  // Load return leg data if round_trip
+  if(t.round_trip && t.booking_ref){
+    const retLeg=S.transports.find(r=>r.id!==t.id&&r.booking_ref===t.booking_ref&&r.round_trip&&!r.parent_leg_id);
+    if(retLeg){
+      setVal('rt-origin',retLeg.origin||'');setVal('rt-dest',retLeg.destination||'');
+      setVal('rt-carrier',retLeg.carrier||'');setVal('rt-ref',retLeg.booking_ref||'');
+      setVal('rt-price',retLeg.price||'');
+      setVal('rt-departure',localDT(retLeg.departure_at));setVal('rt-arrival',localDT(retLeg.arrival_at));
+      document.getElementById('rt-conn-list').innerHTML='';rtConnCount=0;
+      const rtConns=S.transports.filter(c=>c.parent_leg_id===retLeg.id).sort((a,b)=>a.connection_order-b.connection_order);
+      rtConns.forEach(c=>addRtConnectionForm(c));
+    }
+  }
+    openModal('addTransport');
 }
 
 async function saveTransport(){
   const trip=curTrip();if(!trip)return showToast('Selecione uma viagem primeiro','error');
   const o=gv('t-origin'),d=gv('t-dest');
   if(!o||!d)return showToast('Origem e destino são obrigatórios','error');
+  const dep=gv('t-departure'),arr=gv('t-arrival');
+  if(dep&&arr&&arr<dep)return showToast('Horário de chegada deve ser após a partida','error');
   setBusy('btn-save-transport',true,'Salvando...');
   const payload={trip_id:trip.id,type:gv('t-type'),origin:o,destination:d,
     departure_at:gv('t-departure')||null,arrival_at:gv('t-arrival')||null,
@@ -1936,12 +1959,15 @@ function openEditAccomm(id){
   setVal('a-name',a.name);setVal('a-address',a.address||'');
   setVal('a-checkin',a.check_in||'');setVal('a-checkout',a.check_out||'');
   setVal('a-price',a.price_per_night||'');setVal('a-ref',a.booking_ref||'');setVal('a-notes',a.notes||'');
+  const _ac=document.getElementById('accomm-currency-lbl');if(_ac)_ac.textContent=curTrip()?.currency||'BRL';
   openModal('addAccomm');
 }
 
 async function saveAccomm(){
   const trip=curTrip();if(!trip)return showToast('Selecione uma viagem primeiro','error');
   if(!gv('a-name'))return showToast('Nome é obrigatório','error');
+  const ci=gv('a-checkin'),co=gv('a-checkout');
+  if(ci&&co&&co<ci)return showToast('Check-out deve ser após o check-in','error');
   setBusy('btn-save-accomm',true,'Salvando...');
   const payload={trip_id:trip.id,name:gv('a-name'),address:gv('a-address')||null,
     check_in:gv('a-checkin')||null,check_out:gv('a-checkout')||null,
@@ -2031,6 +2057,14 @@ function openEditExpense(id) {
   if (btnEl) btnEl.textContent = 'Salvar Alterações';
 }
 
+function updateExpenseTotal(){
+  const cats=['e-food','e-transport','e-activities','e-shopping','e-health','e-other'];
+  const total=cats.reduce((s,id)=>s+(parseFloat(document.getElementById(id)?.value)||0),0);
+  const el=document.getElementById('expense-total-preview');
+  if(el)el.textContent='R$ '+total.toLocaleString('pt-BR',{minimumFractionDigits:2});
+}
+
+
 async function saveExpense(){
   const trip=curTrip();if(!trip)return showToast('Selecione uma viagem primeiro','error');
   if(!gv('e-date'))return showToast('Data é obrigatória','error');
@@ -2040,6 +2074,14 @@ async function saveExpense(){
     food:num('e-food'),transport:num('e-transport'),activities:num('e-activities'),
     shopping:num('e-shopping'),health:num('e-health'),other:num('e-other'),note:gv('e-note')||null
   };
+  // Prevent duplicate date (if not editing)
+  if(!_editingExpenseId){
+    const existing=S.expenses.find(e=>e.expense_date===payload.expense_date);
+    if(existing){
+      setBusy('btn-save-expense',false,'Salvar');
+      return showToast('Já existe um lançamento para esta data. Clique em Editar para alterá-lo.','error');
+    }
+  }
   let error;
   if (_editingExpenseId) {
     ({error}=await db.from('daily_expenses').update(payload).eq('id',_editingExpenseId));
@@ -2130,7 +2172,7 @@ function openAddItinEvent(prefillCity){
   _editingItinId=null;
   document.getElementById('modal-itin-title').textContent='Novo Evento';
   document.getElementById('btn-save-itin').textContent='Salvar';
-  ['itin-date','itin-time','itin-name','itin-place','itin-notes'].forEach(id=>setVal(id,''));
+  ['itin-date','itin-time','itin-name','itin-place','itin-notes','itin-price'].forEach(id=>setVal(id,''));
   setVal('itin-city', prefillCity||'');
   document.getElementById('itin-type').value='passeio';
   openModal('addItinDay');
@@ -2248,7 +2290,7 @@ function renderItinerary(){
 
 
 // ─── EYE TOGGLE — hide/show monetary values ──────────────────────────────────
-let _valuesHidden = true;
+let _valuesHidden = false;
 
 function toggleValues() {
   _valuesHidden = !_valuesHidden;
@@ -2592,8 +2634,20 @@ function openEditTrip(id){
   openModal('newTrip');
 }
 
+function openNewTrip(){
+  editingTripId=null;
+  document.getElementById('modal-trip-title').textContent='Nova Viagem';
+  document.getElementById('btn-save-trip').textContent='Criar Viagem';
+  ['trip-name','trip-currency','trip-start','trip-end','trip-budget','trip-theme-song','trip-drive-url','trip-country-input'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  resetCountryTags('');
+  openModal('newTrip');
+}
+
+
 async function saveTrip(){
   if(!gv('trip-name'))return showToast('Nome é obrigatório','error');
+  const ts=gv('trip-start'),te=gv('trip-end');
+  if(ts&&te&&te<ts)return showToast('Data de fim deve ser após a data de início','error');
   setBusy('btn-save-trip',true,editingTripId?'Salvando...':'Criando...');
   const countriesISO=_tripCountries.map(c=>c.iso).join(',');
   const payload={name:gv('trip-name'),country:countriesISO||null,currency:gv('trip-currency')||'BRL',theme_song:gv('trip-theme-song')||null,drive_folder_url:gv('trip-drive-url')||null,
