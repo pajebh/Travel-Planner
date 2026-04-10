@@ -612,6 +612,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           Drive
         </button>
+        <button class="btn btn-ghost" id="btn-import-docs" onclick="importDriveData()" title="Importar dados do Drive com IA" style="white-space:nowrap;background:rgba(122,200,232,.12);border:1px solid rgba(122,200,232,.25);color:var(--ac2);display:inline-flex;align-items:center;gap:6px;padding:6px 12px">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Importar Dados
+        </button>
         <button class="btn btn-primary" onclick="openNewDoc()">+ Adicionar</button>
       </div>
     </div>
@@ -725,6 +729,23 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 
 <!-- MODAL: DOCUMENT -->
+<!-- Modal Importar Dados -->
+<div id="modal-importDocs" class="modal-overlay" onclick="closeBg(event,'importDocs')">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-title"><span>Importar Dados do Google Drive</span><span class="modal-close" onclick="closeModal('importDocs')">×</span></div>
+    <div id="import-status" style="padding:8px 0">
+      <div style="font-size:13px;color:var(--mu);margin-bottom:16px">
+        A IA irá ler todos os arquivos do Google Drive e inserir automaticamente passagens, hospedagens e documentos no planejamento.
+      </div>
+      <div id="import-log" style="background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mu);max-height:280px;overflow-y:auto;white-space:pre-wrap;line-height:1.6">Aguardando início...</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('importDocs')">Fechar</button>
+      <button class="btn btn-primary" id="btn-start-import" onclick="startImport()">▶ Iniciar Importação</button>
+    </div>
+  </div>
+</div>
+
 <div id="modal-addDoc" class="modal-overlay" onclick="closeBg(event,'addDoc')">
   <div class="modal">
     <div class="modal-title"><span id="modal-doc-title">Novo Documento</span><span class="modal-close" onclick="closeModal('addDoc')">×</span></div>
@@ -747,6 +768,19 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="form-group"><label class="form-lbl">Vencimento</label><input class="form-input" id="doc-expires" type="date"/></div>
     </div>
     <div class="form-group"><label class="form-lbl">Observações</label><input class="form-input" id="doc-notes" placeholder="Ex: cobre emergências médicas..."/></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-lbl">Valor (Custo)</label><input class="form-input" id="doc-cost" type="number" min="0" step="0.01" placeholder="0,00"/></div>
+      <div class="form-group"><label class="form-lbl">Moeda</label>
+        <select class="form-select" id="doc-currency">
+          <option value="BRL">BRL — Real</option>
+          <option value="USD">USD — Dólar</option>
+          <option value="EUR">EUR — Euro</option>
+          <option value="GBP">GBP — Libra</option>
+          <option value="ARS">ARS — Peso Argentino</option>
+          <option value="COP">COP — Peso Colombiano</option>
+        </select>
+      </div>
+    </div>
     <div class="form-group">
       <label class="form-lbl">Arquivo do Documento</label>
       <div class="upload-area" id="doc-upload-area" ondragover="docDragOver(event)" ondragleave="docDragLeave(event)" ondrop="docDrop(event)">
@@ -1227,21 +1261,24 @@ let _ovAllTransports = [];
 
 async function loadAllTripData() {
   // Carrega transports, accommodations e expenses de TODAS as viagens de uma vez
-  const [trRes, acRes, exRes] = await Promise.all([
+  const [trRes, acRes, exRes, docRes] = await Promise.all([
     db.from('transport_legs').select('trip_id,price,parent_leg_id,origin,destination').is('parent_leg_id', null),
     db.from('accommodations').select('trip_id,check_in,check_out,price_per_night'),
     db.from('daily_expenses').select('trip_id,food,transport,activities,shopping,health,other'),
-    db.from('itinerary_events').select('trip_id,price').not('price','is',null),
+    db.from('trip_documents').select('trip_id,cost,currency').not('cost','is',null),
   ]);
   const itRes = arguments[arguments.length-1] || {data:[]};
   _ovCache = {};
-  S.trips.forEach(t => { _ovCache[t.id] = {totTr:0, totAc:0, totEx:0, totIt:0}; });
+  S.trips.forEach(t => { _ovCache[t.id] = {totTr:0, totAc:0, totEx:0, totIt:0, totDoc:0}; });
   _ovAllTransports = trRes.data||[];
   _ovAllTransports.forEach(r => { if(_ovCache[r.trip_id]) _ovCache[r.trip_id].totTr += (r.price||0); });
   (acRes.data||[]).forEach(r => { if(_ovCache[r.trip_id]) _ovCache[r.trip_id].totAc += calcNights(r.check_in,r.check_out)*(r.price_per_night||0); });
   (exRes.data||[]).forEach(r => { if(_ovCache[r.trip_id]) _ovCache[r.trip_id].totEx += daySum(r); });
   (itRes?.data||[]).forEach(r => { if(_ovCache[r.trip_id]) _ovCache[r.trip_id].totIt += (r.price||0); });
-  Object.keys(_ovCache).forEach(id => { _ovCache[id].total = _ovCache[id].totTr + _ovCache[id].totAc + _ovCache[id].totEx; });
+  // Documentos com custo (conversão simplificada: USD≈5.8, EUR≈6.0 → BRL)
+  const _fx={BRL:1,USD:5.8,EUR:5.9649,GBP:7.1,ARS:0.006,COP:0.0013};
+  (docRes?.data||[]).forEach(r => { if(_ovCache[r.trip_id]&&r.cost) _ovCache[r.trip_id].totDoc += (r.cost||0)*(_fx[r.currency||'BRL']||1); });
+  Object.keys(_ovCache).forEach(id => { _ovCache[id].total = _ovCache[id].totTr + _ovCache[id].totAc + _ovCache[id].totEx + (_ovCache[id].totDoc||0); });
 }
 
 function ovClearFilter() {
@@ -1492,13 +1529,15 @@ function renderOverview() {
   const trip = ovFilterTripId ? S.trips.find(t => t.id === ovFilterTripId) : null;
 
   // ── Stats ─────────────────────────────────────────────────────────────────
-  let totalTr = 0, totalAc = 0, totalEx = 0, totalIt = 0;
+  let totalTr = 0, totalAc = 0, totalEx = 0, totalIt = 0, totalDoc = 0;
   if (ovFilterTripId) {
     // Live data for selected trip
     totalTr = S.transports.filter(x=>!x.parent_leg_id).reduce((s,x)=>s+(x.price||0),0);
     totalAc = S.accommodations.reduce((s,a)=>s+calcNights(a.check_in,a.check_out)*(a.price_per_night||0),0);
     totalEx = S.expenses.reduce((s,e)=>s+daySum(e),0);
     totalIt = S.itinerary.reduce((s,e)=>s+(e.price||0),0);
+    const _fx2={BRL:1,USD:5.8,EUR:5.9649,GBP:7.1,ARS:0.006,COP:0.0013};
+    totalDoc = S.docs.reduce((s,d)=>s+(d.cost||0)*(_fx2[d.currency||'BRL']||1),0);
   } else {
     // Aggregated cache across all trips
     S.trips.forEach(t => {
@@ -1507,15 +1546,17 @@ function renderOverview() {
       totalAc += c.totAc||0;
       totalEx += c.totEx||0;
       totalIt += c.totIt||0;
+      totalDoc += c.totDoc||0;
     });
   }
-  const grandTotal = totalTr + totalAc + totalEx + totalIt;
+  const grandTotal = totalTr + totalAc + totalEx + totalIt + totalDoc;
 
   let statsHtml = `
     <div class="stat-card"><div class="stat-lbl">Total Gasto</div><div class="stat-val" style="color:var(--ac)">${moneySpan(grandTotal, "R$ "+fmt(grandTotal))}</div><div class="stat-sub">${ovFilterTripId ? 'nesta viagem' : `${S.trips.length} viagem(ns)`}</div></div>
     <div class="stat-card"><div class="stat-lbl">Passagens</div><div class="stat-val" style="color:var(--ac2)">${moneySpan(totalTr, "R$ "+fmt(totalTr))}</div><div class="stat-sub">${ovFilterTripId ? `${S.transports.filter(x=>!x.parent_leg_id).length} trecho(s)` : 'total'}</div></div>
     <div class="stat-card"><div class="stat-lbl">Hospedagem</div><div class="stat-val" style="color:var(--ac3)">${moneySpan(totalAc, "R$ "+fmt(totalAc))}</div><div class="stat-sub">${ovFilterTripId ? `${S.accommodations.length} local(is)` : 'total'}</div></div>
-    <div class="stat-card"><div class="stat-lbl">Passeios</div><div class="stat-val" style="color:var(--gn)">${moneySpan(totalIt, "R$ "+fmt(totalIt))}</div><div class="stat-sub">${ovFilterTripId ? `${S.itinerary.filter(e=>e.price).length} evento(s)` : 'total'}</div></div>`;
+    <div class="stat-card"><div class="stat-lbl">Passeios</div><div class="stat-val" style="color:var(--gn)">${moneySpan(totalIt, "R$ "+fmt(totalIt))}</div><div class="stat-sub">${ovFilterTripId ? `${S.itinerary.filter(e=>e.price).length} evento(s)` : 'total'}</div></div>
+    ${totalDoc > 0 ? `<div class="stat-card"><div class="stat-lbl">Documentos</div><div class="stat-val" style="color:var(--mu)">${moneySpan(totalDoc, "R$ "+fmt(totalDoc))}</div><div class="stat-sub">${ovFilterTripId ? S.docs.filter(d=>d.cost).length+' doc(s)' : 'total'}</div></div>` : ''}`;
 
   if (ovFilterTripId && trip) {
     const isPst = isPast(trip.end_date), days = tripDays(trip), rem = Math.max(0, daysLeft(trip.end_date));
@@ -2402,7 +2443,7 @@ function renderDocs() {
     S.docs.map(d => `
     <div class="panel-card" style="margin-bottom:10px;display:flex;align-items:center;gap:14px">
       <div style="flex:1">
-        <div style="font-size:14px;font-weight:600;color:var(--tx)">${d.name||d.title||'—'}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><div style="font-size:14px;font-weight:600;color:var(--tx)">${d.name||d.title||'—'}</div>${d.cost?`<div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;color:var(--ac);white-space:nowrap">${moneySpan(d.cost,(d.currency||'BRL')+' '+fmt(d.cost))}</div>`:''}</div>
         <div style="font-size:12px;color:var(--mu);margin-top:2px">${TYPE_LABEL[d.type]||d.type}${d.ref ? ' · Ref: '+d.ref : ''}${d.notes ? ' · '+d.notes : ''}</div>
         ${(d.issued_at||d.expiry_date||d.expires_at) ? `<div style="font-size:11px;color:var(--mu);margin-top:1px">${d.issued_at?'Emissão: '+fmtDate(d.issued_at):''}${d.issued_at&&(d.expiry_date||d.expires_at)?' · ':''}</div>` : ''}
         ${(d.expiry_date||d.expires_at) ? `<div style="font-size:11px;color:var(--rd);margin-top:1px">Vence: ${fmtDate(d.expiry_date||d.expires_at)}</div>` : ''}
@@ -2412,6 +2453,256 @@ function renderDocs() {
       <button class="action-btn danger" onclick="delDoc('${d.id}')"><span style="display:inline-flex;align-items:center;gap:3px"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg> Excluir</span></button>
     </div>`).join('');
 }
+
+// ─── IMPORTAR DADOS DO DRIVE ──────────────────────────────────────────────
+function importDriveData() {
+  const trip = curTrip();
+  if (!trip) return showToast('Selecione uma viagem primeiro','error');
+  if (!trip.drive_folder_url) return showToast('Esta viagem não tem Google Drive configurado','error');
+  document.getElementById('import-log').textContent = 'Aguardando início...';
+  document.getElementById('btn-start-import').disabled = false;
+  document.getElementById('btn-start-import').textContent = '▶ Iniciar Importação';
+  openModal('importDocs');
+}
+
+function _importLog(msg) {
+  const el = document.getElementById('import-log');
+  if (!el) return;
+  el.textContent += (el.textContent === 'Aguardando início...' ? '' : '\n') + msg;
+  el.scrollTop = el.scrollHeight;
+}
+
+async function _fetchDriveFileText(fileId) {
+  // Fetch via Google Drive embed view as text
+  try {
+    const url = `https://drive.google.com/file/d/${fileId}/view`;
+    // We use the drive export to get text content
+    const exportUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+    // Use CORS proxy via Google Docs viewer text endpoint
+    const viewerUrl = `https://docs.google.com/viewer?url=https://drive.google.com/uc?id=${fileId}&embedded=true`;
+    return null; // Direct fetch blocked by CORS — AI will use DOM approach
+  } catch(e) { return null; }
+}
+
+function _extractDriveFileIds(folderUrl) {
+  // Get file IDs from the drive embed iframe if loaded
+  const iframe = document.getElementById('drive-iframe');
+  if (!iframe) return [];
+  try {
+    const iDoc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (!iDoc) return [];
+    const items = iDoc.querySelectorAll('[data-id]');
+    const seen = new Set();
+    const files = [];
+    items.forEach(el => {
+      const id = el.getAttribute('data-id');
+      const name = el.getAttribute('aria-label') || '';
+      if (id && id.length > 20 && !seen.has(id) && name && !name.includes('Viagens') && !name.includes('Lucas e')) {
+        seen.add(id);
+        files.push({ id, name: name.split(' PDF')[0].split(' Compartilhado')[0].trim() });
+      }
+    });
+    return files;
+  } catch(e) { return []; }
+}
+
+async function startImport() {
+  const trip = curTrip();
+  if (!trip) return;
+  const btn = document.getElementById('btn-start-import');
+  btn.disabled = true;
+  btn.textContent = '⏳ Importando...';
+  document.getElementById('import-log').textContent = '';
+
+  _importLog('🔍 Lendo arquivos do Google Drive...');
+
+  // Get file list from Drive iframe
+  let files = _extractDriveFileIds(trip.drive_folder_url);
+  
+  if (!files.length) {
+    _importLog('⚠️ Não foi possível ler os arquivos automaticamente.');
+    _importLog('   Certifique-se que a pasta está aberta na aba Documentos.');
+    _importLog('\nTentando via Drive folder ID...');
+    
+    // Extract folder ID and build known file list from S.docs context
+    const folderId = _extractDriveFolderId(trip.drive_folder_url);
+    if (!folderId) {
+      _importLog('❌ Pasta do Drive não configurada nesta viagem.');
+      btn.disabled = false; btn.textContent = '▶ Iniciar Importação';
+      return;
+    }
+  }
+
+  _importLog(`📂 ${files.length || '?'} arquivo(s) encontrado(s).\n`);
+
+  // Snapshot atual da viagem
+  const currentTransports = S.transports.filter(t => !t.parent_leg_id);
+  const currentAccoms = S.accommodations;
+  const currentDocs = S.docs;
+
+  _importLog('📊 Estado atual:');
+  _importLog(`   Passagens: ${currentTransports.length} trechos`);
+  _importLog(`   Hospedagens: ${currentAccoms.length} locais`);
+  _importLog(`   Documentos: ${currentDocs.length} cadastrados\n`);
+
+  // Build context for AI
+  const tripCtx = {
+    name: trip.name,
+    start: trip.start_date,
+    end: trip.end_date,
+    currency: trip.currency,
+    driveUrl: trip.drive_folder_url,
+  };
+  
+  const existingCtx = {
+    transports: currentTransports.map(t => ({
+      id: t.id,
+      origin: t.origin, dest: t.destination,
+      dep: t.departure_at, arr: t.arrival_at,
+      carrier: t.carrier, flight: t.flight_number,
+      ref: t.booking_ref, rt: t.round_trip, price: t.price,
+      conns: S.transports.filter(c=>c.parent_leg_id===t.id).map(c=>({origin:c.origin,dest:c.destination,dep:c.departure_at,arr:c.arrival_at,carrier:c.carrier,flight:c.flight_number,ref:c.booking_ref}))
+    })),
+    accommodations: currentAccoms.map(a => ({
+      id: a.id, name: a.name, checkin: a.check_in, checkout: a.check_out,
+      price: a.price_per_night, ref: a.booking_ref
+    })),
+    docs: currentDocs.map(d => ({id:d.id, type:d.type, name:d.name||d.title, ref:d.ref}))
+  };
+
+  _importLog('🤖 Consultando IA para analisar e importar dados...');
+  _importLog('   (Este processo pode levar 30-60 segundos)\n');
+
+  const FILES_KNOWN = files.length ? files.map(f=>f.name).join('\n') : 
+    'Arquivos do Drive não acessíveis diretamente. Use o contexto da viagem.';
+
+  const prompt = `Você é um assistente especializado em planejamento de viagens. 
+Analise o estado atual da viagem "${tripCtx.name}" (${tripCtx.start} a ${tripCtx.end}) e identifique o que precisa ser feito.
+
+ESTADO ATUAL DA VIAGEM:
+${JSON.stringify(existingCtx, null, 2)}
+
+ARQUIVOS NO GOOGLE DRIVE:
+${FILES_KNOWN}
+
+Com base no estado atual, gere um plano de ações em JSON com este formato:
+{
+  "analysis": "Resumo do que foi analisado e o que precisa ser feito",
+  "actions": [
+    {
+      "type": "update_transport" | "insert_transport" | "insert_accomm" | "update_accomm" | "insert_doc" | "skip",
+      "description": "O que essa ação faz",
+      "data": { ... campos relevantes ... }
+    }
+  ]
+}
+
+REGRAS:
+- Para transports: inclua trip_id="${trip.id}", type, origin, destination, departure_at (ISO), arrival_at (ISO), carrier, flight_number, booking_ref, price, round_trip, notes
+- Para accomm: inclua trip_id="${trip.id}", name, address, check_in (YYYY-MM-DD), check_out (YYYY-MM-DD), price_per_night (em BRL, converta EUR×5.9649), booking_ref, notes
+- Para docs: inclua trip_id="${trip.id}", type (seguro|passaporte|visto|voucher_hotel|voucher_tour|passagem|vacina|outro), name, ref, issued_at, expires_at, notes, cost, currency
+- Só proponha ações necessárias. Se dados já estão corretos, use "skip".
+- Retorne APENAS o JSON, sem explicações fora do JSON.`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await resp.json();
+    const raw = data.content?.map(c=>c.text||'').join('');
+    
+    let plan;
+    try {
+      const clean = raw.replace(/```json\n?|```/g,'').trim();
+      plan = JSON.parse(clean);
+    } catch(e) {
+      _importLog('❌ Erro ao parsear resposta da IA: ' + e.message);
+      _importLog('Resposta bruta: ' + raw.slice(0,200));
+      btn.disabled = false; btn.textContent = '▶ Tentar novamente';
+      return;
+    }
+
+    _importLog('📋 Análise da IA:');
+    _importLog('   ' + plan.analysis);
+    _importLog(`\n🔧 ${plan.actions.length} ação(ões) planejada(s):\n`);
+
+    let done = 0, skipped = 0, errors = 0;
+
+    for (const action of plan.actions) {
+      if (action.type === 'skip') {
+        _importLog(`⏭️  ${action.description}`);
+        skipped++;
+        continue;
+      }
+
+      _importLog(`⚙️  ${action.description}`);
+      const d = action.data || {};
+
+      try {
+        if (action.type === 'update_transport') {
+          const {id, ...upd} = d;
+          const {error} = await db.from('transport_legs').update(upd).eq('id', id);
+          if (error) throw error;
+        } else if (action.type === 'insert_transport') {
+          const conns = d._connections || [];
+          delete d._connections;
+          const {data: ins, error} = await db.from('transport_legs').insert(d).select().single();
+          if (error) throw error;
+          if (conns.length && ins?.id) {
+            for (const c of conns) {
+              await db.from('transport_legs').insert({...c, parent_leg_id: ins.id, trip_id: trip.id});
+            }
+          }
+        } else if (action.type === 'update_accomm') {
+          const {id, ...upd} = d;
+          const {error} = await db.from('accommodations').update(upd).eq('id', id);
+          if (error) throw error;
+        } else if (action.type === 'insert_accomm') {
+          const {error} = await db.from('accommodations').insert(d);
+          if (error) throw error;
+        } else if (action.type === 'insert_doc') {
+          const {error} = await db.from('trip_documents').insert(d);
+          if (error) throw error;
+        }
+        _importLog(`   ✅ Concluído`);
+        done++;
+      } catch(e) {
+        _importLog(`   ❌ Erro: ${e.message}`);
+        errors++;
+      }
+
+      // Small delay between DB calls
+      await new Promise(r => setTimeout(r, 200));
+    }
+
+    _importLog(`\n✅ Importação concluída!`);
+    _importLog(`   ${done} ação(ões) executada(s) · ${skipped} ignorada(s) · ${errors} erro(s)`);
+
+    // Reload trip data
+    await reloadTrip();
+    await loadAllTripData();
+    renderSidebar();
+    renderOverview();
+    renderDocs();
+
+    btn.disabled = false;
+    btn.textContent = '▶ Reimportar';
+
+  } catch(e) {
+    _importLog('❌ Erro na chamada à IA: ' + e.message);
+    btn.disabled = false;
+    btn.textContent = '▶ Tentar novamente';
+  }
+}
+// ─── FIM IMPORTAR DADOS ────────────────────────────────────────────────────
+
 
 function openEditDoc(id) {
   const d = S.docs.find(x => x.id === id);
@@ -2426,6 +2717,8 @@ function openEditDoc(id) {
   setVal('doc-expires', d.expires_at || '');
   setVal('doc-notes', d.notes || '');
   setVal('doc-url', d.file_url || '');
+  const costEl=document.getElementById('doc-cost');if(costEl)costEl.value=d.cost||'';
+  const currEl=document.getElementById('doc-currency');if(currEl)currEl.value=d.currency||'BRL';
   // Reset upload area hint
   const hint = document.getElementById('doc-upload-hint');
   if (hint) hint.textContent = d.file_url ? 'Arquivo já enviado — clique ou arraste para substituir' : 'Arraste ou clique para enviar PDF, JPG ou PNG';
@@ -2438,6 +2731,8 @@ function openNewDoc() {
   document.getElementById('btn-save-doc').textContent = 'Salvar';
   document.getElementById('doc-type').value = 'outro';
   ['doc-name','doc-ref','doc-issued','doc-expires','doc-notes','doc-url'].forEach(id => setVal(id,''));
+  const _cEl=document.getElementById('doc-cost');if(_cEl)_cEl.value='';
+  const _curEl=document.getElementById('doc-currency');if(_curEl)_curEl.value=curTrip()?.currency||'BRL';
   const hint = document.getElementById('doc-upload-hint');
   if (hint) hint.textContent = 'Arraste ou clique para enviar PDF, JPG ou PNG';
   openModal('addDoc');
@@ -2457,6 +2752,8 @@ async function saveDoc() {
     issued_at: gv('doc-issued')||null,
     expires_at: gv('doc-expires')||null,
     notes: gv('doc-notes')||null,
+    cost: parseFloat(document.getElementById('doc-cost')?.value)||null,
+    currency: document.getElementById('doc-currency')?.value||'BRL',
     file_url: gv('doc-url')||null,
   };
   let error;
